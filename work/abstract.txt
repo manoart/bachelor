@@ -1,0 +1,8 @@
+Entwicklung eines Datenformates zu Repräsentation von Schnee mit Hilfe 
+prozeduraler Modellierung
+
+Im Rahmen des Masterprojektes "Virtueller Campus" soll in dieser 
+Bachelorarbeit ein Format zur Schneerepräsentation entwickelt werden um 
+Wetterdaten naturgetreuer darstellen zu können. Zur besseren Modellierung 
+sollen hierbei prozedurale Methoden unterstützend eingesetzt und 
+implementiert werden.

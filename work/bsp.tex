@@ -1,0 +1,64 @@
+% class options:
+% - select either [german] or [english]
+% - select the type of thesis from:
+%   [bachelor, master, generic]
+%   (in case of generic, use \type{} to specify it)
+% - use option "alpha" for abbreviated citation (instead of numbers)
+% - option "draft" is available, too
+% - use options "utf8" or "latin1" to select inputencoding
+\documentclass[german, bachelor, utf8, alpha]{thesis_KBS}
+
+\usepackage{units}    % useful for settings units:              \unit[23]{m}
+\usepackage{nicefrac} % for setting fractions esp. within text: \nicefrac{km}{h}
+
+\usepackage{algorithm, algorithmic}  % for pseudo code (cf. documentation)
+\renewcommand{\algorithmiccomment}[1]{\qquad{\small // \textit{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title{Entwicklung eines Datenformates zur Repr"asentation von Schnee mit Hilfe
+prozeduraler Modellierung}
+\author{Manuel Schwarz}
+\email{manschwa@uni-osnabrueck.de}
+\firstSupervisor{Prof. Dr. Oliver Vornberger}
+\secondSupervisor{???}
+%\dept{...}                             % by default MI UOS
+%\submitdate{November 2004}             % by default current month & year
+%\signcity{}                            % by default Osnabrück
+%signline{Osnabrück, 11. Dezember 2004} % by default "signcity, submitdate"
+
+\generatetitle
+
+\cleardoublepage
+
+\begin{prefacesection}{Zusammenfassung}
+Die vorliegende Arbeit \dots
+\end{prefacesection}
+
+\cleardoublepage
+\tableofcontents
+
+
+\startTextChapters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Einleitung}
+
+\section{Motivation}
+
+\section{Zielsetzung}
+
+\section{Aufbau der Arbeit}
+
+\newpage
+Beispieltext. Siehe auch \cite{Fischer:1995, Besl:1992, Thrun:2000}.
+URLs gehen auch: \cite{robocup}.
+
+
+% DON'T set \bibliographystyle here -- use the documentclass option instead
+\bibliography{papers}
+
+\closing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
