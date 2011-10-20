@@ -11,18 +11,20 @@ import java.util.StringTokenizer;
  * sind wavefront Dateien, die von Blender erstellt wurden und beinhalten
  * Vertex-, Normalen- und Indexinformationen der in Blender erstellen Models.
  * Diese Daten werden hier eingelesen und in Arrays abgespeichert.
- * @author cgp10
+ * 
+ * @author manschwa
  *
  */
 public class ObjParser
 {
-	/* String Konstanten, die jeweils das Praefix fuer Vertices, Normals und Indices
-	 * innerhalb der *.obj Datei repraesentieren */
-	private static final String VERTEX_PREFIX = new String("v ");
+	/* 
+     * String constants for the different prefixes in the wavefront-file (*.obj)
+     */
+    private static final String VERTEX_PREFIX = new String("v ");
 	private static final String NORMAL_PREFIX = new String("vn");
 	private static final String FACE_PREFIX = new String("f ");
 	
-	/* Die Arrays mit den Daten */
+	/* Arrays with the data */
 	private float[] outputVertices;
 	private int[] outputFaces;
 	private float[] outputNormals;
@@ -108,10 +110,15 @@ public class ObjParser
 			String line;
 			while((line = br.readLine()) != null)
 			{
-				if(line.substring(0, 2).equals(substring))
-					count++;
-			}
-			
+                //ignore empty Strings
+                if(line.length() > 1)
+                {
+                    if(line.substring(0, 2).equals(substring))
+                    {
+                        count++;
+                    }
+                }     
+			}	
 		}
 		catch(IOException e)
 		{
@@ -162,6 +169,7 @@ public class ObjParser
 			tokens.nextToken();
 			this.outputVertices[this.vertexArrayIndex++] = Float.parseFloat(tokens.nextToken());
 			this.outputVertices[this.vertexArrayIndex++] = Float.parseFloat(tokens.nextToken());
+            //TODO try without "-1"
 			this.outputVertices[this.vertexArrayIndex++] = (-1)*Float.parseFloat(tokens.nextToken());
 		}
 		catch(NumberFormatException nfe)
@@ -187,10 +195,12 @@ public class ObjParser
 		byte numberOfJumps = 0;
 		if(tokens.countTokens() == 4)
 			throw new RuntimeException("Face indices syntax error...");
+        //without textures
 		else if(tokens.countTokens() == 7)
 			numberOfJumps = 0;
+        //with textures
 		else if(tokens.countTokens() == 10)
-			numberOfJumps = 1;
+			numberOfJumps = 1; //because they are not needed
 		else
 		{
 			System.out.println(tokens.countTokens());
@@ -200,43 +210,43 @@ public class ObjParser
 		try
 		{	
 			//f v1//n1 v2//n2 v3//n3
-			//oder
+			//or
 			//f v1/tex1/n1 v2/tex2/n2 v3/tex3/n3
 			
-			//f ueberspringen
+			//ignore f
 			tokens.nextToken();
 			
 			//VERTEX1 -----------
-			//v1 hinzufuegen
+			//add v1
 			this.outputFaces[this.faceArrayIndex++] = Integer.parseInt(tokens.nextToken());
 			
-			//eventuell tex1 ueberspringen
+			//ignore tex1 if needed
 			for(byte t = 0; t < numberOfJumps; t++)
 				tokens.nextToken();
 			
-			//n1 hinzufuegen
+			//add n1
 			this.outputNormalIndices[this.normalIndicesArrayIndex++] = Integer.parseInt(tokens.nextToken());
 			
 			//VERTEX2 -----------
-			//v2 hinzufuegen
+			//add v2
 			this.outputFaces[this.faceArrayIndex++] = Integer.parseInt(tokens.nextToken());
 			
-			//eventuell tex2 ueberspringen
+			//ignore tex2 if needed
 			for(byte t = 0; t < numberOfJumps; t++)
 				tokens.nextToken();
 			
-			//n2 hinzufuegen
+			//add n2
 			this.outputNormalIndices[this.normalIndicesArrayIndex++] = Integer.parseInt(tokens.nextToken());
 			
 			//VERTEX3 -----------
-			//v2 hinzufuegen
+			//add v3
 			this.outputFaces[this.faceArrayIndex++] = Integer.parseInt(tokens.nextToken());
 			
-			//eventuell tex3 ueberspringen
+			//ignore tex3 if needed
 			for(byte t = 0; t < numberOfJumps; t++)
 				tokens.nextToken();
 			
-			//n2 hinzufuegen
+			//add n3
 			this.outputNormalIndices[this.normalIndicesArrayIndex++] = Integer.parseInt(tokens.nextToken());
 		}
 		catch(NumberFormatException nfe)
