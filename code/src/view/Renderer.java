@@ -12,6 +12,8 @@ package view;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import model.Generator;
+import model.Voxel;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -56,6 +58,8 @@ public class Renderer {
         //TODO general file-path
         ObjParser op = new ObjParser("/Users/Manuel/NetBeansProjects/"
             + "Snow/src/obj/cube.obj");
+        Generator generator = new Generator("/Users/Manuel/NetBeansProjects/"
+            + "Snow/src/obj/cube.obj");
 
         float a = 0.0f;
 
@@ -77,7 +81,7 @@ public class Renderer {
 
 //            GL11.glTranslatef(-0.5f, -0.5f, 0.0f);
             GL11.glTranslatef(-0.5f, -0.5f, -3.0f);
-            GL11.glRotatef(30, 0.0f, 0.0f, 1.0f);
+//            GL11.glRotatef(30, 0.0f, 0.0f, 1.0f);
             GL11.glRotatef(a, 0.0f, 1.0f, 0.0f);
 
             //TODO rotating CAMERA
@@ -93,24 +97,35 @@ public class Renderer {
             GL11.glColor3f(0.2f, 0.6f, 0.1f);
 
             // draw triangle
+            GL11.glBegin(GL11.GL_POINTS);
 
-            GL11.glBegin(GL11.GL_TRIANGLES);
+            Voxel[] voxels = generator.getVoxels();
 
-
-            int[] faces = op.getFaces();
-            float[] vertices = op.getVertices();
-
-            for (int i = 0; i < faces.length; i++) {
-                //subtract 1 to get the right index
-                int j = (faces[i] - 1) * 3;
-
-                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
+            for (int i = 0; i < voxels.length; i++)
+            {
+                if(voxels[i] != null)
+                {
+//                    System.out.println("voxels[i] != null");
+                    GL11.glVertex3f(voxels[i].getX(), voxels[i].getY(), voxels[i].getZ());
+                }
             }
-
-
 //		GL11.glVertex3f(5,5,-20);
-
             GL11.glEnd();
+
+//            GL11.glBegin(GL11.GL_POINTS);
+//
+//
+//            int[] faces = op.getFaces();
+//            float[] vertices = op.getVertices();
+//
+//            for (int i = 0; i < faces.length; i++) {
+//                //subtract 1 to get the right index
+//                int j = (faces[i] - 1) * 3;
+//
+//                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
+//            }
+////		GL11.glVertex3f(5,5,-20);
+//            GL11.glEnd();
             GL11.glPopMatrix();
 
             Display.update();

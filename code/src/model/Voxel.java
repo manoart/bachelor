@@ -1,6 +1,5 @@
 package model;
 
-/******************************  Voxel.java  **********************************/
 /** 
  * Representation of a Voxel.
  *
@@ -13,11 +12,11 @@ public class Voxel
     // instance variables
 
     /** x-coordinate of the voxel */
-    private int x;
+    private float x;
     /** y-coordinate of the voxel */
-    private int y;
+    private float y;
     /** z-coordinate of the voxel */
-    private int z;
+    private float z;
     /** marks if there is snow or not */
     private boolean snow;
     /** density of the snow (perhaps needed in the future)*/
@@ -28,7 +27,7 @@ public class Voxel
      */
     public Voxel()
     {
-        this(0, 0, 0, false, 0.0);
+        this(0f, 0f, 0f, false, 0.0);
     }
 
     /**
@@ -38,7 +37,7 @@ public class Voxel
      * @param y y-coordinate of the voxel
      * @param z z-coordinate of the voxel
      */
-    public Voxel(int x, int y, int z)
+    public Voxel(float x, float y, float z)
     {
         this(x, y, z, false, 0.0);
     }
@@ -51,7 +50,7 @@ public class Voxel
      * @param z z-coordinate of the voxel
      * @param snow
      */
-    public Voxel(int x, int y, int z, boolean snow)
+    public Voxel(float x, float y, float z, boolean snow)
     {
         this(x, y, z, snow, 0.0);
     }
@@ -65,7 +64,7 @@ public class Voxel
      * @param snow
      * @param density
      */
-    public Voxel(int x, int y, int z, boolean snow, double density)
+    public Voxel(float x, float y, float z, boolean snow, double density)
     {
         this.x = x;
         this.y = y;
@@ -139,7 +138,7 @@ public class Voxel
      *
      * @return x-coordinate of the Voxel
      */
-    public int getX()
+    public float getX()
     {
         return this.x;
     }
@@ -149,7 +148,7 @@ public class Voxel
      *
      * @return y-coordinate of the Voxel
      */
-    public int getY()
+    public float getY()
     {
         return this.y;
     }
@@ -159,7 +158,7 @@ public class Voxel
      *
      * @return z-coordinate of the Voxel
      */
-    public int getZ()
+    public float getZ()
     {
         return this.z;
     }
