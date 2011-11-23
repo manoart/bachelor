@@ -4,7 +4,6 @@ package view;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Manuel
@@ -23,13 +22,17 @@ import org.lwjgl.util.glu.GLU;
 
 import view.parser.ObjParser;
 
-public class Renderer {
+public class Renderer
+{
 
-    public void start() {
-        try {
+    public void start()
+    {
+        try
+        {
             Display.setDisplayMode(new DisplayMode(800, 600));
             Display.create();
-        } catch (LWJGLException e) {
+        } catch (LWJGLException e)
+        {
             e.printStackTrace();
             System.exit(0);
         }
@@ -41,9 +44,18 @@ public class Renderer {
         GL11.glCullFace(GL11.GL_FRONT);
         GL11.glShadeModel(GL11.GL_FLAT);
 
-        float lightAmbient[] = {0.5f, 0.5f, 0.5f, 1.0f};
-        float lightDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float lightPosition[] = {0.0f, 0.0f, 2.0f, 1.0f};
+        float lightAmbient[] =
+        {
+            0.5f, 0.5f, 0.5f, 1.0f
+        };
+        float lightDiffuse[] =
+        {
+            1.0f, 1.0f, 1.0f, 1.0f
+        };
+        float lightPosition[] =
+        {
+            0.0f, 3.0f, 0.0f, 2.0f
+        };
 
         ByteBuffer temp = ByteBuffer.allocateDirect(16);
         temp.order(ByteOrder.nativeOrder());
@@ -57,11 +69,14 @@ public class Renderer {
 
         //TODO general file-path
         ObjParser op = new ObjParser("/Users/Manuel/NetBeansProjects/"
-            + "Snow/src/obj/cube.obj");
+                + "Snow/src/obj/pawn.obj");
         Generator generator = new Generator("/Users/Manuel/NetBeansProjects/"
-            + "Snow/src/obj/cube.obj");
-
+                + "Snow/src/obj/pawn.obj");
+        
+        // angle to rotate around the z-axis
         float a = 0.0f;
+        // part to move object back and forth (y-axis)
+        float y = 0.0f;
 
         // init OpenGL
         GL11.glMatrixMode(GL11.GL_PROJECTION);
@@ -73,24 +88,37 @@ public class Renderer {
 
 
 
-        while (!Display.isCloseRequested()) {
+        while (!Display.isCloseRequested())
+        {
             // Clear the screen and depth buffer
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
             GL11.glPushMatrix();
 
-//            GL11.glTranslatef(-0.5f, -0.5f, 0.0f);
-            GL11.glTranslatef(-0.5f, -0.5f, -3.0f);
-//            GL11.glRotatef(30, 0.0f, 0.0f, 1.0f);
-            GL11.glRotatef(a, 0.0f, 1.0f, 0.0f);
+            GL11.glTranslatef(0.0f, -1.3f, -3.0f);
+            GL11.glRotatef(270, 1.0f, 0.0f, 0.0f);
+            GL11.glRotatef(a, 0.0f, 0.0f, 1.0f);
+            GL11.glTranslatef(0.0f, y, 0.0f);
 
-            //TODO rotating CAMERA
-            if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+            //TODO fix rotating CAMERA
+            if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
+            {
                 a -= 0.05f;
             }
-            
-            if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+
+            if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+            {
                 a += 0.05f;
+            }
+            
+            if (Keyboard.isKeyDown(Keyboard.KEY_UP))
+            {
+                y += 0.005f;
+            }
+            
+            if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+            {
+                y -= 0.005f;
             }
 
             // set the color of the quad (R,G,B)
@@ -103,29 +131,29 @@ public class Renderer {
 
             for (int i = 0; i < voxels.length; i++)
             {
-                if(voxels[i] != null)
+                if (voxels[i] != null)
                 {
 //                    System.out.println("voxels[i] != null");
                     GL11.glVertex3f(voxels[i].getX(), voxels[i].getY(), voxels[i].getZ());
                 }
             }
-//		GL11.glVertex3f(5,5,-20);
             GL11.glEnd();
 
-//            GL11.glBegin(GL11.GL_POINTS);
-//
-//
-//            int[] faces = op.getFaces();
-//            float[] vertices = op.getVertices();
-//
-//            for (int i = 0; i < faces.length; i++) {
-//                //subtract 1 to get the right index
-//                int j = (faces[i] - 1) * 3;
-//
-//                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
-//            }
-////		GL11.glVertex3f(5,5,-20);
-//            GL11.glEnd();
+            GL11.glBegin(GL11.GL_TRIANGLES);
+
+
+            int[] faces = op.getFaces();
+            float[] vertices = op.getVertices();
+
+            for (int i = 0; i < faces.length; i++)
+            {
+                //subtract 1 to get the right index
+                int j = (faces[i] - 1) * 3;
+
+                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
+            }
+//		GL11.glVertex3f(5,5,-20);
+            GL11.glEnd();
             GL11.glPopMatrix();
 
             Display.update();
@@ -134,7 +162,8 @@ public class Renderer {
         Display.destroy();
     }
 
-    public static void main(String[] argv) {
+    public static void main(String[] argv)
+    {
         Renderer quadExample = new Renderer();
         quadExample.start();
     }
