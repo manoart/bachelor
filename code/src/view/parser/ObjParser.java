@@ -30,7 +30,7 @@ public class ObjParser
 	private float[] outputNormals;
 	private int[] outputNormalIndices;
 	
-	/* Indizes fuer die aktuelle Stelle im Array */
+	/* Indices fuer die aktuelle Stelle im Array */
 	private int vertexArrayIndex;
 	private int faceArrayIndex;
 	private int normalArrayIndex;

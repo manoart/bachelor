@@ -141,8 +141,9 @@ public class Renderer
 
             GL11.glBegin(GL11.GL_TRIANGLES);
 
-
-            int[] faces = op.getFaces();
+            // show all faces which intersect with the x-y-plane
+            int[] faces = generator.activeFaces(0.75f);
+//            int[] faces = op.getFaces();
             float[] vertices = op.getVertices();
 
             for (int i = 0; i < faces.length; i++)

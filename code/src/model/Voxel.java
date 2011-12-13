@@ -132,6 +132,26 @@ public class Voxel
     {
         return true;    //TODO more Code
     }
+    
+    public boolean hasNeighborInEveryDirection()
+    {
+        return true;
+    }
+    
+    public boolean hasTopNeighbor()
+    {
+        return true;
+    }
+    
+    /**
+     * Tests if a voxel is in another object. (surrounded by faces?)
+     * @return true if voxel is in an object, false else.
+     */
+    public boolean isInObject()
+    {
+        //TODO write "is in Object"-Test
+        return true;
+    }
 
     /**
      * Getter for the x-coordinate.
