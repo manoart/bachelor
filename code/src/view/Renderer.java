@@ -86,8 +86,6 @@ public class Renderer
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glPointSize(3.0f);
 
-
-
         while (!Display.isCloseRequested())
         {
             // Clear the screen and depth buffer
@@ -139,22 +137,22 @@ public class Renderer
             }
             GL11.glEnd();
 
-            GL11.glBegin(GL11.GL_TRIANGLES);
-
-            // show all faces which intersect with the x-y-plane
-            int[] faces = generator.activeFaces(0.75f);
-//            int[] faces = op.getFaces();
-            float[] vertices = op.getVertices();
-
-            for (int i = 0; i < faces.length; i++)
-            {
-                //subtract 1 to get the right index
-                int j = (faces[i] - 1) * 3;
-
-                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
-            }
-//		GL11.glVertex3f(5,5,-20);
-            GL11.glEnd();
+//            GL11.glBegin(GL11.GL_TRIANGLES);
+//
+//            // show all faces which intersect with the x-y-plane
+////            int[] faces = generator.activeFaces(0.75f);
+////            int[] faces = op.getFaces();
+//            float[] vertices = op.getVertices();
+//
+//            for (int i = 0; i < faces.length; i++)
+//            {
+//                //subtract 1 to get the right index
+//                int j = (faces[i] - 1) * 3;
+//
+//                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
+//            }
+////		GL11.glVertex3f(5,5,-20);
+//            GL11.glEnd();
             GL11.glPopMatrix();
 
             Display.update();

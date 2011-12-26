@@ -17,8 +17,8 @@ public class Generator
     /** Array which contains the scene */
     private float[] vertices;
     /** constant number of steps per unit (granularity of the voxel-density) */
-    private static final int STEPS = 5;
-    /** Array which contains the faces' vetices */
+    private static final int STEPS = 15;
+    /** Array which contains the faces' vertices */
     private int[] faces;
 
     /**
@@ -71,19 +71,38 @@ public class Generator
     {
         for (float z = calculateMinZ(vertices); z <= calculateMaxZ(vertices) + (0.5f / STEPS); z += 1.0f / STEPS)
         {
-            int[] currentFaces = activeFaces(z);
-            
+            // calculate the edges just once for every z-coordinate
+            float[] edges = edges(z);
+
             for (float x = calculateMinX(vertices); x <= calculateMaxX(vertices) + (0.5f / STEPS); x += 1.0f / STEPS)
             {
                 for (float y = calculateMinY(vertices); y <=  calculateMaxY(vertices) + (0.5f / STEPS); y += 1.0f / STEPS)
                 {
-//                    if(!contains(x, y, z, currentFaces))
+                    if(contains(x, y, edges))
                     {
                         setVoxel((float) x , (float) y , (float) z);
                     }
                 }
             }
         }
+        
+////        for (float z = calculateMinZ(vertices); z <= calculateMaxZ(vertices) + (0.5f / STEPS); z += 1.0f / STEPS)
+////        {
+//            // calculate the edges just once for every z-coordinate
+//            float[] edges = edges(0.75f);
+//
+//            for (float x = calculateMinX(vertices); x <= calculateMaxX(vertices) + (0.5f / STEPS); x += 1.0f / STEPS)
+//            {
+//                for (float y = calculateMinY(vertices); y <=  calculateMaxY(vertices) + (0.5f / STEPS); y += 1.0f / STEPS)
+//                {
+//                    if(!contains(x, y, edges))
+//                    {
+//                        setVoxel((float) x , (float) y , (float) 0.75);
+//                    }
+//                }
+//            }
+////        }
+        
     }
 
     /**
@@ -107,26 +126,186 @@ public class Generator
      * 
      * @param x x-coordinate of the Voxel.
      * @param y y-coordinate of the Voxel.
-     * @param z z-coordinate of the Voxel.
-     * @param currentFaces Faces which intersect with the current plane.
+     * @param edges which are intersections of faces with the current plane.
      * @return true if the coordinates are inside an object.
      */
-    private boolean contains(float x, float y, float z, int[] currentFaces)
+    private boolean contains(float x, float y, float[] edges)
     {
-        int intersections = 0;
-        
-        for(int i = 0; i < currentFaces.length; i++)
+        boolean inside = false;
+        for(int i = 0; i < edges.length; i += 4)
         {
-            //TODO Schnittkante berechnen und Punkt in Polygon - Algo implementieren
+            float x1 = edges[i];
+            float y1 = edges[i + 1];
+            float x2 = edges[i + 2];
+            float y2 = edges[i + 3];
+            
+            boolean startOver = y1 >= y;
+//            System.out.println("y1: " + y1 + ", y: " + y);
+//            System.out.println("y2: " + y2 + ", y: " + y);
+            boolean endOver = y2 >= y;
+            
+            if(startOver != endOver)
+            {
+                float sx = ((float) (y * (x2 - x1) - y1 * x2 + y2 * x1) / (float) (y2 - y1));
+                
+                if(sx >= x)
+                {
+                    inside = !inside;
+                }
+            }
         }
         
-        if(intersections % 2 == 0)
+        return inside;
+    }
+    
+    /**
+     * Calculates all edges at heigth z createt by any object in the y-x-plane.
+     * This Method is used to perform the Point in Polygon algorithm afterwards.
+     * @param z The heigth (z-coordinate) of the y-x-plane.
+     * @return Array of indices that represent the edges of all intersecting
+     *         faces in the scene (in the following form: 
+     *         [x1e1,y1e1,x2e1,y2e1,x1e2,y1e2,x2e2,y2e2, ... ,x2en,y2en]).
+     *         Every edge has two points and therefore 4 vertices.
+     */
+    private float[] edges(float z)
+    {
+        int[] activeFaces = activeFaces(z);
+
+        //TODO do not save double elements in edges
+        //at the moment every edge has two points
+        float[] edges = new float[activeFaces.length / 3 * 4];
+        
+        // calculate the intersecting edge for every face
+        // 
+        //
+        for(int i = 0; i < activeFaces.length; i += 3)
         {
-            return true;
-        } else
-        {
-            return false;
+            if((      (this.vertices[activeFaces[i] * 3 - 1] > z) &&
+                      (this.vertices[activeFaces[i + 1] * 3 - 1] < z) &&
+                      (this.vertices[activeFaces[i + 2] * 3 - 1] > z)) ||
+                      ((this.vertices[activeFaces[i] * 3 - 1] < z) &&
+                      (this.vertices[activeFaces[i + 1] * 3 - 1] > z) &&
+                      (this.vertices[activeFaces[i + 2] * 3 - 1] < z)))
+            {
+                //calculate edges and add them to the array
+                //edge i x1-value
+                edges[(i / 3 * 4)] = 
+                        (((z - this.vertices[activeFaces[i + 1] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i] * 3 - 1] - 
+                        this.vertices[activeFaces[i + 1] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i] * 3 - 3] - 
+                        this.vertices[activeFaces[i + 1] * 3 - 3]) + 
+                        this.vertices[activeFaces[i + 1] * 3 - 3]);
+                //edge i y1-value
+                edges[(i / 3 * 4) + 1] = 
+                        (((z - this.vertices[activeFaces[i + 1] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i] * 3 - 1] - 
+                        this.vertices[activeFaces[i + 1] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i] * 3 - 2] - 
+                        this.vertices[activeFaces[i + 1] * 3 - 2]) + 
+                        this.vertices[activeFaces[i + 1] * 3 - 2]);
+                //edge i x2-value
+                edges[(i / 3 * 4) + 2] = 
+                        (((z - this.vertices[activeFaces[i + 1] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i + 2] * 3 - 1] - 
+                        this.vertices[activeFaces[i + 1] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i + 2] * 3 - 3] - 
+                        this.vertices[activeFaces[i + 1] * 3 - 3]) + 
+                        this.vertices[activeFaces[i + 1] * 3 - 3]);
+                //edge i y2-value
+                edges[(i / 3 * 4) + 3] = 
+                        (((z - this.vertices[activeFaces[i + 1] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i + 2] * 3 - 1] - 
+                        this.vertices[activeFaces[i + 1] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i + 2] * 3 - 2] - 
+                        this.vertices[activeFaces[i + 1] * 3 - 2]) + 
+                        this.vertices[activeFaces[i + 1] * 3 - 2]);
+                
+            }else if(((this.vertices[activeFaces[i] * 3 - 1] < z) &&
+                      (this.vertices[activeFaces[i + 1] * 3 - 1] < z) &&
+                      (this.vertices[activeFaces[i + 2] * 3 - 1] > z)) ||
+                      ((this.vertices[activeFaces[i] * 3 - 1] > z) &&
+                      (this.vertices[activeFaces[i + 1] * 3 - 1] > z) &&
+                      (this.vertices[activeFaces[i + 2] * 3 - 1] < z)))
+            {
+                //calculate edges and add them to the array
+                //edge i x1-value
+                edges[(i / 3 * 4)] = 
+                        (((z - this.vertices[activeFaces[i + 2] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i] * 3 - 1] - 
+                        this.vertices[activeFaces[i + 2] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i] * 3 - 3] - 
+                        this.vertices[activeFaces[i + 2] * 3 - 3]) + 
+                        this.vertices[activeFaces[i + 2] * 3 - 3]);
+                //edge i y1-value
+                edges[(i / 3 * 4) + 1] = 
+                        (((z - this.vertices[activeFaces[i + 2] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i] * 3 - 1] - 
+                        this.vertices[activeFaces[i + 2] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i] * 3 - 2] - 
+                        this.vertices[activeFaces[i + 2] * 3 - 2]) + 
+                        this.vertices[activeFaces[i + 2] * 3 - 2]);
+                //edge i x2-value
+                edges[(i / 3 * 4) + 2] = 
+                        (((z - this.vertices[activeFaces[i + 2] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i + 1] * 3 - 1] - 
+                        this.vertices[activeFaces[i + 2] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i + 1] * 3 - 3] - 
+                        this.vertices[activeFaces[i + 2] * 3 - 3]) + 
+                        this.vertices[activeFaces[i + 2] * 3 - 3]);
+                //edge i y2-value
+                edges[(i / 3 * 4) + 3] = 
+                        (((z - this.vertices[activeFaces[i + 2] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i + 1] * 3 - 1] - 
+                        this.vertices[activeFaces[i + 2] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i + 1] * 3 - 2] - 
+                        this.vertices[activeFaces[i + 2] * 3 - 2]) + 
+                        this.vertices[activeFaces[i + 2] * 3 - 2]);
+                
+            }else if(((this.vertices[activeFaces[i] * 3 - 1] < z) &&
+                      (this.vertices[activeFaces[i + 1] * 3 - 1] > z) &&
+                      (this.vertices[activeFaces[i + 2] * 3 - 1] > z)) ||
+                      ((this.vertices[activeFaces[i] * 3 - 1] > z) &&
+                      (this.vertices[activeFaces[i + 1] * 3 - 1] < z) &&
+                      (this.vertices[activeFaces[i + 2] * 3 - 1] < z)))
+            {
+                //calculate edges and add them to the array
+                //edge i x1-value
+                edges[(i / 3 * 4)] = 
+                        (((z - this.vertices[activeFaces[i] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i + 2] * 3 - 1] - 
+                        this.vertices[activeFaces[i] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i + 2] * 3 - 3] - 
+                        this.vertices[activeFaces[i] * 3 - 3]) + 
+                        this.vertices[activeFaces[i] * 3 - 3]);
+                //edge i y1-value
+                edges[(i / 3 * 4) + 1] = 
+                        (((z - this.vertices[activeFaces[i] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i + 2] * 3 - 1] - 
+                        this.vertices[activeFaces[i] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i + 2] * 3 - 2] - 
+                        this.vertices[activeFaces[i] * 3 - 2]) + 
+                        this.vertices[activeFaces[i] * 3 - 2]);
+                //edge i x2-value
+                edges[(i / 3 * 4) + 2] = 
+                        (((z - this.vertices[activeFaces[i] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i + 1] * 3 - 1] - 
+                        this.vertices[activeFaces[i] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i + 1] * 3 - 3] - 
+                        this.vertices[activeFaces[i] * 3 - 3]) + 
+                        this.vertices[activeFaces[i] * 3 - 3]);
+                //edge i y2-value
+                edges[(i / 3 * 4) + 3] = 
+                        (((z - this.vertices[activeFaces[i] * 3 - 1]) / 
+                        (this.vertices[activeFaces[i + 1] * 3 - 1] - 
+                        this.vertices[activeFaces[i] * 3 - 1])) * 
+                        (this.vertices[activeFaces[i + 1] * 3 - 2] - 
+                        this.vertices[activeFaces[i] * 3 - 2]) + 
+                        this.vertices[activeFaces[i] * 3 - 2]);
+            }
         }
+        
+        return edges;
     }
     
     /**
@@ -140,27 +319,20 @@ public class Generator
     {
         int j = 0;
         int[] activeFaces = new int[this.faces.length];
-        for(int k = 0; k < activeFaces.length; k++)
-        {
-            activeFaces[k] = -1;
-        }
+
         for(int i = 0; i < this.faces.length; i += 3)
         {
             //TODO test if the index is right, look at Renderer.java
-            if(!((this.vertices[this.faces[i] * 3 - 1] < z) && 
+            if(     !((this.vertices[this.faces[i] * 3 - 1] < z) && 
                     (this.vertices[this.faces[i + 1] * 3 - 1] < z) && 
                     (this.vertices[this.faces[i + 2] * 3 - 1] < z)) &&
                     !((this.vertices[this.faces[i] * 3 - 1] > z) && 
                     (this.vertices[this.faces[i + 1] * 3 - 1] > z) && 
                     (this.vertices[this.faces[i + 2] * 3 - 1] > z)))
             {
-                while(activeFaces[j] != -1) 
-                {
-                    j += 3;
-                }
-                activeFaces[j] = this.faces[i];
-                activeFaces[j + 1] = this.faces[i + 1];
-                activeFaces[j + 2] = this.faces[i + 2];
+                activeFaces[j++] = this.faces[i];
+                activeFaces[j++] = this.faces[i + 1];
+                activeFaces[j++] = this.faces[i + 2];
             }
         }
         

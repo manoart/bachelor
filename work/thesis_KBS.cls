@@ -82,7 +82,7 @@
 
   \ifthenelse{\value{bstyle} = 1}{
     %\bibliographystyle{gerplain} % setzt Vornamen inkonsistent !!!!!!!
-    \bibliographystyle{plaindin} 
+    \bibliographystyle{plaindin}
   }{
     % \bibliographystyle{geralpha} % dito
     \bibliographystyle{alphadin}
@@ -91,7 +91,7 @@
   \ifthenelse{\value{mytype} = 1}{\type{Bachelorarbeit}}%
              {\ifthenelse{\value{mytype} = 2}{\type{Masterarbeit}}
                {\type{*** Use \texttt{\textbackslash type\{\}} command to set the type ***}}}
-  
+
 }{ % else -> english
   \RequirePackage[english]{babel}
   \ifthenelse{\value{bstyle} = 1}{
@@ -118,9 +118,9 @@
 % 'American Mathmatical Society'
 % http://ftp.uni-erlangen.de/mirrors/CTAN/support/tcltexed/hlp/eng/amsmath.txt
 % additional:
-% 	- mathmatical symbols
-% 	- mathmatical theorems
-% 	- mathmatical fonts
+%	- mathmatical symbols
+%	- mathmatical theorems
+%	- mathmatical fonts
 \usepackage{amsmath, amssymb, amsthm, amsfonts}
 
 % Hypertext marks in LaTeX
@@ -279,16 +279,17 @@
   \thispagestyle{empty}
 
 \ifthenelse{\value{sprache} = 1}{
-  Hiermit versichere ich, dass ich die vorliegende Arbeit
-  selbst\"andig verfasst und keine anderen als die angegebenen
-  Quellen und Hilfsmittel benutzt sowie Zitate kenntlich gemacht
-  habe.
+    Ich versichere, dass ich die eingereichte Bachelor-Arbeit selbstst\"andig
+    und ohne unerlaubte Hilfe verfasst habe. Anderer als der vom mir
+    angegebenen Hilfsmittel und Schriften habe ich mich nicht bedient. Alle
+    w\"ortlich oder sinngem\"a{\ss} den Schriften anderer Autoren entnommenen
+    Stellen habe ich kenntlich gemacht.
 }{
   Hereby I confirm that I wrote this thesis independently and
   that I have not made use of any other resources or means than
   those indicated.
 }
-  
+
   \bigskip\bigskip
 
 \begin{flushright}
