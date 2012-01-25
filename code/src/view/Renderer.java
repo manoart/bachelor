@@ -68,10 +68,9 @@ public class Renderer
         GL11.glEnable(GL11.GL_LIGHT1);
 
         //TODO general file-path
-        ObjParser op = new ObjParser("/Users/Manuel/NetBeansProjects/"
-                + "Snow/src/obj/pawn.obj");
-        Generator generator = new Generator("/Users/Manuel/NetBeansProjects/"
-                + "Snow/src/obj/pawn.obj");
+        String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/pawn.obj";
+        ObjParser op = new ObjParser(path);
+        Generator generator = new Generator(path);
         
         // angle to rotate around the z-axis
         float a = 0.0f;
@@ -140,7 +139,7 @@ public class Renderer
 //            GL11.glBegin(GL11.GL_TRIANGLES);
 //
 //            // show all faces which intersect with the x-y-plane
-////            int[] faces = generator.activeFaces(0.75f);
+//            int[] faces = generator.activeFaces(0.75f);
 ////            int[] faces = op.getFaces();
 //            float[] vertices = op.getVertices();
 //

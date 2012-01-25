@@ -21,6 +21,18 @@ public class Voxel
     private boolean snow;
     /** density of the snow (perhaps needed in the future)*/
     private double density;
+    /** left neighbor of the voxel */
+    private Voxel leftNeighbor;
+    /** right neighbor of the voxel */
+    private Voxel rightNeighbor;
+    /** top neighbor of the voxel */
+    private Voxel topNeighbor;
+    /** bottom neighbor of the voxel */
+    private Voxel bottomNeighbor;
+    /** front neighbor of the voxel */
+    private Voxel frontNeighbor;
+    /** back neighbor of the voxel */
+    private Voxel backNeighbor;
 
     /**
      * Default-Constructor
@@ -106,23 +118,42 @@ public class Voxel
      * @param v the tested Voxel
      * @return true, if v is a neighbor of this Voxel, else false
      */
-    public boolean isNeighbor(Voxel v)
+    public boolean isNeighbor(Voxel v, float distance)
     {
         /*
          * To make sure that we only test in the six directions of the axis
          * (and not the diagonals), we have to check three cases.
          */
-        return (((Math.abs(this.x - v.getX()) == 1 ^ // first
-                Math.abs(this.y - v.getY()) == 1) &&
+        return (((Math.abs(this.x - v.getX()) == distance ^ // first
+                Math.abs(this.y - v.getY()) == distance) &&
                 Math.abs(this.z - v.getZ()) == 0) ||
-                ((Math.abs(this.x - v.getX()) == 1 ^ // second
-                Math.abs(this.z - v.getZ()) == 1) &&
+                ((Math.abs(this.x - v.getX()) == distance ^ // second
+                Math.abs(this.z - v.getZ()) == distance) &&
                 Math.abs(this.y - v.getY()) == 0) ||
-                ((Math.abs(this.y - v.getY()) == 1 ^ // third
-                Math.abs(this.z - v.getZ()) == 1) &&
+                ((Math.abs(this.y - v.getY()) == distance ^ // third
+                Math.abs(this.z - v.getZ()) == distance) &&
                 Math.abs(this.x - v.getX()) == 0));
     }
 
+    /**
+     * Counts the neighbors of this Voxel.
+     * 
+     * @return number of neighbors
+     */
+    public int countNeighbors()
+    {
+        int count = 0;
+        
+        if(hasLeftNeighbor())   count++;
+        if(hasRightNeighbor())  count++;
+        if(hasTopNeighbor())    count++;
+        if(hasBottomNeighbor()) count++;
+        if(hasBackNeighbor())   count++;
+        if(hasFrontNeighbor())  count++;
+        
+        return count;
+    }
+    
     /**
      * Tests if this Voxel has any neighbors.
      *
@@ -130,27 +161,137 @@ public class Voxel
      */
     public boolean hasNeighbor()
     {
-        return true;    //TODO more Code
+        return countNeighbors() > 0 ? true : false;
     }
     
-    public boolean hasNeighborInEveryDirection()
+    public boolean hasNeighborInEveryDirection(Voxel[] voxels, float distance)
     {
-        return true;
+        return (countNeighbors() == 6) ? true : false;
+    }
+    
+    public void setNeighbors(Voxel[] voxels, float distance)
+    {
+        setLeftNeighbor(voxels, distance);
+        setRightNeighbor(voxels, distance);
+        setFrontNeighbor(voxels, distance);
+        setBackNeighbor(voxels, distance);
+        setTopNeighbor(voxels, distance);
+        setBottomNeighbor(voxels, distance);
+    }
+    
+    public boolean hasLeftNeighbor()
+    {
+        return this.leftNeighbor != null ? true : false;
+    }
+    
+    public boolean hasRightNeighbor()
+    {
+        return this.rightNeighbor != null ? true : false;
     }
     
     public boolean hasTopNeighbor()
     {
-        return true;
+        return this.topNeighbor != null ? true : false;
     }
     
-    /**
-     * Tests if a voxel is in another object. (surrounded by faces?)
-     * @return true if voxel is in an object, false else.
-     */
-    public boolean isInObject()
+    public boolean hasBottomNeighbor()
     {
-        //TODO write "is in Object"-Test
-        return true;
+        return this.bottomNeighbor != null ? true : false;
+    }
+    
+    public boolean hasFrontNeighbor()
+    {
+        return this.frontNeighbor != null ? true : false;
+    }
+    
+    public boolean hasBackNeighbor()
+    {
+        return this.backNeighbor != null ? true : false;
+    }
+    
+    public void setLeftNeighbor(Voxel[] voxels, float distance)
+    {
+        for(int i = 0; i < voxels.length; i++)
+        {
+            float tmp = this.x - voxels[i].getX();
+            if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
+                    this.z == voxels[i].getZ())
+            {
+                this.leftNeighbor = voxels[i];
+                return;
+            }
+        }
+    }
+    
+    public void setRightNeighbor(Voxel[] voxels, float distance)
+    {
+        for(int i = 0; i < voxels.length; i++)
+        {
+            float tmp = voxels[i].getX() - this.x;
+            //TODO fix: genaue nachbarschaft berechnen (gleiche y und z koordinate)
+            if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
+                    this.z == voxels[i].getZ())
+            {
+                this.rightNeighbor = voxels[i];
+                return;
+            }
+        }
+    }
+    
+    public void setTopNeighbor(Voxel[] voxels, float distance)
+    {
+        for(int i = 0; i < voxels.length; i++)
+        {
+            float tmp = voxels[i].getZ() - this.z;
+            if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
+                    this.x == voxels[i].getX())
+            {
+                this.topNeighbor = voxels[i];
+                return;
+            }
+        }
+    }
+    
+    public void setBottomNeighbor(Voxel[] voxels, float distance)
+    {
+        for(int i = 0; i < voxels.length; i++)
+        {
+            float tmp = this.z - voxels[i].getZ();
+            if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
+                    this.x == voxels[i].getX())
+            {
+                this.bottomNeighbor = voxels[i];
+                return;
+            }
+        }
+    }
+    
+    public void setFrontNeighbor(Voxel[] voxels, float distance)
+    {
+        for(int i = 0; i < voxels.length; i++)
+        {
+            float tmp = voxels[i].getY() - this.y;
+            if(tmp <= distance && tmp > 0.0f && this.x == voxels[i].getX() && 
+                    this.z == voxels[i].getZ())
+            {
+                this.frontNeighbor = voxels[i];
+                return;
+            }
+        }
+    }
+    
+    public void setBackNeighbor(Voxel[] voxels, float distance)
+    {
+        for(int i = 0; i < voxels.length; i++)
+        {
+            float tmp = this.y - voxels[i].getY();
+            if(tmp <= distance && tmp > 0.0f && this.x == voxels[i].getX() && 
+                    this.z == voxels[i].getZ())
+            {
+                this.backNeighbor = voxels[i];
+                return;
+            }
+        }
     }
 
     /**

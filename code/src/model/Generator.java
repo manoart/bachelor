@@ -21,6 +21,14 @@ public class Generator
     /** Array which contains the faces' vertices */
     private int[] faces;
 
+    public Generator(float[] vertices, int[] faces)
+    {
+        this.vertices = vertices;
+        this.faces = faces;
+        this.voxels = new Voxel[calculateNumberOfVoxels(this.vertices)];
+        scan(this.vertices);
+    }
+    
     /**
      * Constructor which parses a scene, calculates the Voxel[] voxels size
      * and scans the scene to fill it up with Voxels.
@@ -37,11 +45,6 @@ public class Generator
         voxels = new Voxel[calculateNumberOfVoxels(vertices)];
         System.out.println("Size of voxel-array: " + voxels.length);
         scan(vertices);
-//        for(int i = 0; i < voxels.length; i++)
-//        {
-//            if(voxels[i]!= null)
-//            System.out.println(voxels[i].toString());
-//        }
     }
 
     /**
@@ -78,31 +81,13 @@ public class Generator
             {
                 for (float y = calculateMinY(vertices); y <=  calculateMaxY(vertices) + (0.5f / STEPS); y += 1.0f / STEPS)
                 {
-                    if(contains(x, y, edges))
+                    if((pointInPolygonX(x, y, z, edges) || pointInPolygonY(x, y, z, edges)))
                     {
                         setVoxel((float) x , (float) y , (float) z);
                     }
                 }
             }
-        }
-        
-////        for (float z = calculateMinZ(vertices); z <= calculateMaxZ(vertices) + (0.5f / STEPS); z += 1.0f / STEPS)
-////        {
-//            // calculate the edges just once for every z-coordinate
-//            float[] edges = edges(0.75f);
-//
-//            for (float x = calculateMinX(vertices); x <= calculateMaxX(vertices) + (0.5f / STEPS); x += 1.0f / STEPS)
-//            {
-//                for (float y = calculateMinY(vertices); y <=  calculateMaxY(vertices) + (0.5f / STEPS); y += 1.0f / STEPS)
-//                {
-//                    if(!contains(x, y, edges))
-//                    {
-//                        setVoxel((float) x , (float) y , (float) 0.75);
-//                    }
-//                }
-//            }
-////        }
-        
+        }      
     }
 
     /**
@@ -114,6 +99,11 @@ public class Generator
         int i = 0;
         while (voxels[i] != null)
         {
+            // make sure every Voxel just exists once, no doubles
+            if(voxels[i].equals(new Voxel(x, y, z)))
+            {
+               return;
+            }
             i++;
         }
 
@@ -123,13 +113,15 @@ public class Generator
     /**
      * Checks if the current Voxel (represented through x,y,z) is inside an
      * object or not using the Point in Polygon-Algorithm.
+     * Sets also a Voxel directly on an edge.
      * 
      * @param x x-coordinate of the Voxel.
      * @param y y-coordinate of the Voxel.
+     * @param z z-coordinate of the Voxel to set a Voxel.
      * @param edges which are intersections of faces with the current plane.
      * @return true if the coordinates are inside an object.
      */
-    private boolean contains(float x, float y, float[] edges)
+    private boolean pointInPolygonX(float x, float y, float z, float[] edges)
     {
         boolean inside = false;
         for(int i = 0; i < edges.length; i += 4)
@@ -140,8 +132,6 @@ public class Generator
             float y2 = edges[i + 3];
             
             boolean startOver = y1 >= y;
-//            System.out.println("y1: " + y1 + ", y: " + y);
-//            System.out.println("y2: " + y2 + ", y: " + y);
             boolean endOver = y2 >= y;
             
             if(startOver != endOver)
@@ -151,12 +141,53 @@ public class Generator
                 if(sx >= x)
                 {
                     inside = !inside;
+                    setVoxel(sx, y, z);
                 }
             }
         }
         
         return inside;
     }
+    
+        /**
+     * Checks if the current Voxel (represented through x,y,z) is inside an
+     * object or not using the Point in Polygon-Algorithm.
+     * Sets also a Voxel directly on an edge.
+     * 
+     * @param x x-coordinate of the Voxel.
+     * @param y y-coordinate of the Voxel.
+     * @param z z-coordinate of the Voxel to set a Voxel.
+     * @param edges which are intersections of faces with the current plane.
+     * @return true if the coordinates are inside an object.
+     */
+    private boolean pointInPolygonY(float x, float y, float z, float[] edges)
+    {
+        boolean inside = false;
+        for(int i = 0; i < edges.length; i += 4)
+        {
+            float x1 = edges[i];
+            float y1 = edges[i + 1];
+            float x2 = edges[i + 2];
+            float y2 = edges[i + 3];
+            
+            boolean startOver = x1 >= x;
+            boolean endOver = x2 >= x;
+            
+            if(startOver != endOver)
+            {
+                float sy = ((float) (x * (y2 - y1) - x1 * y2 + x2 * y1) / (float) (x2 - x1));
+                
+                if(sy >= y)
+                {
+                    inside = !inside;
+                    setVoxel(x, sy, z);
+                }
+            }
+        }
+        
+        return inside;
+    }
+    
     
     /**
      * Calculates all edges at heigth z createt by any object in the y-x-plane.
@@ -354,35 +385,6 @@ public class Generator
             trimmedArray[i] = a[i];
         }
         return trimmedArray;
-    }
-    
-    /**
-     * Method to carve the object out of the voxel grid.
-     */
-    private void carveOut()
-    {
-        for(int i = 0; i <= voxels.length; i++)
-        {
-            if(voxels[i] != null && voxels[i].isInObject())
-            {
-                voxels[i] = null;
-            }
-        }
-            
-    }
-    
-    /**
-     * Deletes a certain Voxel from the Voxel[] voxels.
-     * @param a Voxel to be deleted.
-     */
-    private void deleteVoxel(Voxel a)
-    {
-        int i = 0;
-        while(!a.equals(voxels[i]))
-        {
-            i++;
-        }
-        voxels[i] = null;
     }
     
     /**

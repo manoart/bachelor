@@ -21,7 +21,7 @@ public class VoxelTest
         System.out.println("Voxel 2: " + "\n" + v2);
         System.out.println("Voxel 1 equals Voxel 2?: " + v1.equals(v2));
         System.out.println("Voxel 1 equals Voxel 3?: " + v1.equals(v3));
-        System.out.println("Voxel 1 isNeighbor to Voxel 3?: " + v1.isNeighbor(v3));
+//        System.out.println("Voxel 1 isNeighbor to Voxel 3?: " + v1.isNeighbor(v3));
 
     }
 }
