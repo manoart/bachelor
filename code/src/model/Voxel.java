@@ -213,12 +213,15 @@ public class Voxel
     {
         for(int i = 0; i < voxels.length; i++)
         {
-            float tmp = this.x - voxels[i].getX();
-            if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
-                    this.z == voxels[i].getZ())
+            if(voxels[i] != null)
             {
-                this.leftNeighbor = voxels[i];
-                return;
+                float tmp = this.x - voxels[i].getX();
+                if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY()&& 
+                        this.z == voxels[i].getZ())
+                {
+                    this.leftNeighbor = voxels[i];
+                    return;
+                }
             }
         }
     }
@@ -227,13 +230,15 @@ public class Voxel
     {
         for(int i = 0; i < voxels.length; i++)
         {
-            float tmp = voxels[i].getX() - this.x;
-            //TODO fix: genaue nachbarschaft berechnen (gleiche y und z koordinate)
-            if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
-                    this.z == voxels[i].getZ())
+            if(voxels[i] != null)
             {
-                this.rightNeighbor = voxels[i];
-                return;
+                float tmp = voxels[i].getX() - this.x;
+                if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
+                        this.z == voxels[i].getZ())
+                {
+                    this.rightNeighbor = voxels[i];
+                    return;
+                }
             }
         }
     }
@@ -242,12 +247,15 @@ public class Voxel
     {
         for(int i = 0; i < voxels.length; i++)
         {
-            float tmp = voxels[i].getZ() - this.z;
-            if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
-                    this.x == voxels[i].getX())
+            if(voxels[i] != null)
             {
-                this.topNeighbor = voxels[i];
-                return;
+                float tmp = voxels[i].getZ() - this.z;
+                if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
+                        this.x == voxels[i].getX())
+                {
+                    this.topNeighbor = voxels[i];
+                    return;
+                }
             }
         }
     }
@@ -256,12 +264,15 @@ public class Voxel
     {
         for(int i = 0; i < voxels.length; i++)
         {
-            float tmp = this.z - voxels[i].getZ();
-            if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
-                    this.x == voxels[i].getX())
+            if(voxels[i] != null)
             {
-                this.bottomNeighbor = voxels[i];
-                return;
+                float tmp = this.z - voxels[i].getZ();
+                if(tmp <= distance && tmp > 0.0f && this.y == voxels[i].getY() && 
+                        this.x == voxels[i].getX())
+                {
+                    this.bottomNeighbor = voxels[i];
+                    return;
+                }
             }
         }
     }
@@ -270,12 +281,15 @@ public class Voxel
     {
         for(int i = 0; i < voxels.length; i++)
         {
-            float tmp = voxels[i].getY() - this.y;
-            if(tmp <= distance && tmp > 0.0f && this.x == voxels[i].getX() && 
-                    this.z == voxels[i].getZ())
+            if(voxels[i] != null)
             {
-                this.frontNeighbor = voxels[i];
-                return;
+                float tmp = voxels[i].getY() - this.y;
+                if(tmp <= distance && tmp > 0.0f && this.x == voxels[i].getX() && 
+                        this.z == voxels[i].getZ())
+                {
+                    this.frontNeighbor = voxels[i];
+                    return;
+                }
             }
         }
     }
@@ -284,12 +298,15 @@ public class Voxel
     {
         for(int i = 0; i < voxels.length; i++)
         {
-            float tmp = this.y - voxels[i].getY();
-            if(tmp <= distance && tmp > 0.0f && this.x == voxels[i].getX() && 
-                    this.z == voxels[i].getZ())
+            if(voxels[i] != null)
             {
-                this.backNeighbor = voxels[i];
-                return;
+                float tmp = this.y - voxels[i].getY();
+                if(tmp <= distance && tmp > 0.0f && this.x == voxels[i].getX() && 
+                        this.z == voxels[i].getZ())
+                {
+                    this.backNeighbor = voxels[i];
+                    return;
+                }
             }
         }
     }
@@ -334,6 +351,11 @@ public class Voxel
         return this.snow;
     }
 
+    public void setSnow()
+    {
+        this.snow = true;
+    }
+    
     /**
      * Getter for the snow`s density.
      *
@@ -342,6 +364,11 @@ public class Voxel
     public double getDensity()
     {
         return this.density;
+    }
+    
+    public void raiseDensity(double snowflake)
+    {
+        this.density += snowflake;
     }
     
     /**

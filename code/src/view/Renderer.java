@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import model.Generator;
+import model.Surface;
 import model.Voxel;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -70,7 +71,8 @@ public class Renderer
         //TODO general file-path
         String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/pawn.obj";
         ObjParser op = new ObjParser(path);
-        Generator generator = new Generator(path);
+//        Generator generator = new Generator(path);
+        Surface surface = new Surface(path);
         
         // angle to rotate around the z-axis
         float a = 0.0f;
@@ -121,16 +123,15 @@ public class Renderer
             // set the color of the quad (R,G,B)
             GL11.glColor3f(0.2f, 0.6f, 0.1f);
 
-            // draw triangle
+            // draw triangles or points or lines
             GL11.glBegin(GL11.GL_POINTS);
 
-            Voxel[] voxels = generator.getVoxels();
+            Voxel[] voxels = surface.getVoxels();
 
             for (int i = 0; i < voxels.length; i++)
             {
-                if (voxels[i] != null)
+                if (voxels[i] != null && voxels[i].getSnow())
                 {
-//                    System.out.println("voxels[i] != null");
                     GL11.glVertex3f(voxels[i].getX(), voxels[i].getY(), voxels[i].getZ());
                 }
             }
@@ -162,7 +163,7 @@ public class Renderer
 
     public static void main(String[] argv)
     {
-        Renderer quadExample = new Renderer();
-        quadExample.start();
+        Renderer renderer = new Renderer();
+        renderer.start();
     }
 }

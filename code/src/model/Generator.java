@@ -81,7 +81,7 @@ public class Generator
             {
                 for (float y = calculateMinY(vertices); y <=  calculateMaxY(vertices) + (0.5f / STEPS); y += 1.0f / STEPS)
                 {
-                    if((pointInPolygonX(x, y, z, edges) || pointInPolygonY(x, y, z, edges)))
+                    if(!(pointInPolygonX(x, y, z, edges) || pointInPolygonY(x, y, z, edges)))
                     {
                         setVoxel((float) x , (float) y , (float) z);
                     }
@@ -141,7 +141,7 @@ public class Generator
                 if(sx >= x)
                 {
                     inside = !inside;
-                    setVoxel(sx, y, z);
+//                    setVoxel(sx, y, z);
                 }
             }
         }
@@ -180,7 +180,7 @@ public class Generator
                 if(sy >= y)
                 {
                     inside = !inside;
-                    setVoxel(x, sy, z);
+//                    setVoxel(x, sy, z);
                 }
             }
         }
@@ -394,6 +394,11 @@ public class Generator
     {
         return this.voxels;
     }
+    
+    public int getSteps()
+    {
+        return this.STEPS;
+    }
 
     /**
      * Calculates the highest y-value.
@@ -492,7 +497,7 @@ public class Generator
                 max = tmp;
             }
         }
-        return max;
+        return max + 1.0f;
     }
 
     /**
