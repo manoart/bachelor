@@ -41,8 +41,8 @@ public class Renderer
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 //        GL11.glFrontFace(GL11.GL_CW);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glCullFace(GL11.GL_FRONT);
+//        GL11.glEnable(GL11.GL_CULL_FACE);
+//        GL11.glCullFace(GL11.GL_FRONT);
         GL11.glShadeModel(GL11.GL_FLAT);
 
         float lightAmbient[] =
@@ -69,7 +69,7 @@ public class Renderer
         GL11.glEnable(GL11.GL_LIGHT1);
 
         //TODO general file-path
-        String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/pawn.obj";
+        String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/cone2.obj";
         ObjParser op = new ObjParser(path);
 //        Generator generator = new Generator(path);
         Surface surface = new Surface(path);
@@ -124,24 +124,38 @@ public class Renderer
             GL11.glColor3f(0.2f, 0.6f, 0.1f);
 
             // draw triangles or points or lines
-            GL11.glBegin(GL11.GL_POINTS);
+//            GL11.glBegin(GL11.GL_POINTS);
+//
+//            Voxel[] voxels = surface.getVoxels();
+//
+//            for (int i = 0; i < voxels.length; i++)
+//            {
+//                if (voxels[i] != null)// && voxels[i].getSnow())
+//                {
+//                    GL11.glVertex3f(voxels[i].getX(), voxels[i].getY(), voxels[i].getZ());
+//                }
+//            }
+//            GL11.glEnd();
 
-            Voxel[] voxels = surface.getVoxels();
+            
+            GL11.glBegin(GL11.GL_TRIANGLES);
 
-            for (int i = 0; i < voxels.length; i++)
+            float[] faces = surface.getFaces();
+
+            for (int i = 0; i < faces.length; i += 3)
             {
-                if (voxels[i] != null && voxels[i].getSnow())
+//                if (faces[i] != null)// && voxels[i].getSnow())
                 {
-                    GL11.glVertex3f(voxels[i].getX(), voxels[i].getY(), voxels[i].getZ());
+                    GL11.glVertex3f(faces[i], faces[i+1], faces[i+2]);
                 }
             }
             GL11.glEnd();
-
+            
 //            GL11.glBegin(GL11.GL_TRIANGLES);
 //
 //            // show all faces which intersect with the x-y-plane
-//            int[] faces = generator.activeFaces(0.75f);
-////            int[] faces = op.getFaces();
+////            int[] faces = generator.activeFaces(0.75f);
+//            int[] faces = op.getFaces();
 //            float[] vertices = op.getVertices();
 //
 //            for (int i = 0; i < faces.length; i++)

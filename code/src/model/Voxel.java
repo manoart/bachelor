@@ -311,6 +311,21 @@ public class Voxel
         }
     }
 
+    public void setX(float x)
+    {
+        this.x = x;
+    }
+    
+    public void setY(float y)
+    {
+        this.y = y;
+    }
+    
+    public void setZ(float z)
+    {
+        this.z = z;
+    }
+    
     /**
      * Getter for the x-coordinate.
      *
@@ -369,6 +384,36 @@ public class Voxel
     public void raiseDensity(double snowflake)
     {
         this.density += snowflake;
+    }
+    
+    public Voxel getLeftNeighbor()
+    {
+        return this.leftNeighbor;
+    }
+    
+    public Voxel getRightNeighbor()
+    {
+        return this.rightNeighbor;
+    }
+    
+    public Voxel getTopNeighbor()
+    {
+        return this.topNeighbor;
+    }
+    
+    public Voxel getBottomNeighbor()
+    {
+        return this.bottomNeighbor;
+    }
+    
+    public Voxel getFrontNeighbor()
+    {
+        return this.frontNeighbor;
+    }
+    
+    public Voxel getBackNeighbor()
+    {
+        return this.backNeighbor;
     }
     
     /**

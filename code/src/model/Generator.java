@@ -17,7 +17,7 @@ public class Generator
     /** Array which contains the scene */
     private float[] vertices;
     /** constant number of steps per unit (granularity of the voxel-density) */
-    private static final int STEPS = 15;
+    private static final int STEPS = 5;
     /** Array which contains the faces' vertices */
     private int[] faces;
 
@@ -81,9 +81,9 @@ public class Generator
             {
                 for (float y = calculateMinY(vertices); y <=  calculateMaxY(vertices) + (0.5f / STEPS); y += 1.0f / STEPS)
                 {
-                    if(!(pointInPolygonX(x, y, z, edges) || pointInPolygonY(x, y, z, edges)))
+//                    if((pointInPolygonX(x, y, z, edges) || pointInPolygonY(x, y, z, edges)))
                     {
-                        setVoxel((float) x , (float) y , (float) z);
+                        setVoxel((float) x , (float) y , (float) z, edges);
                     }
                 }
             }
@@ -93,7 +93,7 @@ public class Generator
     /**
      * Sets a voxel by adding it to the Voxel[] voxels.
      */
-    private void setVoxel(float x, float y, float z)
+    private void setVoxel(float x, float y, float z, float[] edges)
     {
         // add the new Voxel to the end of the array
         int i = 0;
@@ -108,6 +108,11 @@ public class Generator
         }
 
         voxels[i] = new Voxel(x, y, z);
+        
+        if(pointInPolygonX(x, y, z, edges) || pointInPolygonY(x, y, z, edges))
+        {
+            voxels[i].setSnow();
+        }
     }
     
     /**
@@ -198,7 +203,7 @@ public class Generator
      *         [x1e1,y1e1,x2e1,y2e1,x1e2,y1e2,x2e2,y2e2, ... ,x2en,y2en]).
      *         Every edge has two points and therefore 4 vertices.
      */
-    private float[] edges(float z)
+    public float[] edges(float z)
     {
         int[] activeFaces = activeFaces(z);
 
@@ -394,20 +399,36 @@ public class Generator
     {
         return this.voxels;
     }
-    
+    /**
+     * Getter for the STEPS.
+     */
     public int getSteps()
     {
-        return this.STEPS;
+        return Generator.STEPS;
     }
-
+    /**
+     * Getter for the Faces-Array.
+     */
+    public int[] getFaces()
+    {
+        return this.faces;
+    }
+    /**
+     * Getter for the Vertices-Array.
+     */
+    public float[] getVertices()
+    {
+        return this.vertices;
+    }
+    
     /**
      * Calculates the highest y-value.
      * @param vertices Array with the scene.
      * @return max y-value
      */
-    private float calculateMaxY(float[] vertices)
+    public float calculateMaxY(float[] vertices)
     {
-        float tmp = 0.0f;
+        float tmp;
         float max = 0.0f;
         for (int i = 1; i <= (vertices.length / 3); i++)
         {
@@ -425,9 +446,9 @@ public class Generator
      * @param vertices Array which contains the scene.
      * @return min y-value
      */
-    private float calculateMinY(float[] vertices)
+    public float calculateMinY(float[] vertices)
     {
-        float tmp = 0.0f;
+        float tmp;
         float min = 0.0f;
         for (int i = 1; i <= (vertices.length / 3); i++)
         {
@@ -445,9 +466,9 @@ public class Generator
      * @param vertices Array with the scene.
      * @return max x-value
      */
-    private float calculateMaxX(float[] vertices)
+    public float calculateMaxX(float[] vertices)
     {
-        float tmp = 0.0f;
+        float tmp;
         float max = 0.0f;
         for (int i = 1; i <= (vertices.length / 3); i++)
         {
@@ -465,9 +486,9 @@ public class Generator
      * @param vertices Array which contains the scene.
      * @return min x-value
      */
-    private float calculateMinX(float[] vertices)
+    public float calculateMinX(float[] vertices)
     {
-        float tmp = 0.0f;
+        float tmp;
         float min = 0.0f;
         for (int i = 1; i <= (vertices.length / 3); i++)
         {
@@ -485,9 +506,9 @@ public class Generator
      * @param vertices Array with the scene.
      * @return max z-value
      */
-    private float calculateMaxZ(float[] vertices)
+    public float calculateMaxZ(float[] vertices)
     {
-        float tmp = 0.0f;
+        float tmp;
         float max = 0.0f;
         for (int i = 1; i <= (vertices.length / 3); i++)
         {
@@ -505,9 +526,9 @@ public class Generator
      * @param vertices Array which contains the scene.
      * @return min z-value
      */
-    private float calculateMinZ(float[] vertices)
+    public float calculateMinZ(float[] vertices)
     {
-        float tmp = 0.0f;
+        float tmp;
         float min = 0.0f;
         for (int i = 1; i <= (vertices.length / 3); i++)
         {
