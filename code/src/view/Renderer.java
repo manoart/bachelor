@@ -69,7 +69,7 @@ public class Renderer
         GL11.glEnable(GL11.GL_LIGHT1);
 
         //TODO general file-path
-        String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/cone2.obj";
+        String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/pawn.obj";
         ObjParser op = new ObjParser(path);
 //        Generator generator = new Generator(path);
         Surface surface = new Surface(path);
@@ -130,7 +130,7 @@ public class Renderer
 //
 //            for (int i = 0; i < voxels.length; i++)
 //            {
-//                if (voxels[i] != null)// && voxels[i].getSnow())
+//                if (voxels[i] != null && voxels[i].getSnow())
 //                {
 //                    GL11.glVertex3f(voxels[i].getX(), voxels[i].getY(), voxels[i].getZ());
 //                }

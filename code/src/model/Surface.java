@@ -14,6 +14,7 @@ public class Surface
     /** Array which contains the faces' vertices */
     private float[] faces;
     private static int cnt = 0;
+    private static int count = 0;
     //VOXELOFFSET lists the positions, relative to vertex0, of each of the 8 vertices of a cube
     private static final float[][] VOXEL_OFFSET =
     {
@@ -45,33 +46,58 @@ public class Surface
         this.voxels = generator.getVoxels();
         this.faces = new float[voxels.length * 3];
         this.vertices = generator.getVertices();
+        setNeighbors();
+        randomSnow();
         marchingCubes();
-//        setNeighbors();
-//        randomSnow();
     }
     
-    private void marchingCube(float x, float y, float z, float scale)
-    {
+//    private void marchingCube(float x, float y, float z, float scale)
+//    {
+//        Vertex[] edgeVertex = new Vertex[12];
+////        Vertex[] edgeNorm = new Vertex[12]; 
+//       
+//        //generate a new cube (local copy)
+//        Voxel[] cube = new Voxel[8];
+//        for(int i = 0; i < 8; i++)
+//        {
+//            cube[i] = new Voxel(x + (VOXEL_OFFSET[i][0] * scale), 
+//                                y + (VOXEL_OFFSET[i][1] * scale), 
+//                                z + (VOXEL_OFFSET[i][2] * scale));
+//        }
+    private void marchingCube(Voxel v, float scale)
+    {      
         Vertex[] edgeVertex = new Vertex[12];
-        Vertex[] edgeNorm = new Vertex[12];
-//        int cnt = 0;
+//        Vertex[] edgeNorm = new Vertex[12]; 
         
-        float fTargetValue = 48.0f;
-        //generate a new cube (local copy)
+        // generate a new cube (local copy)
+        // if one voxel of the cube is null, then it is not a complete cube
+        // and one can break up the marching cubes algorithm
         Voxel[] cube = new Voxel[8];
-        for(int i = 0; i < 8; i++)
-        {
-            cube[i] = new Voxel(x + (VOXEL_OFFSET[i][0] * scale), 
-                                y + (VOXEL_OFFSET[i][1] * scale), 
-                                z + (VOXEL_OFFSET[i][2] * scale));
-        }
+        cube[0] = v;
+        cube[1] = v.getRightNeighbor();
+        if(cube[1] == null) return;
+        cube[2] = v.getRightNeighbor().getFrontNeighbor();
+        if(cube[2] == null) return;
+        cube[3] = v.getFrontNeighbor();
+        if(cube[3] == null) return;
+        cube[4] = v.getTopNeighbor();
+        if(cube[4] == null) return;
+        cube[5] = v.getTopNeighbor().getRightNeighbor();
+        if(cube[5] == null) return;
+        cube[6] = v.getTopNeighbor().getRightNeighbor().getFrontNeighbor();
+        if(cube[6] == null) return;
+        cube[7] = v.getTopNeighbor().getFrontNeighbor();
+        if(cube[7] == null) return;
         
         // find which vertices are inside of the surface and which are outside
         int iFlagIndex = 0;
         for(int i = 0; i < 8; i++)
         {
-                if(pointInPolygonX(cube[i].getX(), cube[i].getY(), cube[i].getZ(), generator.edges(cube[i].getZ()))) 
-                        iFlagIndex |= 1<<i;
+//                if(pointInPolygonX(cube[i].getX(), cube[i].getY(), cube[i].getZ(), generator.edges(cube[i].getZ()))) 
+                if(cube[i].getSnow())
+                {
+                    iFlagIndex |= 1<<i;
+                }
         }
 
         //Find which edges are intersected by the surface
@@ -93,9 +119,9 @@ public class Surface
                     // no exact calculation of the intersection points
                     // just connect the middle the edges with each other (0.5f)
 //                    System.out.println("iEdge: " + iEdge);
-                    edgeVertex[iEdge] = new Vertex((x + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
-                                                   (y + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
-                                                   (z + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                    edgeVertex[iEdge] = new Vertex((v.getX() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getY() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getZ() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
 //                    edgeVertex[iEdge].setX(3.0f);//(x + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale);
 //                    edgeVertex[iEdge].setY(y + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale);
 //                    edgeVertex[iEdge].setZ(z + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale);
@@ -166,26 +192,36 @@ public class Surface
         return inside;
     }
     
-    
     private void marchingCubes()
     {
-        int cnt = 0;
-        for (float z = generator.calculateMinZ(vertices); z <= generator.calculateMaxZ(vertices) + (0.5f / generator.getSteps()); z += 1.0f / generator.getSteps())
+//        marchingCube(voxels[50], 1.0f / generator.getSteps());
+        for(int i = 0; i < voxels.length; i++)
         {
-            // calculate the edges just once for every z-coordinate
-//            float[] edges = edges(z);
-
-            for (float x = generator.calculateMinX(vertices); x <= generator.calculateMaxX(vertices) + (0.5f / generator.getSteps()); x += 1.0f / generator.getSteps())
+            if(voxels[i] != null)
             {
-                for (float y = generator.calculateMinY(vertices); y <=  generator.calculateMaxY(vertices) + (0.5f / generator.getSteps()); y += 1.0f / generator.getSteps())
-                {
-                    marchingCube(x, y, z, 1.0f / generator.getSteps());
-                    cnt++;
-                }
+                marchingCube(voxels[i], 1.0f / generator.getSteps());
             }
         }
-        System.out.println("MarchingCube Count: " + cnt);
     }
+//    private void marchingCubes()
+//    {
+//        int cnt = 0;
+//        for (float z = generator.calculateMinZ(vertices); z <= generator.calculateMaxZ(vertices) + (0.5f / generator.getSteps()); z += 1.0f / generator.getSteps())
+//        {
+//            // calculate the edges just once for every z-coordinate
+////            float[] edges = edges(z);
+//
+//            for (float x = generator.calculateMinX(vertices); x <= generator.calculateMaxX(vertices) + (0.5f / generator.getSteps()); x += 1.0f / generator.getSteps())
+//            {
+//                for (float y = generator.calculateMinY(vertices); y <=  generator.calculateMaxY(vertices) + (0.5f / generator.getSteps()); y += 1.0f / generator.getSteps())
+//                {
+//                    marchingCube(x, y, z, 1.0f / generator.getSteps());
+//                    cnt++;
+//                }
+//            }
+//        }
+//        System.out.println("MarchingCube Count: " + cnt);
+//    }
     
     private void setNeighbors()
     {
@@ -220,16 +256,16 @@ public class Surface
         }
         
         // let it snow
-//        for(int j = 0; j < 20000; j++)
-//        {
-//            int index = (int)(Math.random() * activeVoxels.length);
-//            this.activeVoxels[index].raiseDensity(0.1);
-//            if(this.activeVoxels[index].getDensity() > 1.0f && this.activeVoxels[index].getTopNeighbor() != null)
-//            {
-//                this.activeVoxels[index].getTopNeighbor().setSnow();
-//                this.activeVoxels[index] = this.activeVoxels[index].getTopNeighbor();
-//            }
-//        }
+        for(int j = 0; j < 20000; j++)
+        {
+            int index = (int)(Math.random() * activeVoxels.length);
+            this.activeVoxels[index].raiseDensity(0.1);
+            if(this.activeVoxels[index].getDensity() > 1.0f && this.activeVoxels[index].getTopNeighbor() != null)
+            {
+                this.activeVoxels[index].getTopNeighbor().setSnow();
+                this.activeVoxels[index] = this.activeVoxels[index].getTopNeighbor();
+            }
+        }
     }
     
     private int countActiveVoxels(Voxel[] voxels)

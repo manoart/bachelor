@@ -17,7 +17,7 @@ public class Generator
     /** Array which contains the scene */
     private float[] vertices;
     /** constant number of steps per unit (granularity of the voxel-density) */
-    private static final int STEPS = 5;
+    private static final int STEPS = 10;
     /** Array which contains the faces' vertices */
     private int[] faces;
 
