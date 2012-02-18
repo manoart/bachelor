@@ -9,13 +9,10 @@ public class Surface
     private Voxel[] voxels;
     private Voxel[] activeVoxels;
     private Generator generator;
-    /** Array which contains the scene */
-    private float[] vertices;
     /** Array which contains the faces' vertices */
     private float[] faces;
     private static int cnt = 0;
-    private static int count = 0;
-    //VOXELOFFSET lists the positions, relative to vertex0, of each of the 8 vertices of a cube
+    /** VOXEL_OFFSET lists the positions, relative to vertex0, of each of the 8 vertices of a cube */
     private static final float[][] VOXEL_OFFSET =
     {
         {0.0f, 0.0f, 0.0f},{1.0f, 0.0f, 0.0f},{1.0f, 1.0f, 0.0f},{0.0f, 1.0f, 0.0f},
@@ -44,30 +41,24 @@ public class Surface
     {
         this.generator = new Generator(path);
         this.voxels = generator.getVoxels();
-        this.faces = new float[voxels.length * 3];
-        this.vertices = generator.getVertices();
+        this.faces = new float[voxels.length * 6];
+        
         setNeighbors();
-        randomSnow();
+//        randomSnow();
         marchingCubes();
+//        marchingCubesActive();
+        
+        //TODO Schneefall, deutlich machen, aus welcher Richtung der Schnee faellt
+        //TODO Schneedeckenwachstum ueber die Zeit
+        //TODO AVZ-Modell (Plus)
+        //TODO Textur auf AVZ-Modell
+        //TODO Beleuchtung
+        //TODO Kamera
     }
     
-//    private void marchingCube(float x, float y, float z, float scale)
-//    {
-//        Vertex[] edgeVertex = new Vertex[12];
-////        Vertex[] edgeNorm = new Vertex[12]; 
-//       
-//        //generate a new cube (local copy)
-//        Voxel[] cube = new Voxel[8];
-//        for(int i = 0; i < 8; i++)
-//        {
-//            cube[i] = new Voxel(x + (VOXEL_OFFSET[i][0] * scale), 
-//                                y + (VOXEL_OFFSET[i][1] * scale), 
-//                                z + (VOXEL_OFFSET[i][2] * scale));
-//        }
     private void marchingCube(Voxel v, float scale)
     {      
         Vertex[] edgeVertex = new Vertex[12];
-//        Vertex[] edgeNorm = new Vertex[12]; 
         
         // generate a new cube (local copy)
         // if one voxel of the cube is null, then it is not a complete cube
@@ -93,11 +84,10 @@ public class Surface
         int iFlagIndex = 0;
         for(int i = 0; i < 8; i++)
         {
-//                if(pointInPolygonX(cube[i].getX(), cube[i].getY(), cube[i].getZ(), generator.edges(cube[i].getZ()))) 
-                if(cube[i].getSnow())
-                {
-                    iFlagIndex |= 1<<i;
-                }
+            if(cube[i].getSnow())
+            {
+                iFlagIndex |= 1<<i;
+            }
         }
 
         //Find which edges are intersected by the surface
@@ -106,28 +96,22 @@ public class Surface
         //If the cube is entirely inside or outside of the surface, then there will be no intersections
         if(iEdgeFlags == 0) 
         {
-                return;
+            return;
         }
         
         //Find the point of intersection of the surface with each edge
         //Then find the normal to the surface at those points
         for(int iEdge = 0; iEdge < 12; iEdge++)
         {
-                //if there is an intersection on this edge
-                if((iEdgeFlags & (1<<iEdge)) == (1<<iEdge))
-                {
-                    // no exact calculation of the intersection points
-                    // just connect the middle the edges with each other (0.5f)
-//                    System.out.println("iEdge: " + iEdge);
-                    edgeVertex[iEdge] = new Vertex((v.getX() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
-                                                   (v.getY() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
-                                                   (v.getZ() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
-//                    edgeVertex[iEdge].setX(3.0f);//(x + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale);
-//                    edgeVertex[iEdge].setY(y + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale);
-//                    edgeVertex[iEdge].setZ(z + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale);
-                        
-//                    vGetNormal(edgeNorm[iEdge], edgeNorm[iEdge].getX(), edgeNorm[iEdge].getY(), edgeNorm[iEdge].getZ());
-                }
+            //if there is an intersection on this edge
+            if((iEdgeFlags & (1<<iEdge)) == (1<<iEdge))
+            {
+                // no exact calculation of the intersection points
+                // just connect the middle the edges with each other (0.5f)
+                edgeVertex[iEdge] = new Vertex((v.getX() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                (v.getY() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                (v.getZ() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+            }
         }
 
 
@@ -140,11 +124,6 @@ public class Surface
                 for(int iCorner = 0; iCorner < 3; iCorner++)
                 {
                         int iVertex = a2iTriangleConnectionTable[iFlagIndex][3*iTriangle+iCorner];
-
-//                        vGetColor(sColor, asEdgeVertex[iVertex], asEdgeNorm[iVertex]);
-//                        glColor3f(sColor.fX, sColor.fY, sColor.fZ);
-//                        glNormal3f(edgeNorm[iVertex].getX(),   edgeNorm[iVertex].getY(),   edgeNorm[iVertex].getZ());
-//                        glVertex3f(edgeVertex[iVertex].getX(), edgeVertex[iVertex].getY(), edgeVertex[iVertex].getZ());
                         this.faces[cnt++] = edgeVertex[iVertex].getX();
                         this.faces[cnt++] = edgeVertex[iVertex].getY();
                         this.faces[cnt++] = edgeVertex[iVertex].getZ();
@@ -153,48 +132,8 @@ public class Surface
         
     }
     
-    /**
-     * Checks if the current Voxel (represented through x,y,z) is inside an
-     * object or not using the Point in Polygon-Algorithm.
-     * Sets also a Voxel directly on an edge.
-     * 
-     * @param x x-coordinate of the Voxel.
-     * @param y y-coordinate of the Voxel.
-     * @param z z-coordinate of the Voxel to set a Voxel.
-     * @param edges which are intersections of faces with the current plane.
-     * @return true if the coordinates are inside an object.
-     */
-    private boolean pointInPolygonX(float x, float y, float z, float[] edges)
+    public void marchingCubes()
     {
-        boolean inside = false;
-        for(int i = 0; i < edges.length; i += 4)
-        {
-            float x1 = edges[i];
-            float y1 = edges[i + 1];
-            float x2 = edges[i + 2];
-            float y2 = edges[i + 3];
-            
-            boolean startOver = y1 >= y;
-            boolean endOver = y2 >= y;
-            
-            if(startOver != endOver)
-            {
-                float sx = ((float) (y * (x2 - x1) - y1 * x2 + y2 * x1) / (float) (y2 - y1));
-                
-                if(sx >= x)
-                {
-                    inside = !inside;
-//                    setVoxel(sx, y, z);
-                }
-            }
-        }
-        
-        return inside;
-    }
-    
-    private void marchingCubes()
-    {
-//        marchingCube(voxels[50], 1.0f / generator.getSteps());
         for(int i = 0; i < voxels.length; i++)
         {
             if(voxels[i] != null)
@@ -203,25 +142,17 @@ public class Surface
             }
         }
     }
-//    private void marchingCubes()
-//    {
-//        int cnt = 0;
-//        for (float z = generator.calculateMinZ(vertices); z <= generator.calculateMaxZ(vertices) + (0.5f / generator.getSteps()); z += 1.0f / generator.getSteps())
-//        {
-//            // calculate the edges just once for every z-coordinate
-////            float[] edges = edges(z);
-//
-//            for (float x = generator.calculateMinX(vertices); x <= generator.calculateMaxX(vertices) + (0.5f / generator.getSteps()); x += 1.0f / generator.getSteps())
-//            {
-//                for (float y = generator.calculateMinY(vertices); y <=  generator.calculateMaxY(vertices) + (0.5f / generator.getSteps()); y += 1.0f / generator.getSteps())
-//                {
-//                    marchingCube(x, y, z, 1.0f / generator.getSteps());
-//                    cnt++;
-//                }
-//            }
-//        }
-//        System.out.println("MarchingCube Count: " + cnt);
-//    }
+    
+    public void marchingCubesActive()
+    {
+        for(int i = 0; i < this.activeVoxels.length; i++)
+        {
+            if(this.activeVoxels[i] != null)
+            {
+                marchingCube(this.activeVoxels[i], 1.0f / generator.getSteps());
+            }
+        }
+    }
     
     private void setNeighbors()
     {
@@ -234,12 +165,13 @@ public class Surface
         }
     }
     
-    private void randomSnow()
+    public void randomSnow()
     {
         int k = 0;
         for(int i = 0; i < voxels.length; i++)
         {
-            if(voxels[i] != null && voxels[i].hasTopNeighbor() && !voxels[i].hasBottomNeighbor())
+            // get the 'ground'-Voxels beside the model
+            if(voxels[i] != null && !voxels[i].hasBottomNeighbor())//voxels[i].hasTopNeighbor() && !voxels[i].getTopNeighbor().getSnow() && !voxels[i].hasBottomNeighbor())
             {                
                 this.voxels[i].setSnow();
             }
@@ -249,14 +181,14 @@ public class Surface
 
         for(int i = 0; i < voxels.length; i++)
         {
-            if(voxels[i] != null && voxels[i].getSnow())
+            if(voxels[i] != null && voxels[i].getSnow() && !voxels[i].getTopNeighbor().getSnow())
             {
                 activeVoxels[k++] = voxels[i];
             }
         }
         
         // let it snow
-        for(int j = 0; j < 20000; j++)
+        for(int j = 0; j < 10000; j++)
         {
             int index = (int)(Math.random() * activeVoxels.length);
             this.activeVoxels[index].raiseDensity(0.1);
@@ -270,15 +202,20 @@ public class Surface
     
     private int countActiveVoxels(Voxel[] voxels)
     {
-        int cnt = 0;
+        int count = 0;
         for(int i = 0; i < voxels.length; i++)
         {
-            if(voxels[i] != null && voxels[i].getSnow())
+            if(voxels[i] != null && voxels[i].getSnow() && !voxels[i].getTopNeighbor().getSnow())
             {
-                cnt++;
+                count++;
             }
         }
-        return cnt;
+        return count;
+    }
+    
+    public void setCnt(int cnt)
+    {
+        Surface.cnt = cnt;
     }
     
     public Voxel[] getVoxels()
@@ -302,14 +239,14 @@ public class Surface
     }
     
     // For any edge, if one vertex is inside of the surface and the other is outside of the surface
-//  then the edge intersects the surface
-// For each of the 8 vertices of the cube can be two possible states : either inside or outside of the surface
-// For any cube the are 2^8=256 possible sets of vertex states
-// This table lists the edges intersected by the surface for all 256 possible vertex states
-// There are 12 edges.  For each entry in the table, if edge #n is intersected, then bit #n is set to 1
-// size = [256]
-private int[] aiCubeEdgeFlags =
-{
+    //  then the edge intersects the surface
+    // For each of the 8 vertices of the cube can be two possible states : either inside or outside of the surface
+    // For any cube the are 2^8=256 possible sets of vertex states
+    // This table lists the edges intersected by the surface for all 256 possible vertex states
+    // There are 12 edges.  For each entry in the table, if edge #n is intersected, then bit #n is set to 1
+    // size = [256]
+    private int[] aiCubeEdgeFlags =
+    {
         0x000, 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c, 0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00, 
         0x190, 0x099, 0x393, 0x29a, 0x596, 0x49f, 0x795, 0x69c, 0x99c, 0x895, 0xb9f, 0xa96, 0xd9a, 0xc93, 0xf99, 0xe90, 
         0x230, 0x339, 0x033, 0x13a, 0x636, 0x73f, 0x435, 0x53c, 0xa3c, 0xb35, 0x83f, 0x936, 0xe3a, 0xf33, 0xc39, 0xd30, 
@@ -326,18 +263,18 @@ private int[] aiCubeEdgeFlags =
         0xd30, 0xc39, 0xf33, 0xe3a, 0x936, 0x83f, 0xb35, 0xa3c, 0x53c, 0x435, 0x73f, 0x636, 0x13a, 0x033, 0x339, 0x230, 
         0xe90, 0xf99, 0xc93, 0xd9a, 0xa96, 0xb9f, 0x895, 0x99c, 0x69c, 0x795, 0x49f, 0x596, 0x29a, 0x393, 0x099, 0x190, 
         0xf00, 0xe09, 0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c, 0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x000
-};
+    };
 
-//  For each of the possible vertex states listed in aiCubeEdgeFlags there is a specific triangulation
-//  of the edge intersection points.  a2iTriangleConnectionTable lists all of them in the form of
-//  0-5 edge triples with the list terminated by the invalid value -1.
-//  For example: a2iTriangleConnectionTable[3] list the 2 triangles formed when corner[0] 
-//  and corner[1] are inside of the surface, but the rest of the cube is not.
-//
-//  I found this table in an example program someone wrote long ago.  It was probably generated by hand
-//  size = [256][16]
-private int[][] a2iTriangleConnectionTable =  
-{
+    //  For each of the possible vertex states listed in aiCubeEdgeFlags there is a specific triangulation
+    //  of the edge intersection points.  a2iTriangleConnectionTable lists all of them in the form of
+    //  0-5 edge triples with the list terminated by the invalid value -1.
+    //  For example: a2iTriangleConnectionTable[3] list the 2 triangles formed when corner[0] 
+    //  and corner[1] are inside of the surface, but the rest of the cube is not.
+    //
+    //  I found this table in an example program someone wrote long ago.  It was probably generated by hand
+    //  size = [256][16]
+    private int[][] a2iTriangleConnectionTable =  
+    {
         {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
         {0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
         {0, 1, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -594,5 +531,5 @@ private int[][] a2iTriangleConnectionTable =
         {0, 9, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
         {0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
         {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
-};
+    };
 }

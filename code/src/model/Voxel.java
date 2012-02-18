@@ -7,7 +7,7 @@ package model;
  *  
  * @author Manuel Schwarz
  */
-public class Voxel
+public class Voxel extends Vertex
 {
     // instance variables
 

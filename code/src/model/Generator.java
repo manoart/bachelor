@@ -109,7 +109,7 @@ public class Generator
 
         voxels[i] = new Voxel(x, y, z);
         
-        if(pointInPolygonX(x, y, z, edges) || pointInPolygonY(x, y, z, edges))
+        if(pointInPolygonX(x, y, z, edges))
         {
             voxels[i].setSnow();
         }
@@ -154,7 +154,7 @@ public class Generator
         return inside;
     }
     
-        /**
+    /**
      * Checks if the current Voxel (represented through x,y,z) is inside an
      * object or not using the Point in Polygon-Algorithm.
      * Sets also a Voxel directly on an edge.
@@ -385,10 +385,7 @@ public class Generator
     private int[] trim(int[] a, int length)
     {
         int[] trimmedArray = new int[length];
-        for(int i = 0; i < length; i++)
-        {
-            trimmedArray[i] = a[i];
-        }
+        System.arraycopy(a, 0, trimmedArray, 0, length);
         return trimmedArray;
     }
     

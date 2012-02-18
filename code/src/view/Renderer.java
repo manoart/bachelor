@@ -25,7 +25,6 @@ import view.parser.ObjParser;
 
 public class Renderer
 {
-
     public void start()
     {
         try
@@ -41,8 +40,8 @@ public class Renderer
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 //        GL11.glFrontFace(GL11.GL_CW);
-//        GL11.glEnable(GL11.GL_CULL_FACE);
-//        GL11.glCullFace(GL11.GL_FRONT);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glCullFace(GL11.GL_FRONT);
         GL11.glShadeModel(GL11.GL_FLAT);
 
         float lightAmbient[] =
@@ -100,24 +99,45 @@ public class Renderer
             GL11.glTranslatef(0.0f, y, 0.0f);
 
             //TODO fix rotating CAMERA
-            if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
+            if(Keyboard.isKeyDown(Keyboard.KEY_LEFT))
             {
                 a -= 0.05f;
             }
 
-            if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+            if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
             {
                 a += 0.05f;
             }
             
-            if (Keyboard.isKeyDown(Keyboard.KEY_UP))
+            if(Keyboard.isKeyDown(Keyboard.KEY_UP))
             {
                 y += 0.005f;
             }
             
-            if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+            if(Keyboard.isKeyDown(Keyboard.KEY_DOWN))
             {
                 y -= 0.005f;
+            }
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_F))
+            {
+                GL11.glShadeModel(GL11.GL_FLAT);
+            }
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_S))
+            {
+                // switch from Flatshading to SmoothShading (Phong?)
+                GL11.glShadeModel(GL11.GL_SMOOTH);
+            }
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_W))
+            {
+                GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK,GL11.GL_LINE);
+            }
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_T))
+            {
+                GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK,GL11.GL_FILL);
             }
 
             // set the color of the quad (R,G,B)
@@ -125,8 +145,8 @@ public class Renderer
 
             // draw triangles or points or lines
 //            GL11.glBegin(GL11.GL_POINTS);
-//
-//            Voxel[] voxels = surface.getVoxels();
+////            surface.randomSnow();
+//            Voxel[] voxels = surface.getActiveVoxels();
 //
 //            for (int i = 0; i < voxels.length; i++)
 //            {
@@ -137,22 +157,28 @@ public class Renderer
 //            }
 //            GL11.glEnd();
 
-            
-            GL11.glBegin(GL11.GL_TRIANGLES);
-
-            float[] faces = surface.getFaces();
-
-            for (int i = 0; i < faces.length; i += 3)
+//            if(Keyboard.isKeyDown(Keyboard.KEY_P))
             {
-//                if (faces[i] != null)// && voxels[i].getSnow())
+                GL11.glBegin(GL11.GL_TRIANGLES);
+//                surface.randomSnow();
+//                surface.setCnt(0);
+//                surface.marchingCubes();
+                float[] marchingCubesFaces = surface.getFaces();
+
+                for (int i = 0; i < marchingCubesFaces.length; i += 3)
                 {
-                    GL11.glVertex3f(faces[i], faces[i+1], faces[i+2]);
+    //                if (faces[i] != null)// && voxels[i].getSnow())
+                    {
+                        GL11.glVertex3f(marchingCubesFaces[i], 
+                                        marchingCubesFaces[i+1], 
+                                        marchingCubesFaces[i+2]);
+                    }
                 }
+                GL11.glEnd();
             }
-            GL11.glEnd();
+            
             
 //            GL11.glBegin(GL11.GL_TRIANGLES);
-//
 //            // show all faces which intersect with the x-y-plane
 ////            int[] faces = generator.activeFaces(0.75f);
 //            int[] faces = op.getFaces();
@@ -162,13 +188,12 @@ public class Renderer
 //            {
 //                //subtract 1 to get the right index
 //                int j = (faces[i] - 1) * 3;
-//
 //                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
 //            }
 ////		GL11.glVertex3f(5,5,-20);
 //            GL11.glEnd();
+            
             GL11.glPopMatrix();
-
             Display.update();
         }
 
