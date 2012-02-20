@@ -8,12 +8,8 @@ package view;
  *
  * @author Manuel
  */
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import model.Generator;
 import model.Surface;
-import model.Voxel;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -21,7 +17,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
-
 import view.parser.ObjParser;
 
 public class Renderer
@@ -46,31 +41,38 @@ public class Renderer
         GL11.glShadeModel(GL11.GL_FLAT);
 
         FloatBuffer lightAmbient = BufferUtils.createFloatBuffer(4).put(new float[] {0.0f,0.0f,0.0f,1.0f});
+        FloatBuffer lightDiffuse = BufferUtils.createFloatBuffer(4).put(new float[] {1.0f, 1.0f, 1.0f, 1.0f});
+        FloatBuffer lightSpecular = BufferUtils.createFloatBuffer(4).put(new float[] {1.0f, 1.0f, 1.0f, 1.0f});
+        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4).put(new float[] {-2.0f, 3.0f, 1.0f, 1.0f});
+        
+        FloatBuffer globalAmbient = BufferUtils.createFloatBuffer(4).put(new float[] {0.2f, 0.2f, 0.2f, 1.0f});
+        
         lightAmbient.flip();
+        lightDiffuse.flip();
+        lightSpecular.flip();
+        lightPosition.flip();
+        
+        globalAmbient.flip();
         
 //        float lightAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
-        float lightDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float lightSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float lightPosition[] = {-1.0f, 0.0f, 2.0f, 1.0f};
+//        float lightDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+//        float lightSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+//        float lightPosition[] = {-1.0f, 0.0f, 2.0f, 1.0f};
         
 //        float spotPosition[] = {0.0f, 0.0f, 3.5f, 1.0f};
 //        float spotDirection [] = {0.0f, 0.0f, -1.0f,1.0f};
         
-        float globalAmbient[] = {0.2f, 0.2f, 0.2f, 1.0f};
-
-        ByteBuffer temp = ByteBuffer.allocateDirect(16);
-        temp.order(ByteOrder.nativeOrder());
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, lightAmbient);
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, (FloatBuffer) temp.asFloatBuffer().put(lightDiffuse).flip());
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, (FloatBuffer) temp.asFloatBuffer().put(lightSpecular).flip());
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(lightPosition).flip());
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, lightDiffuse);
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, lightSpecular);
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, lightPosition);
         // try to make a spotlight
 //        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPOT_DIRECTION, (FloatBuffer) temp.asFloatBuffer().put(spotDirection).flip());
 //        GL11.glLightf(GL11.GL_LIGHT1, GL11.GL_SPOT_EXPONENT, 60.0f);
 //        GL11.glLightf(GL11.GL_LIGHT1, GL11.GL_SPOT_CUTOFF, 30.0f);
 //        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(spotPosition).flip());
         //global ambient lighting
-        GL11.glLightModel(GL11.GL_AMBIENT, (FloatBuffer) temp.asFloatBuffer().put(globalAmbient).flip());
+        GL11.glLightModel(GL11.GL_AMBIENT, globalAmbient);
         
         GL11.glEnable(GL11.GL_LIGHTING);
 //        GL11.glColor3f(1.0f, 0.0f, 0.0f);
@@ -264,18 +266,24 @@ public class Renderer
                 surface.marchingCubes();
             }
             float[] marchingCubesFaces = surface.getFaces();
+//            float[] normals = op.getNormals();
+//            int[] normalIndices = op.getNormalIndices();
 
             for (int i = 0; i < marchingCubesFaces.length; i += 3)
             {
-                    GL11.glVertex3f(marchingCubesFaces[i], 
-                                    marchingCubesFaces[i+1], 
-                                    marchingCubesFaces[i+2]);
+//                int normal = normalIndices[i] - 1 * 3;
+//                GL11.glNormal3f(normals[normal], normals[normal + 1], normals[normal + 2]);
+                // same normal for every vertex of the snow surface
+                GL11.glNormal3f(1.0f, -1.0f, 1.0f);
+                GL11.glVertex3f(marchingCubesFaces[i], 
+                                marchingCubesFaces[i+1], 
+                                marchingCubesFaces[i+2]);
             }
             GL11.glEnd();
             
             
             // set the color of the quad (R,G,B)
-            GL11.glColor3f(1.0f, 0.0f, 0.0f);
+            GL11.glColor3f(0.8f, 0.5f, 0.2f);
             
             GL11.glBegin(GL11.GL_TRIANGLES);
             // show all faces which intersect with the x-y-plane
@@ -290,9 +298,10 @@ public class Renderer
             {
                 //subtract 1 to get the right index
                 int j = (faces[i] - 1) * 3;
-                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
-//                GL11.glNormal3f(normals[normalIndices[j]], normals[normalIndices[j+1]], normals[normalIndices[j+2]]);
+                int normal = (normalIndices[i] - 1) * 3;
+                GL11.glNormal3f(normals[normal], normals[normal + 1], normals[normal + 2]);
 //                GL11.glNormal3f(vertexNormals[j][0], vertexNormals[j][1] , vertexNormals[j][2]);
+                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
             }
 //		GL11.glVertex3f(5,5,-20);
             GL11.glEnd();

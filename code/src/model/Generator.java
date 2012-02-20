@@ -4,8 +4,7 @@ import view.parser.ObjParser;
 
 /**
  * Class to fill up the scene with Voxels. Sets Voxels in the whole scene
- * (complete xyz-range) and cuts out the Voxels where objects are.
- * In addition to that there are Voxels set on each surface of the objects.
+ * (complete xyz-range).
  *
  * @verison 25.10.2011
  * @author manschwa
@@ -17,7 +16,7 @@ public class Generator
     /** Array which contains the scene */
     private float[] vertices;
     /** constant number of steps per unit (granularity of the voxel-density) */
-    private static final int STEPS = 15;
+    private static final int STEPS = 10;
     /** Array which contains the faces' vertices */
     private int[] faces;
 
