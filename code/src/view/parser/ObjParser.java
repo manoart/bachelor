@@ -29,6 +29,7 @@ public class ObjParser
 	private int[] outputFaces;
 	private float[] outputNormals;
 	private int[] outputNormalIndices;
+    private float[][] outputVertexNormals;
 	
 	/* Indices fuer die aktuelle Stelle im Array */
 	private int vertexArrayIndex;
@@ -55,7 +56,8 @@ public class ObjParser
 		this.outputVertices = new float[countOccurrences(file, VERTEX_PREFIX)*3];
 		this.outputFaces = new int[countOccurrences(file, FACE_PREFIX)*3];
 		this.outputNormals = new float[countOccurrences(file, NORMAL_PREFIX)*3];
-		this.outputNormalIndices = new int[countOccurrences(file, FACE_PREFIX)*3];
+		this.outputNormalIndices = new int[this.outputFaces.length];
+        this.outputVertexNormals = new float[this.outputVertices.length][3];
 		
 		try
 		{
@@ -85,6 +87,8 @@ public class ObjParser
 		{
 			e.printStackTrace();
 		}
+        
+//        calculateVertexNormals();
 	}
 	
 	/**
@@ -174,7 +178,7 @@ public class ObjParser
 		}
 		catch(NumberFormatException nfe)
 		{
-			System.out.println("Wrong numbers in obj. file (vertices)");;
+			System.out.println("Wrong numbers in obj. file (vertices)");
 			System.exit(0);
 		}
 	}
@@ -285,7 +289,18 @@ public class ObjParser
 		}
 	}
 	
-	
+//	private void calculateVertexNormals()
+//    {
+//        for(int i = 0; i < this.outputFaces.length; i++)
+//        {
+//            int j = (this.outputFaces[i] - 1);
+//            this.outputVertexNormals[j][0] += this.outputNormals[(this.outputNormalIndices[j] - 1) * 3];
+//            this.outputVertexNormals[j][1] += this.outputNormals[(this.outputNormalIndices[j] - 1) * 3 + 1];
+//            this.outputVertexNormals[j][2] += this.outputNormals[(this.outputNormalIndices[j] - 1) * 3 + 2];
+//        }
+//    }
+    
+    
 	/**
 	 * Gibt die Vertex-Koordinaten als Array zurueck. Dabei besteht
 	 * ein Vertex immer aus drei Koordinaten, die in dem Array alle
@@ -329,4 +344,9 @@ public class ObjParser
 	{
 		return this.outputNormalIndices;
 	}
+    
+    public float[][] getVertexNormals()
+    {
+        return this.outputVertexNormals;
+    }
 }

@@ -45,15 +45,13 @@ public class Surface
         
         setNeighbors();
 //        randomSnow();
-        marchingCubes();
+//        marchingCubes();
 //        marchingCubesActive();
         
         //TODO Schneefall, deutlich machen, aus welcher Richtung der Schnee faellt
-        //TODO Schneedeckenwachstum ueber die Zeit
+        //TODO Schnee aus verschiedenen Richtungen
         //TODO AVZ-Modell (Plus)
         //TODO Textur auf AVZ-Modell
-        //TODO Beleuchtung
-        //TODO Kamera
     }
     
     private void marchingCube(Voxel v, float scale)
@@ -188,7 +186,7 @@ public class Surface
         }
         
         // let it snow
-        for(int j = 0; j < 10000; j++)
+        for(int j = 0; j < 10; j++)
         {
             int index = (int)(Math.random() * activeVoxels.length);
             this.activeVoxels[index].raiseDensity(0.1);

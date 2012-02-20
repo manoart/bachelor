@@ -17,7 +17,7 @@ public class Generator
     /** Array which contains the scene */
     private float[] vertices;
     /** constant number of steps per unit (granularity of the voxel-density) */
-    private static final int STEPS = 10;
+    private static final int STEPS = 15;
     /** Array which contains the faces' vertices */
     private int[] faces;
 
@@ -109,6 +109,7 @@ public class Generator
 
         voxels[i] = new Voxel(x, y, z);
         
+        // set snow to mark these voxels as inside
         if(pointInPolygonX(x, y, z, edges))
         {
             voxels[i].setSnow();
@@ -435,7 +436,7 @@ public class Generator
                 max = tmp;
             }
         }
-        return max;
+        return max + 0.1f;
     }
 
     /**
@@ -455,7 +456,7 @@ public class Generator
                 min = tmp;
             }
         }
-        return min;
+        return min - 0.1f;
     }
 
     /**
@@ -475,7 +476,7 @@ public class Generator
                 max = tmp;
             }
         }
-        return max;
+        return max + 0.1f;
     }
 
     /**
@@ -495,7 +496,7 @@ public class Generator
                 min = tmp;
             }
         }
-        return min;
+        return min - 0.1f;
     }
 
     /**
