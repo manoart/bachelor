@@ -7,11 +7,16 @@ package model;
 public class Surface
 {
     private Voxel[] voxels;
+    private Voxel[] activeRightVoxels;
     private Voxel[] activeVoxels;
     private Generator generator;
-    /** Array which contains the faces' vertices */
+    /** Array which contains the faces' vertices. */
     private float[] faces;
+    /** Array which contains the normals vertices. */
+    private float[] normals;
+    /** static counter for the faces and normals arrays */
     private static int cnt = 0;
+    private static boolean cold = true;
     /** VOXEL_OFFSET lists the positions, relative to vertex0, of each of the 8 vertices of a cube */
     private static final float[][] VOXEL_OFFSET =
     {
@@ -42,6 +47,7 @@ public class Surface
         this.generator = new Generator(path);
         this.voxels = generator.getVoxels();
         this.faces = new float[voxels.length * 6];
+        this.normals = new float[faces.length];
         
         setNeighbors();
 //        randomSnow();
@@ -57,6 +63,9 @@ public class Surface
     private void marchingCube(Voxel v, float scale)
     {      
         Vertex[] edgeVertex = new Vertex[12];
+        Vertex[] edgeNormal = new Vertex[12];
+        
+        float density = (float)v.getDensity();
         
         // generate a new cube (local copy)
         // if one voxel of the cube is null, then it is not a complete cube
@@ -82,7 +91,7 @@ public class Surface
         int iFlagIndex = 0;
         for(int i = 0; i < 8; i++)
         {
-            if(cube[i].getSnow())
+            if(cube[i].getInside() || cube[i].getSnow())
             {
                 iFlagIndex |= 1<<i;
             }
@@ -106,9 +115,14 @@ public class Surface
             {
                 // no exact calculation of the intersection points
                 // just connect the middle the edges with each other (0.5f)
+                //TODO voxel.getDensity() berücksichtigen
                 edgeVertex[iEdge] = new Vertex((v.getX() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
                                                 (v.getY() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
                                                 (v.getZ() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                
+                edgeNormal[iEdge] = getNormal(edgeVertex[iEdge].getX(), edgeVertex[iEdge].getY(), edgeVertex[iEdge].getZ());
+//                edgeNormal[iEdge] = new Vertex(normal.getX(), normal.getY(), normal.getZ());
+                
             }
         }
 
@@ -122,12 +136,46 @@ public class Surface
                 for(int iCorner = 0; iCorner < 3; iCorner++)
                 {
                         int iVertex = a2iTriangleConnectionTable[iFlagIndex][3*iTriangle+iCorner];
+                        this.normals[cnt] = edgeNormal[iVertex].getX();
                         this.faces[cnt++] = edgeVertex[iVertex].getX();
+                        this.normals[cnt] = edgeNormal[iVertex].getY();
                         this.faces[cnt++] = edgeVertex[iVertex].getY();
+                        this.normals[cnt] = edgeVertex[iVertex].getZ();
                         this.faces[cnt++] = edgeVertex[iVertex].getZ();
                 }
-        }
-        
+        }      
+    }
+    
+    private Vertex getNormal(float x, float y, float z)
+    {
+        Vertex v = new Vertex();
+        v.setX(fSample(x - 0.01f, y, z) - fSample(x + 0.01f, y, z));
+        v.setY(fSample(x, y - 0.01f, z) - fSample(x, y + 0.01f, z));
+        v.setZ((fSample(x, y, z - 0.01f) - fSample(x, y, z + 0.01f)) * (-1));
+        return v;
+    }    
+    
+    //fSample1 finds the distance of (fX, fY, fZ) from three moving points
+    private float fSample(float fX, float fY, float fZ)
+    {
+        float fResult = 0.0f;
+        float fDx, fDy, fDz;
+        fDx = fX - 0.5f;
+        fDy = fY - 0.5f;
+        fDz = fZ - 0.5f;
+        fResult += 0.5f/(fDx*fDx + fDy*fDy + fDz*fDz);
+
+        fDx = fX - 0.5f;
+        fDy = fY - 0.5f;
+        fDz = fZ - 0.5f;
+        fResult += 1.0/(fDx*fDx + fDy*fDy + fDz*fDz);
+
+        fDx = fX - 0.5f;
+        fDy = fY - 0.5f;
+        fDz = fZ - 0.5f;
+        fResult += 1.5f/(fDx*fDx + fDy*fDy + fDz*fDz);
+
+        return fResult;
     }
     
     public void marchingCubes()
@@ -143,11 +191,11 @@ public class Surface
     
     public void marchingCubesActive()
     {
-        for(int i = 0; i < this.activeVoxels.length; i++)
+        for(int i = 0; i < this.activeRightVoxels.length; i++)
         {
-            if(this.activeVoxels[i] != null)
+            if(this.activeRightVoxels[i] != null)
             {
-                marchingCube(this.activeVoxels[i], 1.0f / generator.getSteps());
+                marchingCube(this.activeRightVoxels[i], 1.0f / generator.getSteps());
             }
         }
     }
@@ -163,37 +211,138 @@ public class Surface
         }
     }
     
-    public void randomSnow()
+    public void rightSnow()
     {
         int k = 0;
+
+        this.activeRightVoxels = new Voxel[countActiveTopVoxels(voxels)];
+        // snow from above
+        // mark Voxels as active if they have a topNeighbor 
         for(int i = 0; i < voxels.length; i++)
         {
-            // get the 'ground'-Voxels beside the model
-            if(voxels[i] != null && !voxels[i].hasBottomNeighbor())//voxels[i].hasTopNeighbor() && !voxels[i].getTopNeighbor().getSnow() && !voxels[i].hasBottomNeighbor())
-            {                
-                this.voxels[i].setSnow();
+            if((voxels[i] != null && voxels[i].getSnow() && voxels[i].hasLeftNeighbor() && !voxels[i].getLeftNeighbor().getSnow()))
+
+            {
+                activeRightVoxels[k++] = voxels[i];
             }
         }
+        
+        // let it snow
+        if(Surface.cold)
+        {
+            for(int j = 0; j < 5; j++)
+            {
+                int index = (int)(Math.random() * activeRightVoxels.length);
+                this.activeRightVoxels[index].raiseDensity(0.1f);
+                if(this.activeRightVoxels[index].getDensity() > 1.0f && this.activeRightVoxels[index].getLeftNeighbor() != null)
+                {
+                    this.activeRightVoxels[index].getLeftNeighbor().setSnow();
+                    this.activeRightVoxels[index] = this.activeRightVoxels[index].getLeftNeighbor();
+                }   
+            }
+        }else
+        {
+        
+            // melting snow
+            for(int j = 0; j < 10; j++)
+            {
+                int index = (int)(Math.random() * activeRightVoxels.length);
+                Voxel v = this.activeRightVoxels[index];
+                v.raiseDensity(-0.1f);
+                
+                Voxel right = v.getRightNeighbor();
+                Voxel left = v.getLeftNeighbor();
+                Voxel front = v.getFrontNeighbor();
+                Voxel back = v.getBackNeighbor();
+                Voxel bottom = v.getBottomNeighbor();
+                
+                if((v.getDensity() < 0.0f && left != null) )//||
+
+//                   (v.getSnow() && right != null && !right.getSnow() && left != null && 
+//                    !left.getSnow() && front != null && !front.getSnow() &&
+//                    back != null && !back.getSnow() && bottom != null))
+
+                {
+                    v.removeSnow();
+                    this.activeRightVoxels[index] = v.getLeftNeighbor();
+                }
+            }
+        }
+    }
+    
+    private int countActiveTopVoxels(Voxel[] voxels)
+    {
+        int count = 0;
+        for(int i = 0; i < voxels.length; i++)
+        {
+            if((voxels[i] != null && voxels[i].getSnow() && voxels[i].hasLeftNeighbor() && !voxels[i].getLeftNeighbor().getSnow()))// ||
+//               (voxels[i] != null && !voxels[i].getSnow() && !voxels[i].hasBottomNeighbor() && !voxels[i].getTopNeighbor().getSnow()) ||
+//               (voxels[i] != null && voxels[i].getInside() && !voxels[i].getTopNeighbor().getInside()))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    public void topSnow()
+    {
+        int k = 0;
 
         this.activeVoxels = new Voxel[countActiveVoxels(voxels)];
 
+        // snow from above
+        // mark Voxels as active if they have a topNeighbor 
         for(int i = 0; i < voxels.length; i++)
         {
-            if(voxels[i] != null && voxels[i].getSnow() && !voxels[i].getTopNeighbor().getSnow())
+            if((voxels[i] != null && voxels[i].getSnow() && !voxels[i].getTopNeighbor().getSnow()) ||
+               (voxels[i] != null && !voxels[i].hasBottomNeighbor() && !voxels[i].getTopNeighbor().getSnow() && !voxels[i].getSnow()) ||
+               (voxels[i] != null && voxels[i].getInside() && !voxels[i].getTopNeighbor().getInside()))
             {
                 activeVoxels[k++] = voxels[i];
             }
         }
         
         // let it snow
-        for(int j = 0; j < 10; j++)
+        if(Surface.cold)
         {
-            int index = (int)(Math.random() * activeVoxels.length);
-            this.activeVoxels[index].raiseDensity(0.1);
-            if(this.activeVoxels[index].getDensity() > 1.0f && this.activeVoxels[index].getTopNeighbor() != null)
+            for(int j = 0; j < 10; j++)
             {
-                this.activeVoxels[index].getTopNeighbor().setSnow();
-                this.activeVoxels[index] = this.activeVoxels[index].getTopNeighbor();
+                int index = (int)(Math.random() * activeVoxels.length);
+                this.activeVoxels[index].raiseDensity(0.1f);
+                if(this.activeVoxels[index].getDensity() > 1.0f && this.activeVoxels[index].getTopNeighbor() != null)
+                {
+                    this.activeVoxels[index].getTopNeighbor().setSnow();
+                    this.activeVoxels[index] = this.activeVoxels[index].getTopNeighbor();
+                }   
+            }
+        }else
+        {
+        
+            // melting snow
+            for(int j = 0; j < 10; j++)
+            {
+                int index = (int)(Math.random() * activeVoxels.length);
+                Voxel v = this.activeVoxels[index];
+                v.raiseDensity(-0.1f);
+                
+                Voxel right = v.getRightNeighbor();
+                Voxel left = v.getLeftNeighbor();
+                Voxel front = v.getFrontNeighbor();
+                Voxel back = v.getBackNeighbor();
+                Voxel bottom = v.getBottomNeighbor();
+                
+                if((v.getDensity() < 0.0f && bottom != null) ||
+//                   (!this.activeVoxels[index].getRightNeighbor().getSnow() && !this.activeVoxels[index].getLeftNeighbor().getSnow() && 
+//                    !this.activeVoxels[index].getFrontNeighbor().getSnow() && !this.activeVoxels[index].getBackNeighbor().getSnow() && 
+                   (v.getSnow() && right != null && !right.getSnow() && left != null && 
+                    !left.getSnow() && front != null && !front.getSnow() &&
+                    back != null && !back.getSnow() && bottom != null)) //||
+//                     (v.countNeighborsWithSnow() <= 4 && bottom != null))
+                {
+                    v.removeSnow();
+                    this.activeVoxels[index] = v.getBottomNeighbor();
+                }
             }
         }
     }
@@ -203,7 +352,9 @@ public class Surface
         int count = 0;
         for(int i = 0; i < voxels.length; i++)
         {
-            if(voxels[i] != null && voxels[i].getSnow() && !voxels[i].getTopNeighbor().getSnow())
+            if((voxels[i] != null && voxels[i].getSnow() && !voxels[i].getTopNeighbor().getSnow()) ||
+               (voxels[i] != null && !voxels[i].getSnow() && !voxels[i].hasBottomNeighbor() && !voxels[i].getTopNeighbor().getSnow()) ||
+               (voxels[i] != null && voxels[i].getInside() && !voxels[i].getTopNeighbor().getInside()))
             {
                 count++;
             }
@@ -216,6 +367,11 @@ public class Surface
         Surface.cnt = cnt;
     }
     
+    public void setCold(boolean bool)
+    {
+        this.cold = bool;
+    }
+    
     public Voxel[] getVoxels()
     {
         return this.voxels;
@@ -226,9 +382,14 @@ public class Surface
         return this.faces;
     }
     
+    public float[] getNormals()
+    {
+        return this.normals;
+    }
+    
     public Voxel[] getActiveVoxels()
     {
-        return this.activeVoxels;
+        return this.activeRightVoxels;
     }
     
     public Generator getGenerator()

@@ -19,6 +19,8 @@ public class Generator
     private static final int STEPS = 10;
     /** Array which contains the faces' vertices */
     private int[] faces;
+    
+    private static int iVoxel = 0;
 
     public Generator(float[] vertices, int[] faces)
     {
@@ -95,24 +97,26 @@ public class Generator
     private void setVoxel(float x, float y, float z, float[] edges)
     {
         // add the new Voxel to the end of the array
-        int i = 0;
-        while (voxels[i] != null)
-        {
-            // make sure every Voxel just exists once, no doubles
-            if(voxels[i].equals(new Voxel(x, y, z)))
-            {
-               return;
-            }
-            i++;
-        }
+//        int i = 0;
+//        while (voxels[i] != null)
+//        {
+//            // make sure every Voxel just exists once, no doubles
+//            if(voxels[i].equals(new Voxel(x, y, z)))
+//            {
+//               return;
+//            }
+//            i++;
+//        }
 
-        voxels[i] = new Voxel(x, y, z);
+        voxels[iVoxel] = new Voxel(x, y, z);
         
         // set snow to mark these voxels as inside
         if(pointInPolygonX(x, y, z, edges))
         {
-            voxels[i].setSnow();
+            voxels[iVoxel].setInside();
+            voxels[iVoxel].setSnow();
         }
+        iVoxel++;
     }
     
     /**
@@ -207,7 +211,6 @@ public class Generator
     {
         int[] activeFaces = activeFaces(z);
 
-        //TODO do not save double elements in edges
         //at the moment every edge has two points
         float[] edges = new float[activeFaces.length / 3 * 4];
         
@@ -358,7 +361,6 @@ public class Generator
 
         for(int i = 0; i < this.faces.length; i += 3)
         {
-            //TODO test if the index is right, look at Renderer.java
             if(     !((this.vertices[this.faces[i] * 3 - 1] < z) && 
                     (this.vertices[this.faces[i + 1] * 3 - 1] < z) && 
                     (this.vertices[this.faces[i + 2] * 3 - 1] < z)) &&
@@ -495,7 +497,7 @@ public class Generator
                 min = tmp;
             }
         }
-        return min - 0.1f;
+        return min - 1.1f;
     }
 
     /**

@@ -10,6 +10,7 @@ package view;
  */
 import java.nio.FloatBuffer;
 import model.Surface;
+import model.Voxel;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -42,8 +43,8 @@ public class Renderer
 
         FloatBuffer lightAmbient = BufferUtils.createFloatBuffer(4).put(new float[] {0.0f,0.0f,0.0f,1.0f});
         FloatBuffer lightDiffuse = BufferUtils.createFloatBuffer(4).put(new float[] {1.0f, 1.0f, 1.0f, 1.0f});
-        FloatBuffer lightSpecular = BufferUtils.createFloatBuffer(4).put(new float[] {1.0f, 1.0f, 1.0f, 1.0f});
-        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4).put(new float[] {-2.0f, 3.0f, 1.0f, 1.0f});
+        FloatBuffer lightSpecular = BufferUtils.createFloatBuffer(4).put(new float[] {0.5f, 0.5f, 0.5f, 1.0f});
+        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4).put(new float[] {10.0f, 1.5f, 10.0f, 1.0f});
         
         FloatBuffer globalAmbient = BufferUtils.createFloatBuffer(4).put(new float[] {0.2f, 0.2f, 0.2f, 1.0f});
         
@@ -54,28 +55,15 @@ public class Renderer
         
         globalAmbient.flip();
         
-//        float lightAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
-//        float lightDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
-//        float lightSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-//        float lightPosition[] = {-1.0f, 0.0f, 2.0f, 1.0f};
-        
-//        float spotPosition[] = {0.0f, 0.0f, 3.5f, 1.0f};
-//        float spotDirection [] = {0.0f, 0.0f, -1.0f,1.0f};
-        
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, lightAmbient);
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, lightDiffuse);
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, lightSpecular);
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, lightPosition);
-        // try to make a spotlight
-//        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPOT_DIRECTION, (FloatBuffer) temp.asFloatBuffer().put(spotDirection).flip());
-//        GL11.glLightf(GL11.GL_LIGHT1, GL11.GL_SPOT_EXPONENT, 60.0f);
-//        GL11.glLightf(GL11.GL_LIGHT1, GL11.GL_SPOT_CUTOFF, 30.0f);
-//        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, (FloatBuffer) temp.asFloatBuffer().put(spotPosition).flip());
+
         //global ambient lighting
         GL11.glLightModel(GL11.GL_AMBIENT, globalAmbient);
         
         GL11.glEnable(GL11.GL_LIGHTING);
-//        GL11.glColor3f(1.0f, 0.0f, 0.0f);
 
         GL11.glEnable(GL11.GL_LIGHT0);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
@@ -84,9 +72,6 @@ public class Renderer
         //TODO general file-path
         String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/pawn.obj";
         ObjParser op = new ObjParser(path);
-//        System.out.println("faces.length: " + op.getFaces().length);
-//        System.out.println("normalIndices.length: " + op.getNormalIndices().length);
-//        Generator generator = new Generator(path);
         Surface surface = new Surface(path);
         
         // angle to rotate around the z-axis
@@ -97,27 +82,20 @@ public class Renderer
         float cameraY = 4.0f;
         // move the 'camera' up and down (glLookAt()-z-coordinate)
         float cameraZ = 2.0f;
-        
-        
 
         // init OpenGL
-//        private void initOpenGL()
-        {
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
         GLU.gluPerspective(70, (float) 800 / 600, 1, 1000);
-//	GL11.glOrtho(0, 800, 600, 0, 1, -1);
         
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
-        GLU.gluLookAt(cameraX, cameraY, cameraZ,       // camera-position
-                      0.0f, 0.0f, 1.0f,     // point of view
-                      0.0f, 0.0f, 1.0f);    // up-vector
-        }
+        GLU.gluLookAt(cameraX, cameraY, cameraZ,    // camera-position
+                      0.0f, 0.0f, 1.0f,             // point of view
+                      0.0f, 0.0f, 1.0f);            // up-vector
         
         GL11.glPointSize(3.0f);
 
-//        GL11.glPushMatrix();
         while (!Display.isCloseRequested())
         {
             // Clear the screen and depth buffer
@@ -125,12 +103,8 @@ public class Renderer
 
             GL11.glPushMatrix();
 
-//            GL11.glTranslatef(0.0f, -1.3f, -3.0f);
-//            GL11.glRotatef(270, 1.0f, 0.0f, 0.0f);
             GL11.glRotatef(orbitAngle, 0.0f, 0.0f, 1.0f);
-//            GL11.glTranslatef(0.0f, y, 0.0f);
 
-            //TODO fix rotating CAMERA
             if(Keyboard.isKeyDown(Keyboard.KEY_LEFT))
             {
                 orbitAngle -= 0.05f;
@@ -149,14 +123,12 @@ public class Renderer
                 GL11.glMatrixMode(GL11.GL_PROJECTION);
                 GL11.glLoadIdentity();
                 GLU.gluPerspective(70 * zoom, (float) 800 / 600, 1, 1000);
-//             	GL11.glOrtho(0, 800, 600, 0, 1, -1);
 
                 GL11.glMatrixMode(GL11.GL_MODELVIEW);
                 GL11.glLoadIdentity();
                 GLU.gluLookAt(cameraX, cameraY, cameraZ, 
                               0.0f, 0.0f, 1.0f, 
                               0.0f, 0.0f, 1.0f);
-//                GL11.glRotatef(a, 0.0f, 0.0f, 1.0f);
                 GL11.glPushMatrix();
                 GL11.glRotatef(orbitAngle, 0.0f, 0.0f, 1.0f);
             }
@@ -169,14 +141,12 @@ public class Renderer
                 GL11.glMatrixMode(GL11.GL_PROJECTION);
                 GL11.glLoadIdentity();
                 GLU.gluPerspective(70 * zoom, (float) 800 / 600, 1, 1000);
-//             	GL11.glOrtho(0, 800, 600, 0, 1, -1);
 
                 GL11.glMatrixMode(GL11.GL_MODELVIEW);
                 GL11.glLoadIdentity();
                 GLU.gluLookAt(cameraX, cameraY, cameraZ, 
                               0.0f, 0.0f, 1.0f, 
                               0.0f, 0.0f, 1.0f);
-//                GL11.glRotatef(a, 0.0f, 0.0f, 1.0f);
                 GL11.glPushMatrix();
                 GL11.glRotatef(orbitAngle, 0.0f, 0.0f, 1.0f);
             }
@@ -189,14 +159,12 @@ public class Renderer
                 GL11.glMatrixMode(GL11.GL_PROJECTION);
                 GL11.glLoadIdentity();
                 GLU.gluPerspective(70 * zoom, (float) 800 / 600, 1, 1000);
-//             	GL11.glOrtho(0, 800, 600, 0, 1, -1);
 
                 GL11.glMatrixMode(GL11.GL_MODELVIEW);
                 GL11.glLoadIdentity();
                 GLU.gluLookAt(cameraX, cameraY, cameraZ, 
                               0.0f, 0.0f, 1.0f, 
                               0.0f, 0.0f, 1.0f);
-//                GL11.glRotatef(a, 0.0f, 0.0f, 1.0f);
                 GL11.glPushMatrix();
                 GL11.glRotatef(orbitAngle, 0.0f, 0.0f, 1.0f);
             }
@@ -209,14 +177,12 @@ public class Renderer
                 GL11.glMatrixMode(GL11.GL_PROJECTION);
                 GL11.glLoadIdentity();
                 GLU.gluPerspective(70 * zoom, (float) 800 / 600, 1, 1000);
-//             	GL11.glOrtho(0, 800, 600, 0, 1, -1);
 
                 GL11.glMatrixMode(GL11.GL_MODELVIEW);
                 GL11.glLoadIdentity();
                 GLU.gluLookAt(cameraX, cameraY, cameraZ, 
                               0.0f, 0.0f, 1.0f, 
                               0.0f, 0.0f, 1.0f);
-//                GL11.glRotatef(a, 0.0f, 0.0f, 1.0f);
                 GL11.glPushMatrix();
                 GL11.glRotatef(orbitAngle, 0.0f, 0.0f, 1.0f);
             }
@@ -228,7 +194,7 @@ public class Renderer
             
             if(Keyboard.isKeyDown(Keyboard.KEY_S))
             {
-                // switch from Flatshading to SmoothShading (Phong?)
+                // switch from Flatshading to SmoothShading
                 GL11.glShadeModel(GL11.GL_SMOOTH);
             }
             
@@ -241,11 +207,24 @@ public class Renderer
             {
                 GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK,GL11.GL_FILL);
             }
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_M))
+            {
+                surface.setCold(false);
+            }
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_N))
+            {
+                surface.setCold(true);
+            }
 
 
             // draw triangles or points or lines
 //            GL11.glBegin(GL11.GL_POINTS);
-////            surface.randomSnow();
+//            if(Keyboard.isKeyDown(Keyboard.KEY_P))
+//            {
+//                surface.randomSnow();
+//            }
 //            Voxel[] voxels = surface.getActiveVoxels();
 //
 //            for (int i = 0; i < voxels.length; i++)
@@ -261,29 +240,28 @@ public class Renderer
             GL11.glBegin(GL11.GL_TRIANGLES);
             if(Keyboard.isKeyDown(Keyboard.KEY_P))
             {
-                surface.randomSnow();
+                surface.topSnow();
+                surface.rightSnow();
                 surface.setCnt(0);
                 surface.marchingCubes();
             }
             float[] marchingCubesFaces = surface.getFaces();
-//            float[] normals = op.getNormals();
-//            int[] normalIndices = op.getNormalIndices();
+            float[] marchingCubesNormals = surface.getNormals();
 
             for (int i = 0; i < marchingCubesFaces.length; i += 3)
             {
-//                int normal = normalIndices[i] - 1 * 3;
-//                GL11.glNormal3f(normals[normal], normals[normal + 1], normals[normal + 2]);
-                // same normal for every vertex of the snow surface
-                GL11.glNormal3f(1.0f, -1.0f, 1.0f);
+                GL11.glNormal3f(marchingCubesNormals[i], 
+                                marchingCubesNormals[i + 1], 
+                                marchingCubesNormals[i + 2]);
                 GL11.glVertex3f(marchingCubesFaces[i], 
-                                marchingCubesFaces[i+1], 
-                                marchingCubesFaces[i+2]);
+                                marchingCubesFaces[i + 1], 
+                                marchingCubesFaces[i + 2]);
             }
             GL11.glEnd();
             
             
-            // set the color of the quad (R,G,B)
-            GL11.glColor3f(0.8f, 0.5f, 0.2f);
+            // set the color of the object (R,G,B)
+            GL11.glColor3f(0.8f, 0.5f, 0.2f);   //brown
             
             GL11.glBegin(GL11.GL_TRIANGLES);
             // show all faces which intersect with the x-y-plane
@@ -292,7 +270,6 @@ public class Renderer
             float[] vertices = op.getVertices();
             float[] normals = op.getNormals();
             int[] normalIndices = op.getNormalIndices();
-            float[][] vertexNormals = op.getVertexNormals();
 
             for (int i = 0; i < faces.length; i++)
             {
@@ -300,10 +277,8 @@ public class Renderer
                 int j = (faces[i] - 1) * 3;
                 int normal = (normalIndices[i] - 1) * 3;
                 GL11.glNormal3f(normals[normal], normals[normal + 1], normals[normal + 2]);
-//                GL11.glNormal3f(vertexNormals[j][0], vertexNormals[j][1] , vertexNormals[j][2]);
                 GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
             }
-//		GL11.glVertex3f(5,5,-20);
             GL11.glEnd();
             
             GL11.glPopMatrix();

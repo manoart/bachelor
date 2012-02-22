@@ -1,8 +1,8 @@
 package view.parser;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
@@ -20,16 +20,15 @@ public class ObjParser
 	/* 
      * String constants for the different prefixes in the wavefront-file (*.obj)
      */
-    private static final String VERTEX_PREFIX = new String("v ");
-	private static final String NORMAL_PREFIX = new String("vn");
-	private static final String FACE_PREFIX = new String("f ");
+    private static final String VERTEX_PREFIX = "v ";
+	private static final String NORMAL_PREFIX = "vn";
+	private static final String FACE_PREFIX = "f ";
 	
 	/* Arrays with the data */
 	private float[] outputVertices;
 	private int[] outputFaces;
 	private float[] outputNormals;
 	private int[] outputNormalIndices;
-    private float[][] outputVertexNormals;
 	
 	/* Indices fuer die aktuelle Stelle im Array */
 	private int vertexArrayIndex;
@@ -57,7 +56,6 @@ public class ObjParser
 		this.outputFaces = new int[countOccurrences(file, FACE_PREFIX)*3];
 		this.outputNormals = new float[countOccurrences(file, NORMAL_PREFIX)*3];
 		this.outputNormalIndices = new int[this.outputFaces.length];
-        this.outputVertexNormals = new float[this.outputVertices.length][3];
 		
 		try
 		{
@@ -87,8 +85,6 @@ public class ObjParser
 		{
 			e.printStackTrace();
 		}
-        
-//        calculateVertexNormals();
 	}
 	
 	/**
@@ -156,7 +152,7 @@ public class ObjParser
 		if(line.length() >= 2)
 			return line.substring(0, 2);
 		
-		return new String("");
+		return "";
 	}
 	
 	/**
@@ -173,7 +169,6 @@ public class ObjParser
 			tokens.nextToken();
 			this.outputVertices[this.vertexArrayIndex++] = Float.parseFloat(tokens.nextToken());
 			this.outputVertices[this.vertexArrayIndex++] = Float.parseFloat(tokens.nextToken());
-            //TODO try without "-1"
 			this.outputVertices[this.vertexArrayIndex++] = (-1)*Float.parseFloat(tokens.nextToken());
 		}
 		catch(NumberFormatException nfe)
@@ -255,7 +250,7 @@ public class ObjParser
 		}
 		catch(NumberFormatException nfe)
 		{
-			System.out.println("Wrong numbers in obj. file (faces)");;
+			System.out.println("Wrong numbers in obj. file (faces)");
 			System.exit(0);
 		}
 		catch(java.util.NoSuchElementException nsee)
@@ -284,22 +279,10 @@ public class ObjParser
 		}
 		catch(NumberFormatException nfe)
 		{
-			System.out.println("Wrong numbers in obj. file (vertices)");;
+			System.out.println("Wrong numbers in obj. file (vertices)");
 			System.exit(0);
 		}
 	}
-	
-//	private void calculateVertexNormals()
-//    {
-//        for(int i = 0; i < this.outputFaces.length; i++)
-//        {
-//            int j = (this.outputFaces[i] - 1);
-//            this.outputVertexNormals[j][0] += this.outputNormals[(this.outputNormalIndices[j] - 1) * 3];
-//            this.outputVertexNormals[j][1] += this.outputNormals[(this.outputNormalIndices[j] - 1) * 3 + 1];
-//            this.outputVertexNormals[j][2] += this.outputNormals[(this.outputNormalIndices[j] - 1) * 3 + 2];
-//        }
-//    }
-    
     
 	/**
 	 * Gibt die Vertex-Koordinaten als Array zurueck. Dabei besteht
@@ -344,9 +327,4 @@ public class ObjParser
 	{
 		return this.outputNormalIndices;
 	}
-    
-    public float[][] getVertexNormals()
-    {
-        return this.outputVertexNormals;
-    }
 }

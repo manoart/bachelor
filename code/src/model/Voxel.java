@@ -7,7 +7,7 @@ package model;
  *  
  * @author Manuel Schwarz
  */
-public class Voxel extends Vertex
+public class Voxel
 {
     // instance variables
 
@@ -19,6 +19,8 @@ public class Voxel extends Vertex
     private float z;
     /** marks if there is snow or not */
     private boolean snow;
+    /** marks if the voxel is inside an object */
+    private boolean inside;
     /** density of the snow (perhaps needed in the future)*/
     private double density;
     /** left neighbor of the voxel */
@@ -39,7 +41,7 @@ public class Voxel extends Vertex
      */
     public Voxel()
     {
-        this(0f, 0f, 0f, false, 0.0);
+        this(0f, 0f, 0f, false, false, 0.0);
     }
 
     /**
@@ -51,7 +53,7 @@ public class Voxel extends Vertex
      */
     public Voxel(float x, float y, float z)
     {
-        this(x, y, z, false, 0.0);
+        this(x, y, z, false, false, 0.0);
     }
 
     /**
@@ -64,7 +66,7 @@ public class Voxel extends Vertex
      */
     public Voxel(float x, float y, float z, boolean snow)
     {
-        this(x, y, z, snow, 0.0);
+        this(x, y, z, snow, false, 0.0);
     }
 
     /**
@@ -76,12 +78,13 @@ public class Voxel extends Vertex
      * @param snow
      * @param density
      */
-    public Voxel(float x, float y, float z, boolean snow, double density)
+    public Voxel(float x, float y, float z, boolean snow, boolean inside, double density)
     {
         this.x = x;
         this.y = y;
         this.z = z;
         this.snow = snow;
+        this.inside = inside;
         this.density = density;
     }
 
@@ -92,7 +95,7 @@ public class Voxel extends Vertex
      */
     public Voxel(Voxel v)
     {
-        this(v.getX(), v.getY(), v.getZ(), v.getSnow(), v.getDensity());
+        this(v.getX(), v.getY(), v.getZ(), v.getSnow(), v.getInside(), v.getDensity());
     }
 
     /**
@@ -150,6 +153,20 @@ public class Voxel extends Vertex
         if(hasBottomNeighbor()) count++;
         if(hasBackNeighbor())   count++;
         if(hasFrontNeighbor())  count++;
+        
+        return count;
+    }
+    
+    public int countNeighborsWithSnow()
+    {
+        int count = 0;
+        
+        if(hasLeftNeighbor() && leftNeighbor.snow)      count++;
+        if(hasRightNeighbor() && rightNeighbor.snow)    count++;
+        if(hasTopNeighbor() && topNeighbor.snow)        count++;
+        if(hasBottomNeighbor() && bottomNeighbor.snow)  count++;
+        if(hasBackNeighbor() && backNeighbor.snow)      count++;
+        if(hasFrontNeighbor() && frontNeighbor.snow)    count++;
         
         return count;
     }
@@ -371,6 +388,21 @@ public class Voxel extends Vertex
         this.snow = true;
     }
     
+    public void removeSnow()
+    {
+        this.snow = false;
+    }
+    
+    public boolean getInside()
+    {
+        return this.inside;
+    }
+    
+    public void setInside()
+    {
+        this.inside = true;
+    }
+    
     /**
      * Getter for the snow`s density.
      *
@@ -381,9 +413,10 @@ public class Voxel extends Vertex
         return this.density;
     }
     
-    public void raiseDensity(double snowflake)
+    public void raiseDensity(float snowflake)
     {
         this.density += snowflake;
+        if(this.density <= -0.1f) this.density = -0.1f;
     }
     
     public Voxel getLeftNeighbor()
