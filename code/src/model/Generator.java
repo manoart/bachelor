@@ -27,7 +27,7 @@ public class Generator
         this.vertices = vertices;
         this.faces = faces;
         this.voxels = new Voxel[calculateNumberOfVoxels(this.vertices)];
-        scan(this.vertices);
+        fillScene(this.vertices);
     }
     
     /**
@@ -45,7 +45,7 @@ public class Generator
         // calculate size of Voxel[] voxels (every 0.1 "m")
         voxels = new Voxel[calculateNumberOfVoxels(vertices)];
         System.out.println("Size of voxel-array: " + voxels.length);
-        scan(vertices);
+        fillScene(vertices);
     }
 
     /**
@@ -71,20 +71,27 @@ public class Generator
      * calls the setVoxel()-method.
      * @param vertices Vertices of the given scene.
      */
-    private void scan(float[] vertices)
+    private void fillScene(float[] vertices)
     {
-        for (float z = calculateMinZ(vertices); z <= calculateMaxZ(vertices) + (0.5f / STEPS); z += 1.0f / STEPS)
+        float maxX = calculateMaxX(vertices);
+        float minX = calculateMinX(vertices);
+        float maxY = calculateMaxY(vertices);
+        float minY = calculateMinY(vertices);
+        float maxZ = calculateMaxZ(vertices);
+        float minZ = calculateMinZ(vertices);
+        
+        for (float z = minZ; z <= maxZ + (0.5f / STEPS); z += 1.0f / STEPS)
         {
             // calculate the edges just once for every z-coordinate
             float[] edges = edges(z);
 
-            for (float x = calculateMinX(vertices); x <= calculateMaxX(vertices) + (0.5f / STEPS); x += 1.0f / STEPS)
+            for (float x = minX; x <= maxX + (0.5f / STEPS); x += 1.0f / STEPS)
             {
-                for (float y = calculateMinY(vertices); y <=  calculateMaxY(vertices) + (0.5f / STEPS); y += 1.0f / STEPS)
+                for (float y = minY; y <= maxY + (0.5f / STEPS); y += 1.0f / STEPS)
                 {
 //                    if((pointInPolygonX(x, y, z, edges) || pointInPolygonY(x, y, z, edges)))
                     {
-                        setVoxel((float) x , (float) y , (float) z, edges);
+                        setVoxel(x, y, z, edges);
                     }
                 }
             }
@@ -96,25 +103,13 @@ public class Generator
      */
     private void setVoxel(float x, float y, float z, float[] edges)
     {
-        // add the new Voxel to the end of the array
-//        int i = 0;
-//        while (voxels[i] != null)
-//        {
-//            // make sure every Voxel just exists once, no doubles
-//            if(voxels[i].equals(new Voxel(x, y, z)))
-//            {
-//               return;
-//            }
-//            i++;
-//        }
-
         voxels[iVoxel] = new Voxel(x, y, z);
         
         // set snow to mark these voxels as inside
-        if(pointInPolygonX(x, y, z, edges))
+        if(pointInPolygonX(x, y, edges))
         {
-            voxels[iVoxel].setInside();
-            voxels[iVoxel].setSnow();
+//            voxels[iVoxel].setInside();
+//            voxels[iVoxel].setSnow();
         }
         iVoxel++;
     }
@@ -130,7 +125,7 @@ public class Generator
      * @param edges which are intersections of faces with the current plane.
      * @return true if the coordinates are inside an object.
      */
-    private boolean pointInPolygonX(float x, float y, float z, float[] edges)
+    private boolean pointInPolygonX(float x, float y, float[] edges)
     {
         boolean inside = false;
         for(int i = 0; i < edges.length; i += 4)
@@ -150,11 +145,9 @@ public class Generator
                 if(sx >= x)
                 {
                     inside = !inside;
-//                    setVoxel(sx, y, z);
                 }
             }
         }
-        
         return inside;
     }
     
@@ -425,7 +418,7 @@ public class Generator
      * @param vertices Array with the scene.
      * @return max y-value
      */
-    public float calculateMaxY(float[] vertices)
+    private float calculateMaxY(float[] vertices)
     {
         float tmp;
         float max = 0.0f;
@@ -437,7 +430,7 @@ public class Generator
                 max = tmp;
             }
         }
-        return max + 0.1f;
+        return max + 0.2f;
     }
 
     /**
@@ -445,7 +438,7 @@ public class Generator
      * @param vertices Array which contains the scene.
      * @return min y-value
      */
-    public float calculateMinY(float[] vertices)
+    private float calculateMinY(float[] vertices)
     {
         float tmp;
         float min = 0.0f;
@@ -465,10 +458,10 @@ public class Generator
      * @param vertices Array with the scene.
      * @return max x-value
      */
-    public float calculateMaxX(float[] vertices)
+    private float calculateMaxX(float[] vertices)
     {
         float tmp;
-        float max = 0.0f;
+        float max = Float.MIN_VALUE;
         for (int i = 1; i <= (vertices.length / 3); i++)
         {
             tmp = vertices[(i * 3) - 3];
@@ -485,7 +478,7 @@ public class Generator
      * @param vertices Array which contains the scene.
      * @return min x-value
      */
-    public float calculateMinX(float[] vertices)
+    private float calculateMinX(float[] vertices)
     {
         float tmp;
         float min = 0.0f;
@@ -497,7 +490,7 @@ public class Generator
                 min = tmp;
             }
         }
-        return min - 1.1f;
+        return min - 0.1f;
     }
 
     /**
@@ -505,7 +498,7 @@ public class Generator
      * @param vertices Array with the scene.
      * @return max z-value
      */
-    public float calculateMaxZ(float[] vertices)
+    private float calculateMaxZ(float[] vertices)
     {
         float tmp;
         float max = 0.0f;
@@ -517,7 +510,7 @@ public class Generator
                 max = tmp;
             }
         }
-        return max + 1.0f;
+        return max + 2.5f;
     }
 
     /**
@@ -525,7 +518,7 @@ public class Generator
      * @param vertices Array which contains the scene.
      * @return min z-value
      */
-    public float calculateMinZ(float[] vertices)
+    private float calculateMinZ(float[] vertices)
     {
         float tmp;
         float min = 0.0f;
@@ -537,6 +530,6 @@ public class Generator
                 min = tmp;
             }
         }
-        return min;
+        return min - 0.5f;
     }
 }

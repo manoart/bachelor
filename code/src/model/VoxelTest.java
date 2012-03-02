@@ -14,9 +14,9 @@ public class VoxelTest
 
     public static void main(String[] args)
     {
-        Voxel v1 = new Voxel(0, 0, 0, true, 1.0);
+        Voxel v1 = new Voxel(0, 0, 0, true, false, 1.0);
         Voxel v2 = new Voxel(v1);
-        Voxel v3 = new Voxel(1, 0, 1, true, 0.5);
+        Voxel v3 = new Voxel(1, 0, 1, true, false, 0.5);
         System.out.println("Voxel 1: " + "\n" + v1);
         System.out.println("Voxel 2: " + "\n" + v2);
         System.out.println("Voxel 1 equals Voxel 2?: " + v1.equals(v2));

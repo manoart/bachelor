@@ -15,7 +15,7 @@
    id="svg3017"
    version="1.1"
    inkscape:version="0.48.2 r9819"
-   sodipodi:docname="Neues Dokument 3">
+   sodipodi:docname="marching_cube.svg">
   <defs
      id="defs3019">
     <marker
@@ -107,7 +107,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -345,7 +345,7 @@
          y="247.2706"
          x="258.59906"
          id="tspan7442"
-         sodipodi:role="line">Referenzvoxel</tspan></text>
+         sodipodi:role="line">(Referenz-) Voxel</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.50000000000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-start:url(#Arrow2Lstart);marker-end:url(#Arrow2Lend)"
        d="m 504.5712,77.564976 0,45.456864 41.41625,0"

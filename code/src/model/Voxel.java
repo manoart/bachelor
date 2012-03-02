@@ -22,7 +22,7 @@ public class Voxel
     /** marks if the voxel is inside an object */
     private boolean inside;
     /** density of the snow (perhaps needed in the future)*/
-    private double density;
+    private float density;
     /** left neighbor of the voxel */
     private Voxel leftNeighbor;
     /** right neighbor of the voxel */
@@ -41,7 +41,7 @@ public class Voxel
      */
     public Voxel()
     {
-        this(0f, 0f, 0f, false, false, 0.0);
+        this(0f, 0f, 0f, false, false, 0.0f);
     }
 
     /**
@@ -53,7 +53,7 @@ public class Voxel
      */
     public Voxel(float x, float y, float z)
     {
-        this(x, y, z, false, false, 0.0);
+        this(x, y, z, false, false, 0.0f);
     }
 
     /**
@@ -66,7 +66,7 @@ public class Voxel
      */
     public Voxel(float x, float y, float z, boolean snow)
     {
-        this(x, y, z, snow, false, 0.0);
+        this(x, y, z, snow, false, 0.0f);
     }
 
     /**
@@ -78,7 +78,7 @@ public class Voxel
      * @param snow
      * @param density
      */
-    public Voxel(float x, float y, float z, boolean snow, boolean inside, double density)
+    public Voxel(float x, float y, float z, boolean snow, boolean inside, float density)
     {
         this.x = x;
         this.y = y;
@@ -95,7 +95,7 @@ public class Voxel
      */
     public Voxel(Voxel v)
     {
-        this(v.getX(), v.getY(), v.getZ(), v.getSnow(), v.getInside(), v.getDensity());
+        this(v.getX(), v.getY(), v.getZ(), v.getSnow(), v.isInside(), v.getDensity());
     }
 
     /**
@@ -184,6 +184,26 @@ public class Voxel
     public boolean hasNeighborInEveryDirection(Voxel[] voxels, float distance)
     {
         return (countNeighbors() == 6) ? true : false;
+    }
+    
+    public boolean hasSameLevelSnowNeighbors()
+    {
+        return hasLeftNeighbor() && getLeftNeighbor().getSnow() &&
+               hasRightNeighbor() && getRightNeighbor().getSnow() && 
+               hasFrontNeighbor() && getFrontNeighbor().getSnow() &&
+               hasBackNeighbor() && getBackNeighbor().getSnow();
+    }
+    
+    public boolean has3BottomNeighbors()
+    {
+        return (hasBottomNeighbor() && !getBottomNeighbor().hasSameLevelSnowNeighbors()&&
+                getBottomNeighbor().hasBottomNeighbor() && !getBottomNeighbor().getBottomNeighbor().hasSameLevelSnowNeighbors() &&
+                getBottomNeighbor().getBottomNeighbor().hasBottomNeighbor() && !getBottomNeighbor().getBottomNeighbor().getBottomNeighbor().hasSameLevelSnowNeighbors());
+    }
+    
+    public Voxel get3rdBottomNeighbor()
+    {
+        return getBottomNeighbor().getBottomNeighbor().getBottomNeighbor();
     }
     
     public void setNeighbors(Voxel[] voxels, float distance)
@@ -391,9 +411,10 @@ public class Voxel
     public void removeSnow()
     {
         this.snow = false;
+        this.density = 0.0f;
     }
     
-    public boolean getInside()
+    public boolean isInside()
     {
         return this.inside;
     }
@@ -408,14 +429,28 @@ public class Voxel
      *
      * @return the density of the snow
      */
-    public double getDensity()
+    public float getDensity()
     {
         return this.density;
     }
     
+    public void setDensity(float density)
+    {
+        this.density = density;
+    }
+            
+    
     public void raiseDensity(float snowflake)
     {
+//        if(!this.snow)
+//        {
+//            setSnow();
+//        }
         this.density += snowflake;
+        if(this.density > 1.0f)
+        {
+            getTopNeighbor().setSnow();
+        }
         if(this.density <= -0.1f) this.density = -0.1f;
     }
     

@@ -17,6 +17,8 @@ public class Surface
     /** static counter for the faces and normals arrays */
     private static int cnt = 0;
     private static boolean cold = true;
+    private static float SNOWFLAKE = 0.1f;
+    private static int STEEPNESS = 3;
     /** VOXEL_OFFSET lists the positions, relative to vertex0, of each of the 8 vertices of a cube */
     private static final float[][] VOXEL_OFFSET =
     {
@@ -54,7 +56,6 @@ public class Surface
 //        marchingCubes();
 //        marchingCubesActive();
         
-        //TODO Schneefall, deutlich machen, aus welcher Richtung der Schnee faellt
         //TODO Schnee aus verschiedenen Richtungen
         //TODO AVZ-Modell (Plus)
         //TODO Textur auf AVZ-Modell
@@ -67,7 +68,7 @@ public class Surface
         
         float density = (float)v.getDensity();
         
-        // generate a new cube (local copy)
+        // generate a new cube
         // if one voxel of the cube is null, then it is not a complete cube
         // and one can break up the marching cubes algorithm
         Voxel[] cube = new Voxel[8];
@@ -89,16 +90,16 @@ public class Surface
         
         // find which vertices are inside of the surface and which are outside
         int iFlagIndex = 0;
-        for(int i = 0; i < 8; i++)
+        for(int iVoxel = 0; iVoxel < 8; iVoxel++)
         {
-            if(cube[i].getInside() || cube[i].getSnow())
+            if(cube[iVoxel].isInside() || cube[iVoxel].getSnow())
             {
-                iFlagIndex |= 1<<i;
+                iFlagIndex |= 1<<iVoxel;
             }
         }
 
         //Find which edges are intersected by the surface
-        int iEdgeFlags = aiCubeEdgeFlags[iFlagIndex];
+        int iEdgeFlags = CubeEdgeFlags[iFlagIndex];
 
         //If the cube is entirely inside or outside of the surface, then there will be no intersections
         if(iEdgeFlags == 0) 
@@ -114,15 +115,13 @@ public class Surface
             if((iEdgeFlags & (1<<iEdge)) == (1<<iEdge))
             {
                 // no exact calculation of the intersection points
-                // just connect the middle the edges with each other (0.5f)
+                // just connect the middle of the edges with each other (0.5f)
                 //TODO voxel.getDensity() berücksichtigen
                 edgeVertex[iEdge] = new Vertex((v.getX() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
-                                                (v.getY() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
-                                                (v.getZ() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                                               (v.getY() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                               (v.getZ() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
                 
                 edgeNormal[iEdge] = getNormal(edgeVertex[iEdge].getX(), edgeVertex[iEdge].getY(), edgeVertex[iEdge].getZ());
-//                edgeNormal[iEdge] = new Vertex(normal.getX(), normal.getY(), normal.getZ());
-                
             }
         }
 
@@ -130,12 +129,12 @@ public class Surface
         //Draw the triangles that were found.  There can be up to five per cube
         for(int iTriangle = 0; iTriangle < 5; iTriangle++)
         {
-                if(a2iTriangleConnectionTable[iFlagIndex][3*iTriangle] < 0)
+                if(TriangleLookupTable[iFlagIndex][3*iTriangle] < 0)
                         break;
 
                 for(int iCorner = 0; iCorner < 3; iCorner++)
                 {
-                        int iVertex = a2iTriangleConnectionTable[iFlagIndex][3*iTriangle+iCorner];
+                        int iVertex = TriangleLookupTable[iFlagIndex][3*iTriangle+iCorner];
                         this.normals[cnt] = edgeNormal[iVertex].getX();
                         this.faces[cnt++] = edgeVertex[iVertex].getX();
                         this.normals[cnt] = edgeNormal[iVertex].getY();
@@ -287,6 +286,7 @@ public class Surface
     
     public void topSnow()
     {
+        // TODO snow stability...
         int k = 0;
 
         this.activeVoxels = new Voxel[countActiveVoxels(voxels)];
@@ -297,7 +297,7 @@ public class Surface
         {
             if((voxels[i] != null && voxels[i].getSnow() && !voxels[i].getTopNeighbor().getSnow()) ||
                (voxels[i] != null && !voxels[i].hasBottomNeighbor() && !voxels[i].getTopNeighbor().getSnow() && !voxels[i].getSnow()) ||
-               (voxels[i] != null && voxels[i].getInside() && !voxels[i].getTopNeighbor().getInside()))
+               (voxels[i] != null && voxels[i].isInside() && !voxels[i].getTopNeighbor().isInside()))
             {
                 activeVoxels[k++] = voxels[i];
             }
@@ -306,7 +306,7 @@ public class Surface
         // let it snow
         if(Surface.cold)
         {
-            for(int j = 0; j < 10; j++)
+            for(int j = 0; j < 50; j++)
             {
                 int index = (int)(Math.random() * activeVoxels.length);
                 this.activeVoxels[index].raiseDensity(0.1f);
@@ -314,7 +314,13 @@ public class Surface
                 {
                     this.activeVoxels[index].getTopNeighbor().setSnow();
                     this.activeVoxels[index] = this.activeVoxels[index].getTopNeighbor();
-                }   
+                }
+                
+                if(!this.activeVoxels[index].hasLeftNeighbor() || !this.activeVoxels[index].hasRightNeighbor() || 
+                   !this.activeVoxels[index].hasFrontNeighbor() || !this.activeVoxels[index].hasBackNeighbor())
+                {
+                    this.activeVoxels[index].removeSnow();
+                }
             }
         }else
         {
@@ -354,13 +360,165 @@ public class Surface
         {
             if((voxels[i] != null && voxels[i].getSnow() && !voxels[i].getTopNeighbor().getSnow()) ||
                (voxels[i] != null && !voxels[i].getSnow() && !voxels[i].hasBottomNeighbor() && !voxels[i].getTopNeighbor().getSnow()) ||
-               (voxels[i] != null && voxels[i].getInside() && !voxels[i].getTopNeighbor().getInside()))
+               (voxels[i] != null && voxels[i].isInside() && !voxels[i].getTopNeighbor().isInside()))
             {
                 count++;
             }
         }
         return count;
     }
+    
+    public void singleTopSnow()
+    { 
+        // snow just from a point-source
+        for(int j = 0; j < 1; j++)
+        {
+            int index = 275;// 14627;// 14750;//
+            this.voxels[index].raiseDensity(SNOWFLAKE);
+            if(this.voxels[index].getDensity() > 1.0f && this.voxels[index].getTopNeighbor() != null)
+            {
+                this.voxels[index] = this.voxels[index].getTopNeighbor();
+
+                if(stabilityTest(this.voxels[index]) >= 5)
+                {
+                    this.voxels[index].removeSnow();
+                    this.voxels[index] = this.voxels[index].getBottomNeighbor();
+                }
+            }
+        }
+        
+//        for(int j = 0; j < 1; j++)
+//        {
+//            int index = 19050;
+//            Voxel source = avalanche(this.voxels[index]);
+//            source.raiseDensity(SNOWFLAKE);
+//            if(source.getDensity() > 1.0f && source.getTopNeighbor() != null)
+//            {
+//
+//                if(stabilityTest(source) >= 1) //default = 5
+//                {
+//                    source.setDensity(0.0f);
+//                }
+//            }
+//        }
+
+    }
+    
+    private int stabilityTest(Voxel v)
+    {
+        int avalanche = 0;
+        // test all 8 neighbors and calculate their height difference
+        if(v.hasRightNeighbor())
+        {
+            if(height(v.getRightNeighbor()) >= STEEPNESS)
+            {
+                avalanche(v.getRightNeighbor()).raiseDensity(SNOWFLAKE / 6.0f);
+                stabilityTest(avalanche(v.getRightNeighbor()));
+                avalanche++;
+            }
+        }
+        
+        if(v.hasLeftNeighbor())
+        {
+            if(height(v.getLeftNeighbor()) >= STEEPNESS)
+            {
+                avalanche(v.getLeftNeighbor()).raiseDensity(SNOWFLAKE / 6.0f);
+                stabilityTest(avalanche(v.getLeftNeighbor()));
+                avalanche++;
+            }
+        }
+        
+        if(v.hasFrontNeighbor())
+        {
+            if(height(v.getFrontNeighbor()) >= STEEPNESS)
+            {
+                avalanche(v.getFrontNeighbor()).raiseDensity(SNOWFLAKE / 6.0f);
+                stabilityTest(avalanche(v.getFrontNeighbor()));
+                avalanche++;
+            }
+        }
+        
+        if(v.hasBackNeighbor())
+        {
+            if(height(v.getBackNeighbor()) >= STEEPNESS)
+            {
+                avalanche(v.getBackNeighbor()).raiseDensity(SNOWFLAKE / 6.0f);
+                stabilityTest(avalanche(v.getBackNeighbor()));
+                avalanche++;
+            }
+        }
+        
+        if(v.hasRightNeighbor() && v.getRightNeighbor().hasFrontNeighbor())
+        {
+            if(height(v.getRightNeighbor().getFrontNeighbor()) >= STEEPNESS)
+            {
+                avalanche(v.getRightNeighbor().getFrontNeighbor()).raiseDensity(SNOWFLAKE / 12.0f);
+                stabilityTest(avalanche(v.getRightNeighbor().getFrontNeighbor()));
+                avalanche++;
+            }
+        }
+        
+        if(v.hasLeftNeighbor() && v.getLeftNeighbor().hasFrontNeighbor())
+        {
+            if(height(v.getLeftNeighbor().getFrontNeighbor()) >= STEEPNESS)
+            {
+                avalanche(v.getLeftNeighbor().getFrontNeighbor()).raiseDensity(SNOWFLAKE / 12.0f);
+                stabilityTest(avalanche(v.getLeftNeighbor().getFrontNeighbor()));
+                avalanche++;
+            }
+        }
+        
+        if(v.hasRightNeighbor() && v.getRightNeighbor().hasBackNeighbor())
+        {
+            if(height(v.getRightNeighbor().getBackNeighbor()) >= STEEPNESS)
+            {
+                avalanche(v.getRightNeighbor().getBackNeighbor()).raiseDensity(SNOWFLAKE / 12.0f);
+                stabilityTest(avalanche(v.getRightNeighbor().getBackNeighbor()));
+                avalanche++;
+            }
+        }
+        
+        if(v.hasLeftNeighbor() && v.getLeftNeighbor().hasBackNeighbor())
+        {
+            if(height(v.getLeftNeighbor().getBackNeighbor()) >= STEEPNESS)
+            {
+                avalanche(v.getLeftNeighbor().getBackNeighbor()).raiseDensity(SNOWFLAKE / 12.0f);
+                stabilityTest(avalanche(v.getLeftNeighbor().getBackNeighbor()));
+                avalanche++;
+            }
+        }
+        
+        
+        
+        
+        return avalanche;
+    }
+    
+    
+    private Voxel avalanche(Voxel v)
+    {
+        Voxel tmp = v;
+        while(tmp.getBottomNeighbor() != null && !(tmp.getBottomNeighbor().getDensity() >= 1.0f) && 
+             !tmp.getBottomNeighbor().isInside())
+        {
+            tmp = tmp.getBottomNeighbor();
+        }
+        return tmp;
+    }
+    
+    
+    private int height(Voxel v)
+    {
+        int height = 0;
+        Voxel tmp = v;
+        while(tmp != null && !tmp.getSnow() && !tmp.isInside())
+        {
+            height++;
+            tmp = tmp.getBottomNeighbor();
+        }
+        return height;
+    }
+    
     
     public void setCnt(int cnt)
     {
@@ -404,7 +562,7 @@ public class Surface
     // This table lists the edges intersected by the surface for all 256 possible vertex states
     // There are 12 edges.  For each entry in the table, if edge #n is intersected, then bit #n is set to 1
     // size = [256]
-    private int[] aiCubeEdgeFlags =
+    private int[] CubeEdgeFlags =
     {
         0x000, 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c, 0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00, 
         0x190, 0x099, 0x393, 0x29a, 0x596, 0x49f, 0x795, 0x69c, 0x99c, 0x895, 0xb9f, 0xa96, 0xd9a, 0xc93, 0xf99, 0xe90, 
@@ -432,7 +590,7 @@ public class Surface
     //
     //  I found this table in an example program someone wrote long ago.  It was probably generated by hand
     //  size = [256][16]
-    private int[][] a2iTriangleConnectionTable =  
+    private int[][] TriangleLookupTable =  
     {
         {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
         {0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
