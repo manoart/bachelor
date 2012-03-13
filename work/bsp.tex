@@ -12,6 +12,8 @@
 \usepackage{nicefrac} % for setting fractions esp. within text: \nicefrac{km}{h}
 \usepackage{minted}
 \usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{wrapfig}
 
 \usepackage{algorithm, algorithmic}  % for pseudo code (cf. documentation)
 \renewcommand{\algorithmiccomment}[1]{\qquad{\small // \textit{#1}}}
@@ -97,7 +99,47 @@ implementiert werden.
 Zu Beginn soll der Begriff der prozeduralen Modellierung n"aher beleuchtet
 werden.
 
-\section{Displacement Map}
+\newpage
+\section{Displacement Mapping}
+\label{sec:displacement_mapping}
+
+Das Displacement-Mapping geht aus dem Bump-Mapping hervor und stellt eine
+Erweiterung dessen dar.\cite[S. 9]{texturing} Robert L. Cook beschreibt das
+Displacement-Mapping erstmals 1984.\cite{displacement_mapping}
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \vspace{-20pt}
+    \begin{center}
+        \includegraphics[width=0.35\textwidth]{pictures/displacement_mapping.jpg}
+    \end{center}
+    \vspace{-10pt}
+    \caption{Beispiel f"ur Displacement Mapping}
+    \label{fig:displacement}
+    \vspace{-20pt}
+\end{wrapfigure}
+
+Dabei werden Texturen dazu benutzt die Objektoberfl"ache zu alternieren.
+Das hei\ss t, es werden nicht nur die Normalen, wie beim
+Bump Mapping ver"andert um eine gew"unschte Erscheinung der Oberfl"ache zu
+simulieren\cite{bump_mapping}, sondern es wird die tats"achliche
+Objektgeometrie modifiziert.
+Dies geschieht, indem die Vertices eines Objekts anhand der Werte einer
+Displacement-Map entlang der Normalen (senkrecht zur Oberfl"ache) verschoben
+werden.
+
+
+
+In der Abbildung \ref{fig:displacement}\cite{displacement_mapping_pic} ist ein
+Beispiel f"ur eine solche
+Displacement-Map und die Auswirkung auf die Oberfl"ache (Mesh) gegeben.
+Die Displacement-Map enth"alt dabei Farbwerte von schwarz (keine Ver"anderung)
+bis wei\ss (maximale Verschiebung des Vertex in Richtung der Normalen).
+Im dritten Bild ist die ver"anderte Silhouette der Oberfl"ache gut zu erkennen.
+Da sich bei dieser Vertexverschiebung auch die Normalen "andern
+sieht das Displacement-Mapping oftmals dem Bump-Mapping sehr "ahnlich, mit dem
+entscheidenen Unterschied, dass die Struktur, die durch das Displacement-Mapping
+erzeugt wird im Umriss des Objekts sichtbar ist.
+
 
 \section{Punkt in Polygon - Algorithmus}
 \label{sec:pip_theo}
@@ -139,21 +181,89 @@ pr"uft.
 
 \chapter{Umsetzung}
 
-Dieses Kapitel besch"aftigt sich mit der Umsetzung und Implementierung der
-vorher genannten Konzepte. Nach einer Darstellung verschiedener
-L"osungsans"atze wird genauer auf den gew"ahlten Ansatz eingegangen.
-Besonders herausgestellt werden der Punkt in Objekt Algorithmus sowie der
-Marching Cubes Algorithmus, die den Kern dieser Arbeit darstellen.
+%%%% TODO evtl. umschreiben, oder weglassen
+%Dieses Kapitel besch"aftigt sich mit der Umsetzung und Implementierung der
+%vorher genannten Konzepte. Nach einer Darstellung verschiedener
+%L"osungsans"atze wird genauer auf den gew"ahlten Ansatz eingegangen.
+%Besonders herausgestellt werden der Punkt in Objekt Algorithmus sowie der
+%Marching Cubes Algorithmus, die den Kern dieser Arbeit darstellen.
+
 
 \section{Ans"atze}
 
+Dieses Kapitel befasst sich mit m"oglichen L"osungsans"atzen zur Erstellung
+einer Schneedecke und stellt drei verschiedene Ans"atze dar, von denen der
+letztgenannte umgesetzt werden soll.
+
+
 \subsection{Snow-Map}
+
 
 \subsubsection{Interpretation als Lightmap}
 
-\subsubsection{Interpretation als Light- und Displacementmap}
+Ein erster, naiver Ansatz eine Schneedecke zu modellieren ist es, eine Textur
+zu erstellen, die die Aufgabe hat die Menge an gefallenem Schnee an jeder
+Stelle der Szene zu speichern (Snow-Map).
+Diese Textur k"onnte anschlie\ss end als Lightmap
+interpretiert werden, das hei\ss t, dass die urspr"ungliche Farbe der
+Objekttextur entsprechend der Menge an Schnee aufgehellt wird. Das Prinzip
+einer Lightmap ist in der folgenden Abbildung (\ref{fig:lightmap}) verdeutlicht.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=300px]{pictures/lightmap.png}
+    \caption{Lightmap eines W"urfels}
+    \label{fig:lightmap}
+\end{figure}
+
+Dabei hat der W"urfel lediglich eine Textur, die eine nicht vorhandene
+Lichtquelle simuliert. Ebenso w"urde sich die Snow-Map mit der Simulation von
+Schnee verhalten. Die dabei
+entstehenden Probleme liegen auf der Hand. Es k"onnen lediglich hellere Stellen
+oder Fl"achen auf der bereits vorhandenen Oberfl"ache entstehen. L"auft die
+Simulation lange genug, bzw. f"allt gen"ugend Schnee, so ist nach gewisser Zeit
+die gesamte Oberfl"ache der Szene wei\ss und eine Unterscheidung zwischen
+viel und wenig Schnee ist nicht mehr m"oglich. Die Nutzung einer einfachen
+Textur bedeutet letztlich, dass keine richtige Schneedecke vorhanden ist,
+wodurch wiederum keine Schneeh"aufungen oder -ansammlungen deutlich gemacht
+werden k"onnen.
+Dieser Ansatz f"uhrt folglich zu keinem zufriedenstellenden Ergebnis.
+
+
+\subsubsection{Interpretation als Light- und Displacement-Map}
+
+Zur Verbesserung des Ergebnisses, das allein mit der Lightmap erzeugt werden
+kann, w"are es denkbar die Snow-Map als eine Kombination aus Light- und
+Displacement-Map zu interpretieren. Dabei arbeitet die Lightmap genauso
+wie im vorherigen Abschnitt beschrieben und die Funktionsweise der
+Displacement-Map ist dem Kapitel \ref{sec:displacement_mapping} zu entnehmen.\\
+Somit lie\ss en sich Erhebungen und Schneeh"aufungen darstellen, die zudem
+passend eingef"arbt w"aren. Jedoch wird man bei dieser Vorgehensweise ebenfalls
+mit gewissen Problemen konfrontiert. Zum einen wird keine richtige
+Schneedecke erzeugt, sondern lediglich durch Modifizierung der Objektgeometrie
+simuliert und zum anderen k"onnen unerw"unschte Nebeneffekte auftreten.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=300px]{pictures/ecke.png}
+    \caption{"Uberschneidung beim Displacement-Mapping}
+    \label{fig:ecke}
+\end{figure}
+
+Ein m"ogliches Problem ist in Abbildung \ref{fig:ecke} aufgezeigt. Aufgrund
+der sich ver"andernden Objektgeometrie und eventuell wachsenden Schneemengen
+k"onnte es zu "Uberschneidungen des Objektes mit sich selbst an solchen Ecken
+kommen (siehe Bild 3). Da allerdings weder die Objektgeometrie ver"andert, noch
+seltsame Effekte beim Rendern durch "Uberschneidungen auftreten sollen,
+k"onnte auch dieser Ansatz kein befriedigendes Ergebnis liefern.
+
+
 
 \subsection{Voxelrepr"asentation}
+
+L"osung des Problems der bisher fehlenden Schneedecke. Mit Voxeln soll eine
+richtige Schneedecke erzeugt werden. Zudem ist keine "Uberschneidung des Objekts
+in den Ecken mehr m"oglich, da Voxel gesetzt werden.
 
 \subsubsection{Voxel}
 
@@ -167,9 +277,13 @@ Dieser Ansatz wird der in dieser Arbeit entscheidene sein.
 
 \section{Szene auslesen}
 
-Um nun eine Schneedecke zu simulieren muss zun"achst die vorliegende Szene
-ausgelesen werden. Hierbei ist es wichtig, dass die Szene in dem sogenannten
-Wavefront-Dateiformat (Dateiendung: *.obj) vorliegt. Es folgt eine
+Um nun eine Schneedecke simulieren zu k"onnen, muss die vorliegende Szene
+zun"achst ausgelesen werden.
+Das Programm kann Szenen im Wavefront-Format einlesen.
+%TODO mehr Informationen ueber das Format, woher kommt es, Verbreitung, etc.
+%Hierbei ist es wichtig, dass die Szene in dem sogenannten
+%Wavefront-Dateiformat (Dateiendung: *.obj) vorliegt.
+Es folgt eine
 kurze Erkl"arung dieses
 Dateiformats sowie die Beschreibung und Funktionsweise des Parsers.
 
@@ -260,29 +374,35 @@ immer zwei Informationen in einer Zeile stehen.
 \section{Szene mit Voxeln f"ullen}
 
 Nachdem die Szene nun ausgelesen werden kann und die Arrays mit den ben"otigten
-Daten zur Verf"ugung stehen, soll die Szene mit Voxeln gef"ullt werden.\\
-Um ein regelm"a\ss ige Voxelgitter zu erstellen muss als erstes der Platz im
-Raum f"ur die Voxel bestimmt werden, das hei\ss t die Gr"o\ss e der Szene ist
+Daten zur Verf"ugung stehen, soll die Szene mit Voxeln gef"ullt werden.
+%TODO oberen Abschnitt umschreiben (Erzaehlstil)
+\\
+Um ein regelm"a\ss iges Voxelgitter zu erstellen muss als erstes
+die r"aumliche Ausdehnung der Voxel
+bestimmt werden, das hei\ss t die Gr"o\ss e der Szene ist
 zu ermitteln. Mit Hilfe des Vertex-Arrays l"asst sich nun der gr"o\ss te bzw.
 kleinste in der Szene enthaltene Wert auf jeder der drei Achsen herausfinden.
 Daraus lassen sich nun drei Kantenl"angen berechnen aus denen wiederum ein
 Quader ermittelt werden kann, der die Szene enth"alt und mit Voxeln
 aufgef"ullt wird.
 
-Beispielhaft sei hier die Methode zur Berechnung des gr"o\ss ten
-\texttt{x}-Wertes dargestellt.
+%TODO weglassen
+%Beispielhaft sei hier die Methode zur Berechnung des gr"o\ss ten
+%\texttt{x}-Wertes dargestellt.
 
-\inputminted[linenos=true]{java}{code/CalculateMaxX.java}
+%\inputminted[linenos=true]{java}{code/CalculateMaxX.java}
 
-Die Methode bekommt das gesamte Vertex-Array "ubergeben und geht alle Vertices
-durch, wobei lediglich die \texttt{x}-Koordinate betrachtet wird (Zeile 7).
-Es wird sich der bisher gr"o\ss te gefundene \texttt{x}-Wert gemerkt und
-bei Bedarf aktualisiert und am Ende zur"uckgegeben.\\
-Die Berechnung der f"unf weiteren Werte geschieht analog, mit dem Unterschied,
-dass die untersuchte Koordinate des Vertex wechselt.\\
-\\
-Um schlie\ss lich den Quader mit Voxeln zu f"ullen wird die folgende Methode
-verwendet.
+%Die Methode bekommt das gesamte Vertex-Array "ubergeben und geht alle Vertices
+%durch, wobei lediglich die \texttt{x}-Koordinate betrachtet wird (Zeile 7).
+%Es wird sich der bisher gr"o\ss te gefundene \texttt{x}-Wert gemerkt und
+%bei Bedarf aktualisiert und am Ende zur"uckgegeben.\\
+%Die Berechnung der f"unf weiteren Werte geschieht analog, mit dem Unterschied,
+%dass die untersuchte Koordinate des Vertex wechselt.\\
+
+Dazu wird das Vertex-Array betrachtet und der jeweils kleinste bzw. gr"o\ss te
+Wert jeder Koordinatenachse herausgesucht.\\
+Um schlie\ss lich den daraus entstehenden Quader mit Voxeln zu f"ullen wird die
+folgende Methode verwendet.
 
 \inputminted[linenos=true]{java}{code/FillScene.java}
 
@@ -293,6 +413,7 @@ Dimensionen handelt wird dieses Vorgehen mit drei ineinander geschachtelten
 Die Konstante \texttt{STEPS} stellt dabei eine Art Granularit"atsfaktor dar.
 Das hei\ss t pro L"angeneinheit im Koordinatensystem werden \texttt{STEPS}
 Voxel gesetzt.\\
+%TODO evtl. die setVoxel()-Methode erkl"aren
 Das Ergebnis ist in Abbildung \ref{fig:pawn_scene} zu sehen.
 
 \begin{figure}[htbp]
@@ -311,14 +432,15 @@ Szene dar in der nur die gesetzten Voxel angezeigt werden.
 
 In diesem Abschnitt soll die Funktionsweise des 3-dimensionalen Punkt in
 Polygon Algorithmus erl"autert werden. Dieser dient dazu festzustellen, ob
-ein Voxel in einem Objekt liegt, oder nicht. Mit dieser Information l"asst sich
+ein Voxel in einem Objekt liegt. Mit dieser Information l"asst sich
 sp"ater bestimmen an welchen Stellen der Szene Schnee fallen kann und an welchen
 nicht.
+%TODO groben Ueberblick schaffen, WARUM wird das ueberhaupt gemacht?
 
 
 \subsection{Aktive Faces berechnen}
 
-Um etwas Rechenaufwand zu sparen, sollen nicht immer alle in der Szene
+Es sollen nicht immer alle in der Szene
 enthaltenen Faces auf Schnittpunkte mit dem aus dem Punkt in Polygon bekannten,
 imagin"aren ''Strahl'' gepr"uft werden, sondern lediglich die
 f"ur die jeweilige Ebene relevanten.\\ %%%%% TODO Umschreiben!!!!
@@ -330,8 +452,8 @@ besitzen und nur mit den gerade aktiven Faces gepr"uft werden m"ussen.
 
 \inputminted[linenos=true]{java}{code/ActiveFaces.java}
 
-Welches Face die betrachtete Ebene schneidet und welches nicht
-bestimmt die \texttt{z}-Koordinate der drei Face-Vertices. Sind alle
+Welches Face die betrachtete Ebene schneidet bestimmt die
+\texttt{z}-Koordinate der drei Face-Vertices. Sind alle
 \texttt{z}-Werte kleiner oder gr"o\ss er als der \texttt{z}-Wert der Ebene,
 so gibt es offensichtlich keine Schnittkante. Sobald mindestens eine
 \texttt{z}-Koordinate gr"o\ss er und eine andere kleiner ist als die der Ebene,
@@ -346,12 +468,106 @@ Code-Ausschnitt statt (Zeile 8-13).
     \label{fig:active_faces}
 \end{figure}
 
+In der Abbildung \ref{fig:active_faces} sind beispielhaft f"ur eine Ebene die
+aktiven Faces einmal dargestellt. Zudem werden zur besseren "Ubersicht lediglich
+die innenliegenden Voxel angezeigt.\\
+In einem n"achsten Schritt m"ussen nun die genauen Schnittkanten der Faces mit
+der entsprechenden Ebene berechnet werden.
 
 
 \subsection{Schnittkanten der Faces mit der Ebene bestimmen}
+\label{sec:schnittkanten}
+
+Die Schnittkantenberechnung der aktiven Faces mit der aktuell betrachteten
+Ebene ist entscheidend um im Folgenden den zweidimensionalen Punkt in Polygon
+Algorithmus anwenden zu k"onnen.\\
+Dazu werden zun"achst alle M"oglichkeiten ein Face zu schneiden betrachtet
+(siehe Abbildung \ref{fig:faces_schnitte}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=400px]{pictures/faces_schnitte.eps}
+    \caption{Ebene-Face Schnittm"oglichkeiten}
+    \label{fig:faces_schnitte}
+\end{figure}
+
+Es k"onnen sechs verschiedene F"alle unterschieden werden. F"ur die
+Fallunterscheidung signifikant sind die
+\texttt{z}-Koordinaten der drei Vertices jedes Faces. Es wird gepr"uft, welcher
+Vertex oberhalb und welcher unterhalb der Ebene liegt. Aus Symmetriegr"unden
+k"onnen bei der weiteren Berechnung die F"alle \texttt{1} und \texttt{4},
+\texttt{2} und \texttt{5} sowie \texttt{3} und \texttt{6} zusammengefasst
+werden, da jeweils die gleichen Seiten des Face-Dreiecks geschnitten werden.\\
+Um die genaue
+Schnittkante zwischen dem Face und der Ebene zu berechnen wird bestimmt,
+welche beiden Seiten des Faces geschnitten werden. Aus den daraus
+resultierenden Schnittpunkten l"asst sich anschlie\ss end die
+Schnittkante zusammensetzen.\\
+Das bedeutet, dass f"ur jedes Face zweimal ein Schnittpunkt zwischen einer
+Gerade und der aktuellen Ebene durchgef"uhrt werden muss.
+Umgesetzt wird dies mit Hilfe einfacher Vektorgeometrie. Zur besseren
+Veranschaulichung ist die Abbildung \ref{fig:sp_gerade_ebene} gegeben.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=300px]{pictures/sp_gerade_ebene.eps}
+    \caption{Schnittpunkt von einer Geraden mit einer Ebene}
+    \label{fig:sp_gerade_ebene}
+\end{figure}
+
+Exemplarisch soll sich hier auf eine Seite und deren Schnittpunkt mit einer
+Ebene beschr"ankt werden.
+Gegeben sind die Punkte $P_1$ und $P_2$ und gesucht ist
+der Schnittpunkt $S$, wobei die \texttt{z}-Koordinate von $S$ durch die Ebene
+bereits gegeben ist. Insbesondere sind folglich die \texttt{x}- und die
+\texttt{y}-Koordinate von $S$ von Interesse.
+Die Punkte k"onnen ebenso als Vektoren betrachtet werden,
+was in der Zeichnung angedeutet wird. Auch die Seite $\overrightarrow{P_2 P_1}$
+selbst kann als
+Vektor dargestellt werden durch
+\begin{equation*}
+    \overrightarrow{P_2 P_1} = P_1 - P_2
+\end{equation*}
+Da der Schnittpunkt offensichtlich auf diesem Vektor liegen muss, kann $S$
+zun"achst wie folgt geschrieben werden:
+\begin{equation*}
+    S = \lambda \overrightarrow{P_2 P_1}
+\end{equation*}
+Dabei ist $\lambda$ ein Skalierungsfaktor f"ur den gilt
+\begin{equation*}
+    \lambda = \frac{z^* - z_2}{z_1 - z_2}
+\end{equation*}
+Der Wert $z^*$ stellt die gegebene \texttt{z}-Koordinate der betrachteten Ebene
+dar und $z_1$ bzw. $z_2$ die \texttt{z}-Koordinaten der beiden Punkte $P_1$ und
+$P_2$.
+%mit $\lambda \in \[0,1\]$.
+
+Des Weiteren muss ber"uchsichtigt werden, dass $S$ im Moment noch von
+$P_2$ und nicht vom Ursprung ausgeht. Um die richtigen Koordinaten von $S$
+zu erhalten muss zuletzt noch der Vektor $\vec{P_2}$ zu dem Ergebnis
+hinzuaddiert werden, sodass sich f"ur die gesuchten \texttt{x}- und
+\texttt{y}-Koordinaten des Schnittpunktes folgende Formeln aufstellen lassen:
+\begin{align*}
+    x_1^* &= \frac{z^* - z_2}{z_1 - z_2} (x_1 - x_2) + x_2 \\
+    y_1^* &= \frac{z^* - z_2}{z_1 - z_2} (y_1 - y_2) + y_2
+\end{align*}
+Analog lassen sich die Koordinaten $x_2^*$ und $y_2^*$ des Schnittpunktes der
+zweiten Kante
+berechnen. Zum Schluss werden die Koordinaten aller Schnittkanten in einem
+Edge-Array gespeichert, wobei eine Kante immer aus vier Koordinaten besteht,
+die hintereinander in das Array eingetragen werden.\\
+Mit den so berechneten Schnittkanten kann im Folgenden der Punkt in Polygon
+Algorithmus im Zweidimensionalen angewandt werden.
 
 
 \subsection{Punkt in Polgon - Algorithmus anwenden}
+
+Durch die im vorherigen Abschnitt \ref{sec:schnittkanten} bestimmten
+Schnittkanten zwischen der Ebene
+und den betroffenen Faces kann im Folgenden der in Kapitel \ref{sec:pip_theo}
+bereits theoretisch erl"auterte, zweidimensionale Punkt in Polygon - Algorithmus
+angewandt werden.
+
 
 \inputminted[linenos=true]{java}{code/PunktInPolygon.java}
 
