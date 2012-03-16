@@ -99,7 +99,6 @@ implementiert werden.
 Zu Beginn soll der Begriff der prozeduralen Modellierung n"aher beleuchtet
 werden.
 
-\newpage
 \section{Displacement Mapping}
 \label{sec:displacement_mapping}
 
@@ -125,7 +124,7 @@ simulieren\cite{bump_mapping}, sondern es wird die tats"achliche
 Objektgeometrie modifiziert.
 Dies geschieht, indem die Vertices eines Objekts anhand der Werte einer
 Displacement-Map entlang der Normalen (senkrecht zur Oberfl"ache) verschoben
-werden.
+und die Normalen entsprechend angepasst werden.
 
 
 
@@ -135,7 +134,7 @@ Displacement-Map und die Auswirkung auf die Oberfl"ache (Mesh) gegeben.
 Die Displacement-Map enth"alt dabei Farbwerte von schwarz (keine Ver"anderung)
 bis wei\ss (maximale Verschiebung des Vertex in Richtung der Normalen).
 Im dritten Bild ist die ver"anderte Silhouette der Oberfl"ache gut zu erkennen.
-Da sich bei dieser Vertexverschiebung auch die Normalen "andern
+Da bei dieser Vertexverschiebung auch die Normalen neu berechnet werden
 sieht das Displacement-Mapping oftmals dem Bump-Mapping sehr "ahnlich, mit dem
 entscheidenen Unterschied, dass die Struktur, die durch das Displacement-Mapping
 erzeugt wird im Umriss des Objekts sichtbar ist.
@@ -144,12 +143,24 @@ erzeugt wird im Umriss des Objekts sichtbar ist.
 \section{Punkt in Polygon - Algorithmus}
 \label{sec:pip_theo}
 
-Im Wesentlichen ist der Punkt in Polygon Algorithmus ein Algorithmus, der
-im Zweidimensionalen operiert.
+Der Punkt in Polyon - Algorithmus ist ein Verfahren um festzustellen, ob ein
+gegebener Punkt in einer Ebene innerhalb oder au\ss erhalb der Grenzen
+eines Polygons liegt. Diese Methode findet vorwiegend Anwendung beim
+Verarbeiten geometrischer Daten, wie zum Beispiel in der Computergrafik.\\
+Bereits 1974 wurden zwei Ans"atze zur L"osung des Punkt-in-Polygon-Problems
+f"ur nicht-konvexe Polygone
+(Ray-Casting und Winkelsummation) vorgestellt.\cite[S. 13f.]{point_in_polygon}
+In dem Artikel von Sutherland wird der Algorithmus dazu verwendet festzustellen
+welche Oberfl"achen einer Szene n"aher am Betrachter liegen und welche
+durch andere verdeckt werden.
+\\
+Im Folgenden wird n"aher auf das Konzept des Ray-Castings eingegangen, welches
+in Abbildung \ref{fig:pip} illustriert wird.
+
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[]{pictures/punkt_in_polygon.eps}
+    \includegraphics[width=250px]{pictures/punkt_in_polygon.eps}
     \caption{Punkt in Polygon Algorithmus}
     \label{fig:pip}
 \end{figure}
@@ -157,7 +168,23 @@ im Zweidimensionalen operiert.
 Punkte werden getestest, indem man einen imagin"aren ''Strahl'' in eine
 beliebige Richtung schickt und die Schnittpunkte mit den Kanten des Polygons
 z"ahlt. Ist die Anzahl der Schnittpunkte gerade, so liegt der Punkt
-au\ss erhalb, ist sie ungerade, so liegt der Punkt innerhalb des Polygons.
+au\ss erhalb, ist sie ungerade, so liegt der Punkt innerhalb des Polygons.\\
+Um konsistente Ergebnisse zu erhalten falls ein oder mehrere Polygon-Vertices
+genau auf dem Test-Strahl liegen, ist es notwendig die Sonderf"alle zu
+betrachten, die in Abbildung \ref{fig:sonderfaelle} dargestellt sind.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=300px]{pictures/sonderfaelle.eps}
+    \caption{Sonderf"alle des Punkt in Polygon Algorithmus}
+    \label{fig:sonderfaelle}
+\end{figure}
+
+Die Umgehung dieses Problems liegt in der Annahme, dass der Plygon-Vertex
+infinitisimal "uber dem Test-Strahl liegt. Durch dieses Vorgehen wird
+zus"atzlich festgelegt, zu welchem Polygon ein Pixel geh"ort, sollten
+zwei Polygone einen oder mehrere Vertices gemeinsam haben.
+\cite[S. 51ff.]{skript_cg}
 
 \section{Marching Cubes - Algorithmus}
 \label{sec:mc_theo}
@@ -193,7 +220,7 @@ pr"uft.
 
 Dieses Kapitel befasst sich mit m"oglichen L"osungsans"atzen zur Erstellung
 einer Schneedecke und stellt drei verschiedene Ans"atze dar, von denen der
-letztgenannte umgesetzt werden soll.
+Letztgenannte umgesetzt werden soll.
 
 
 \subsection{Snow-Map}
@@ -203,22 +230,26 @@ letztgenannte umgesetzt werden soll.
 
 Ein erster, naiver Ansatz eine Schneedecke zu modellieren ist es, eine Textur
 zu erstellen, die die Aufgabe hat die Menge an gefallenem Schnee an jeder
-Stelle der Szene zu speichern (Snow-Map).
-Diese Textur k"onnte anschlie\ss end als Lightmap
-interpretiert werden, das hei\ss t, dass die urspr"ungliche Farbe der
-Objekttextur entsprechend der Menge an Schnee aufgehellt wird. Das Prinzip
-einer Lightmap ist in der folgenden Abbildung (\ref{fig:lightmap}) verdeutlicht.
+Stelle der Szene zu speichern. Diese Textur wird im Folgenden als Snow-Map
+bezeichnet.
+Die Snow-Map k"onnte anschlie\ss end "ahnlich wie eine Lightmap
+interpretiert werden. Das hei\ss t, dass in die urspr"ungliche Farbe der
+Objekttextur entsprechend der Menge an Schnee wei\ss hineingemischt wird um
+die Farbe aufzuhellen. Das Prinzip
+einer Lightmap ist in Abbildung (\ref{fig:lightmap}) verdeutlicht.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=300px]{pictures/lightmap.png}
-    \caption{Lightmap eines W"urfels}
+    \includegraphics[width=400px]{pictures/lightmap.png}
+    \caption{Lightmap auf einer Wand}
     \label{fig:lightmap}
 \end{figure}
 
-Dabei hat der W"urfel lediglich eine Textur, die eine nicht vorhandene
-Lichtquelle simuliert. Ebenso w"urde sich die Snow-Map mit der Simulation von
-Schnee verhalten. Die dabei
+Die Abbildung zeigt die Auswirkung einer Lightmap in Form eines Spotlights
+auf eine Mauer-Textur.
+Ebenso w"urde sich die Snow-Map bei der Simulation von
+Schnee verhalten.
+Die dabei
 entstehenden Probleme liegen auf der Hand. Es k"onnen lediglich hellere Stellen
 oder Fl"achen auf der bereits vorhandenen Oberfl"ache entstehen. L"auft die
 Simulation lange genug, bzw. f"allt gen"ugend Schnee, so ist nach gewisser Zeit
@@ -237,11 +268,25 @@ kann, w"are es denkbar die Snow-Map als eine Kombination aus Light- und
 Displacement-Map zu interpretieren. Dabei arbeitet die Lightmap genauso
 wie im vorherigen Abschnitt beschrieben und die Funktionsweise der
 Displacement-Map ist dem Kapitel \ref{sec:displacement_mapping} zu entnehmen.\\
+Zus"atzlich zu der dort gegebenen Beschreibung w"urde man eine Schneegeometrie
+definieren, die initial mit der Szenengeometrie "ubereinstimmt und die Werte in
+der Snow-Map als Transparenzfaktor betrachten. Damit ist gemeint, dass je
+dunkler der Farbwert in der Snow-Map ist, desto transparenter ist die
+Schneegeometrie an dieser Stelle, so dass man die Szene darunter noch erkennen
+kann. Umgekehrt ist die Schneegeometrie undurchsichtiger je heller der Wert
+der Snow-Map ist.
+Hierbei ist es wichtig zu bedenken, dass die Schneegeometrie von Anfang an
+wei\ss ist und nur die Transparenz die Menge an Schnee wiederspiegelt.\\
+
+%TODO Bild aus Hennings Arbeit einfuegen
+
 Somit lie\ss en sich Erhebungen und Schneeh"aufungen darstellen, die zudem
 passend eingef"arbt w"aren. Jedoch wird man bei dieser Vorgehensweise ebenfalls
-mit gewissen Problemen konfrontiert. Zum einen wird keine richtige
-Schneedecke erzeugt, sondern lediglich durch Modifizierung der Objektgeometrie
-simuliert und zum anderen k"onnen unerw"unschte Nebeneffekte auftreten.
+mit gewissen Problemen konfrontiert. Zum einen kann es bei der Visualisierung
+passieren, dass aufgrund der Transparenz bei einer Betrachtung von der Seite
+nur schwebende
+Pyramiden- bzw. Kegelspitzen zu sehen sind und zum anderen k"onnen unerw"unschte
+"Uberschneidungen auftreten.
 
 \begin{figure}[htbp]
     \centering
@@ -251,10 +296,12 @@ simuliert und zum anderen k"onnen unerw"unschte Nebeneffekte auftreten.
 \end{figure}
 
 Ein m"ogliches Problem ist in Abbildung \ref{fig:ecke} aufgezeigt. Aufgrund
-der sich ver"andernden Objektgeometrie und eventuell wachsenden Schneemengen
-k"onnte es zu "Uberschneidungen des Objektes mit sich selbst an solchen Ecken
-kommen (siehe Bild 3). Da allerdings weder die Objektgeometrie ver"andert, noch
-seltsame Effekte beim Rendern durch "Uberschneidungen auftreten sollen,
+der sich ver"andernden Schneegeometrie und eventuell wachsenden Schneemengen
+k"onnte es zu "Uberschneidungen der Schneedecke mit sich selbst an solchen Ecken
+kommen (siehe Bild 3). Da allerdings weder schwebende Kegelspitzen sichtbar
+sein, noch
+seltsame Effekte beim Rendern durch
+"Uberschneidungen auftreten sollen,
 k"onnte auch dieser Ansatz kein befriedigendes Ergebnis liefern.
 
 
@@ -554,7 +601,8 @@ hinzuaddiert werden, sodass sich f"ur die gesuchten \texttt{x}- und
 Analog lassen sich die Koordinaten $x_2^*$ und $y_2^*$ des Schnittpunktes der
 zweiten Kante
 berechnen. Zum Schluss werden die Koordinaten aller Schnittkanten in einem
-Edge-Array gespeichert, wobei eine Kante immer aus vier Koordinaten besteht,
+\texttt{edges}-Array gespeichert, wobei eine Kante immer aus vier Koordinaten
+besteht,
 die hintereinander in das Array eingetragen werden.\\
 Mit den so berechneten Schnittkanten kann im Folgenden der Punkt in Polygon
 Algorithmus im Zweidimensionalen angewandt werden.
@@ -562,16 +610,45 @@ Algorithmus im Zweidimensionalen angewandt werden.
 
 \subsection{Punkt in Polgon - Algorithmus anwenden}
 
-Durch die im vorherigen Abschnitt \ref{sec:schnittkanten} bestimmten
+Durch die im vorherigen Abschnitt {\ref{sec:schnittkanten}} bestimmten
 Schnittkanten zwischen der Ebene
 und den betroffenen Faces kann im Folgenden der in Kapitel \ref{sec:pip_theo}
 bereits theoretisch erl"auterte, zweidimensionale Punkt in Polygon - Algorithmus
-angewandt werden.
-
+angewandt werden.\\
+Die \texttt{punktInPolygon}-Methode bekommt hierzu die Koordinaten des zu
+testenden Voxels und ein Array mir allen Polygonkanten der Ebene "ubergeben.
 
 \inputminted[linenos=true]{java}{code/PunktInPolygon.java}
 
-Ergebnis (siehe Abbildung \ref{fig:voxel_in_object}):
+Dabei muss f"ur jede Polygonkante gepr"uft werden, ob sie einen Schnittpunkt
+mit dem Test-Strahl hat, oder nicht. Da jede Kante aus zwei Punkten, bzw.
+vier Koordinaten besteht, werden diese zu Beginn aus dem \texttt{edges}-Array
+geholt und zwischengespeichert.
+Schlie\ss lich gibt es nur zwei relevante Zust"ande (innerhalb und au\ss erhalb)
+die in einer Variable \texttt{inside} vom Typ \texttt{boolean} gespeichert
+werden k"onnen.\\
+Zur effizienteren Berechnung wird der Test-Strahl in Richtung der positiven
+\texttt{x}-Achse geschossen.
+Um nur die relevanten Kanten auf einen Schnittpunkt mit dem Strahl zu testen,
+wird vorab getestet, ob Anfangs- und Endpunkt der aktuellen Polygonkante beide
+oberhalb oder beide unterhalb des Teststrahls liegen. Ist dies der Fall, so
+liegt kein Schnittpunkt vor. Dabei wird die Annahme, dass ein Polygonvertex
+infinitisimal "uber dem Test-Strahl liegt in Zeile 11 und 12 umgesetzt.
+Einen Schnittpunkt kann es nur geben, wenn ein Punkt oberhalb und der andere
+unterhalb des Strahls liegt, wobei dann die \texttt{x}-Koordinaten genauer
+untersucht werden. Liegen beide Punkte rechts von dem zu pr"ufenden Punkt
+(d.h. $x1>x$ und $x2>x$), so
+schneidet die Kante den Strahl irgendwo und \texttt{inside} wechselt den Wert.
+Sind die \texttt{x}-Koordinaten der beiden Punkte kleiner als \texttt{x}, dann
+gibt es keinen Schnittpunkt. Liegt ein Punkt rechts und der andere links von
+\texttt{x}, so muss berechnet werden, ob der Schnittpunkt rechts von dem
+Textvoxel liegt. Ist dies der Fall, so wechselt \texttt{inside} erneut seinen
+Wert.\cite[S. 51ff.]{skript_cg}
+\\
+Das Ergebnis des Punkt-in-Polygon-Algorithmus l"asst sich in Abbildung
+\ref{fig:voxel_in_object} gut erkennen. Das erste Bild zeigt die mit Voxeln
+gef"ullte Szene und zweite Bild zeigt alle Voxel, die innerhalb der
+Schachfigur liegen.
 
 \begin{figure}[htbp]
     \centering
