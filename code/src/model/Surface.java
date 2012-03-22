@@ -19,14 +19,14 @@ public class Surface
     private static boolean cold = true;
     private static float SNOWFLAKE = 0.1f;
     private static int STEEPNESS = 3;
-    /** VOXEL_OFFSET lists the positions, relative to vertex0, of each of the 8 vertices of a cube */
-    private static final float[][] VOXEL_OFFSET =
+    /** VERTEX_OFFSET lists the positions, relative to vertex0, of each of the 8 vertices of a cube */
+    private static final float[][] VERTEX_OFFSET =
     {
         {0.0f, 0.0f, 0.0f},{1.0f, 0.0f, 0.0f},{1.0f, 1.0f, 0.0f},{0.0f, 1.0f, 0.0f},
         {0.0f, 0.0f, 1.0f},{1.0f, 0.0f, 1.0f},{1.0f, 1.0f, 1.0f},{0.0f, 1.0f, 1.0f}
     };
     
-    //a2iEdgeConnection lists the index of the endpoint vertices for each of the 12 edges of the cube
+    // EdgeConnection lists the index of the endpoint vertices for each of the 12 edges of the cube
     private static final int[][] EDGE_CONNECTION = 
     {
         {0,1}, {1,2}, {2,3}, {3,0},
@@ -94,7 +94,7 @@ public class Surface
         {
             if(cube[iVoxel].isInside() || cube[iVoxel].getSnow())
             {
-                iFlagIndex |= 1<<iVoxel;
+                iFlagIndex |= 1 << iVoxel;
             }
         }
 
@@ -112,15 +112,38 @@ public class Surface
         for(int iEdge = 0; iEdge < 12; iEdge++)
         {
             //if there is an intersection on this edge
-            if((iEdgeFlags & (1<<iEdge)) == (1<<iEdge))
+            if((iEdgeFlags & (1 << iEdge)) == (1 << iEdge))
             {
                 // no exact calculation of the intersection points
                 // just connect the middle of the edges with each other (0.5f)
-                //TODO voxel.getDensity() berücksichtigen
-                edgeVertex[iEdge] = new Vertex((v.getX() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
-                                               (v.getY() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
-                                               (v.getZ() + (VOXEL_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
-                
+//                if(iEdge == 8)// && v.getDensity() != 0.0f)
+//                {
+//                   edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+//                                                  (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+//                                                  (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getDensity() * EDGE_DIRECTION[iEdge][2]) * scale)); 
+//                }else if(iEdge == 9)// && v.getRightNeighbor().getDensity() != 0.0f)
+//                {
+//                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+//                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+//                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getRightNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
+//                }else if(iEdge == 10)// && v.getRightNeighbor().getFrontNeighbor().getDensity() != 0.0f)
+//                {
+//                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+//                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+//                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getRightNeighbor().getFrontNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
+//                }else if (iEdge == 11)// && v.getFrontNeighbor().getDensity() != 0.0f)
+//                {
+//                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+//                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+//                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getFrontNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
+//                }   
+//                else
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                }
+            
                 edgeNormal[iEdge] = getNormal(edgeVertex[iEdge].getX(), edgeVertex[iEdge].getY(), edgeVertex[iEdge].getZ());
             }
         }
@@ -150,9 +173,35 @@ public class Surface
         Vertex v = new Vertex();
         v.setX(fSample(x - 0.01f, y, z) - fSample(x + 0.01f, y, z));
         v.setY(fSample(x, y - 0.01f, z) - fSample(x, y + 0.01f, z));
-        v.setZ((fSample(x, y, z - 0.01f) - fSample(x, y, z + 0.01f)) * (-1));
-        return v;
+        v.setZ((fSample(x, y, z - 0.01f) - fSample(x, y, z + 0.01f)) * (1));
+        return normalizeVector(v);
     }    
+    
+    private Vertex normalizeVector(Vertex vIn)
+    {
+        Vertex vOut = new Vertex();
+        float fOldLength;
+        float fScale;
+
+        fOldLength = (float)Math.sqrt( (vIn.getX() * vIn.getX()) +
+                            (vIn.getY() * vIn.getY()) +
+                            (vIn.getZ() * vIn.getZ()) );
+
+        if(fOldLength != 0.0f)
+        {
+            fScale = 1.0f / fOldLength;
+            vOut.setX(vIn.getX() * fScale);
+            vOut.setY(vIn.getY() * fScale);
+            vOut.setZ(vIn.getZ() * fScale);
+        }else
+        {
+            vOut = vIn;
+        }
+        
+        return vOut;
+    }
+
+        
     
     //fSample1 finds the distance of (fX, fY, fZ) from three moving points
     private float fSample(float fX, float fY, float fZ)
@@ -316,8 +365,7 @@ public class Surface
                     this.activeVoxels[index] = this.activeVoxels[index].getTopNeighbor();
                 }
                 
-                if(!this.activeVoxels[index].hasLeftNeighbor() || !this.activeVoxels[index].hasRightNeighbor() || 
-                   !this.activeVoxels[index].hasFrontNeighbor() || !this.activeVoxels[index].hasBackNeighbor())
+                if(!this.activeVoxels[index].hasSameLevelNeighbors())
                 {
                     this.activeVoxels[index].removeSnow();
                 }
@@ -373,10 +421,14 @@ public class Surface
         // snow just from a point-source
         for(int j = 0; j < 1; j++)
         {
-            int index = 275;// 14627;// 14750;//
+//            int index = 14627;
+            int index = 14750;
+//            int index = 275;
+            
             this.voxels[index].raiseDensity(SNOWFLAKE);
             if(this.voxels[index].getDensity() > 1.0f && this.voxels[index].getTopNeighbor() != null)
             {
+//                if(stabilityTest(this.voxels[index]) < 5)
                 this.voxels[index] = this.voxels[index].getTopNeighbor();
 
                 if(stabilityTest(this.voxels[index]) >= 5)
@@ -385,6 +437,19 @@ public class Surface
                     this.voxels[index] = this.voxels[index].getBottomNeighbor();
                 }
             }
+//            if(this.voxels[index].getDensity() <= 1.0)
+//            {
+//                this.voxels[index].raiseDensity(SNOWFLAKE);
+//            }else
+//            {
+//
+//
+//                if(stabilityTest(this.voxels[index]) < 5)
+//                {
+//                    this.voxels[index] = this.voxels[index].getTopNeighbor();
+//                }
+//
+//            }
         }
         
 //        for(int j = 0; j < 1; j++)
@@ -488,6 +553,10 @@ public class Surface
             }
         }
         
+        if(!v.hasSameLevelNeighbors())
+        {
+            v.removeSnow();
+        }
         
         
         
@@ -585,7 +654,7 @@ public class Surface
     //  For each of the possible vertex states listed in aiCubeEdgeFlags there is a specific triangulation
     //  of the edge intersection points.  a2iTriangleConnectionTable lists all of them in the form of
     //  0-5 edge triples with the list terminated by the invalid value -1.
-    //  For example: a2iTriangleConnectionTable[3] list the 2 triangles formed when corner[0] 
+    //  For example: TriangleLookupTable[3] list the 2 triangles formed when corner[0] 
     //  and corner[1] are inside of the surface, but the rest of the cube is not.
     //
     //  I found this table in an example program someone wrote long ago.  It was probably generated by hand

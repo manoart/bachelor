@@ -112,7 +112,7 @@ Displacement-Mapping erstmals 1984.\cite{displacement_mapping}
         \includegraphics[width=0.35\textwidth]{pictures/displacement_mapping.jpg}
     \end{center}
     \vspace{-10pt}
-    \caption{Beispiel f"ur Displacement Mapping}
+    \caption[Beispiel f"ur Displacement Mapping]{Beispiel f"ur Displacement Mapping \cite{displacement_mapping_pic}}
     \label{fig:displacement}
     \vspace{-20pt}
 \end{wrapfigure}
@@ -128,7 +128,7 @@ und die Normalen entsprechend angepasst werden.
 
 
 
-In der Abbildung \ref{fig:displacement}\cite{displacement_mapping_pic} ist ein
+In der Abbildung \ref{fig:displacement} ist ein
 Beispiel f"ur eine solche
 Displacement-Map und die Auswirkung auf die Oberfl"ache (Mesh) gegeben.
 Die Displacement-Map enth"alt dabei Farbwerte von schwarz (keine Ver"anderung)
@@ -189,8 +189,42 @@ zwei Polygone einen oder mehrere Vertices gemeinsam haben.
 \section{Marching Cubes - Algorithmus}
 \label{sec:mc_theo}
 
-Bei dem Marching Cubes Algorithmus betrachtet man zwei benachbarte oder
-"ubereinanderliegende Ebenen in einem regelm"a\ss igen Pixelraster.
+%Der MC geht auf Lorensen und Cline zur"uck...
+\subsection{Bedeutung}
+Der Marching Cubes Algorithmus wurde im Jahr 1987 im Auftrag der General
+Electric Company von Lorensen und Cline entwickelt, um ein effizienteres
+Verfahren zur Visualisierung medizinischer Messdaten bereitzustellen.
+\cite{marching_cubes}
+Dabei wurde bis zum damaligen Zeitpunkt meist auf 2-dimensonale Bilddaten
+von bildgebenden
+Verfahren wie zum Beispiel der Computertomografie (CT) oder der
+Magnetresonanztomografie (MRT) zur"uckgegriffen.
+Da das Analysieren und Interpretieren dieser 2-dimensionalen Bilder
+(Scheiben oder Schichten) besondere Schulung und Erfahrung bedarf, bietet der
+Marching Cubes
+Algorithmus eine aussagekr"aftige, 3-dimensionale Repr"asentation der
+evaluierten Messdaten zur
+Unterst"utzung von Medizinern in den unterschiedlichsten Bereichen.\\
+Die vom CT bzw. MRT erzeugten Volumendaten liegen in Form von Voxel-Datenmengen
+vor. Das hei\ss t, dass in regelm"a\ss igen Abst"anden die Dichte des Materials
+ermittelt und gespeichert wird, wodurch ein gleichm"a\ss iges 3-dimensionales
+Datengitter generiert wird. Die Nachteile eines solchen Modells sind der enorme
+Speicherbedarf und die langsame Visualisierung im Vergleich zu einfachen
+Drahtgittermodellen.\\
+Der Marching Cubes Algorithmus erm"oglicht nun die zuvor genannten
+Voxel-Datenmengen durch ein polygonales Oberfl"achenmodell anzun"ahren und somit
+effizient zu visualisieren.
+
+
+\subsection{Funktionsweise}
+Der Marching Cubes Algorithmus verfolgt einen Divide-and-Conquer-Ansatz.
+Um die gegebenen Volumen-Daten zu Triangulisieren betrachtet man zun"achst zwei
+benachbarte bzw. direkt "ubereinanderliegende Schichten oder Ebenen. In einem
+n"achsten Schritt werden vier benachbarte Voxel auf der unteren Ebene
+\texttt{z} so
+miteinander verbunden, dass sie ein Quadrat ergeben. Danach bilden diese mit
+den genau dar"uberliegenden Voxeln der Ebene \texttt{z+1} einen imagin"aren
+W"urfel (siehe Abbildung \ref{fig:mc}).
 
 \begin{figure}[htbp]
     \centering
@@ -199,9 +233,56 @@ Bei dem Marching Cubes Algorithmus betrachtet man zwei benachbarte oder
     \label{fig:mc}
 \end{figure}
 
-Nun erschafft man einen imagin"aren W"urfel, indem man acht in w"urfelform
-benachbarte Punkte herausgreift und auf Schnittpunte mit einem Objekt
-pr"uft.
+Dabei gibt es meist einen Referenzvoxel von dem aus die restlichen
+Kubusecken mit Hilfe eines Offsets bestimmt werden.\\
+Damit anschlie\ss end eine Oberfl"ache generiert werden kann wird wird f"ur
+jeden Eckpunkt
+gepr"uft, ob dieser innerhalb oder au\ss erhalb des betrachteten Objektes liegt,
+was anhand der Dichtewerde bestimmt werden kann.
+Liegen alle Eckpunkte innerhalb oder au\ss erhalb, so muss dieser W"urfel nicht
+weiter untersucht werden und es wird zum N"achsten ''marschiert''.
+Liegt hingegen ein Schnittpunkt des Kubus mit der Objektoberfl"ache vor, so
+teilt diese den Marching Cube unweigerlich in Innen- und Au\ss enbereiche auf.\\
+Da der W"urfel acht Eckpunkte besitzt und jeder Eckpunkt zwei Zust"ande
+haben kann, gibt es genau $2^8 = 256$ M"oglichkeiten den Kubus zu zerteilen.
+Aus Symmetriegr"unden k"onnen diese 256 F"alle auf die in Abbildung
+\ref{fig:mc_possibilities} dargestellten 15 reduziert
+werden.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=310px]{pictures/marchingCubes.png}
+    \caption[Marching Cube - Schnittm"oglichkeiten]
+        {Marching Cube - Schnittm"oglichkeiten \cite{mc_possibilities}}
+    \label{fig:mc_possibilities}
+\end{figure}
+
+Sind schlie\ss lich die Zust"ande aller beteiligten Voxel bestimmt, so wird in
+einer Tabelle, der sogenannten
+\texttt{TriangleLookupTable} nachgesehen, welche Dreiecke in dem vorliegenden
+Fall gezeichnet werden m"ussen. Genauer gesagt, werden die W"urfelkanten
+bestimmt, die von der Oberfl"ache geschnitten werden und wo auf den Kanten
+die Eckpunkte der zu zeichnenden Dreiecke liegen.
+In dem Kapitel \ref{sec:mc_algo} wird dieses Verfahren und die \texttt{TriangleLookupTable}
+genauer erl"autert.\\
+Wahlweise k"onnen f"ur eine bessere Ann"aherung an das Ursprungsobjekt die
+Oberfl"achenpunkte entsprechend interpoliert werden. Ansonsten wird f"ur die
+Berechnung der Dreiecke immer von der Mitte einer W"urfelkante ausgegangen.
+Zur besseren Darstellung (Beleuchtung) lassen sich daraufhin die
+Einheitsnormalen berechnen.\\
+Ein Beispiel f"ur die Visualisierung eines aus 150 Schichten bestehenden
+MRT-Modells soll die Abbildung \ref{fig:mc_head} geben, in der die
+Ann"aherung an einen Kopf deutlich zu erkennen ist.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=250px]{pictures/marching_cubes_head.png}
+    \caption[Marching Cubes - Polygonmodell eines Kopfes]
+        {Marching Cubes - Polygonmodell eines Kopfes \cite{mc_head}}
+    \label{fig:mc_head}
+\end{figure}
+
+
 
 
 %%%%%%%  UMSETZUNG  %%%%%%%%
@@ -419,6 +500,7 @@ immer zwei Informationen in einer Zeile stehen.
 %%%%%%%% Hier evtl. noch Zugriff auf Daten erkl"aren
 
 \section{Szene mit Voxeln f"ullen}
+\label{sec:voxel_fill}
 
 Nachdem die Szene nun ausgelesen werden kann und die Arrays mit den ben"otigten
 Daten zur Verf"ugung stehen, soll die Szene mit Voxeln gef"ullt werden.
@@ -476,6 +558,7 @@ Szene dar in der nur die gesetzten Voxel angezeigt werden.
 
 
 \section{Voxel in Objekt - Algorithmus}
+\label{sec:voxel_in_object}
 
 In diesem Abschnitt soll die Funktionsweise des 3-dimensionalen Punkt in
 Polygon Algorithmus erl"autert werden. Dieser dient dazu festzustellen, ob
@@ -569,7 +652,7 @@ der Schnittpunkt $S$, wobei die \texttt{z}-Koordinate von $S$ durch die Ebene
 bereits gegeben ist. Insbesondere sind folglich die \texttt{x}- und die
 \texttt{y}-Koordinate von $S$ von Interesse.
 Die Punkte k"onnen ebenso als Vektoren betrachtet werden,
-was in der Zeichnung angedeutet wird. Auch die Seite $\overrightarrow{P_2 P_1}$
+so, wie in der Zeichnung angedeutet. Auch die Kante $\overrightarrow{P_2 P_1}$
 selbst kann als
 Vektor dargestellt werden durch
 \begin{equation*}
@@ -630,7 +713,7 @@ werden k"onnen.\\
 Zur effizienteren Berechnung wird der Test-Strahl in Richtung der positiven
 \texttt{x}-Achse geschossen.
 Um nur die relevanten Kanten auf einen Schnittpunkt mit dem Strahl zu testen,
-wird vorab getestet, ob Anfangs- und Endpunkt der aktuellen Polygonkante beide
+wird vorab gepr"uft, ob Anfangs- und Endpunkt der aktuellen Polygonkante beide
 oberhalb oder beide unterhalb des Teststrahls liegen. Ist dies der Fall, so
 liegt kein Schnittpunkt vor. Dabei wird die Annahme, dass ein Polygonvertex
 infinitisimal "uber dem Test-Strahl liegt in Zeile 11 und 12 umgesetzt.
@@ -647,7 +730,7 @@ Wert.\cite[S. 51ff.]{skript_cg}
 \\
 Das Ergebnis des Punkt-in-Polygon-Algorithmus l"asst sich in Abbildung
 \ref{fig:voxel_in_object} gut erkennen. Das erste Bild zeigt die mit Voxeln
-gef"ullte Szene und zweite Bild zeigt alle Voxel, die innerhalb der
+gef"ullte Szene und im zweiten Bild sieht man alle Voxel, die innerhalb der
 Schachfigur liegen.
 
 \begin{figure}[htbp]
@@ -660,22 +743,211 @@ Schachfigur liegen.
 
 
 \section{Marching Cubes - Algorithmus}
+\label{sec:mc_algo}
+
+Der folgende Abschnitt beschreibt die Umsetzung des in Kapitel \ref{sec:mc_theo}
+dargestellten Marching Cubes Algorithmus in Java, basierend auf einer
+Implementation von Cory Gene Bloyd in C++. \cite{mc_algo}\\
+Um  sp"ater zu bestimmen an welchen Stellen der Szene Schnee fallen kann, dient
+dieser Algorithmus zun"achst als Grundlage, um die Oberfl"ache der Szene bzw.
+der Objekte innerhalb der Szene nachzubilden.\\
+Gegeben ist das aus Kapitel \ref{sec:voxel_fill} bekannte regelm"a\ss ige,
+dreidimensionale Voxelgitter. Jeder Voxel enth"alt die Information, ob er
+innerhalb oder au\ss erhalb eines Objektes liegt.
+Es wird nun eine neue Oberfl"ache erstellt, indem man kubusweise durch das
+Voxelgrid durchgeht, den jeweiligen W"urfel auf Schnittpunkte mit der
+Objektoberfl"ache untersucht und die entsprechenden Dreiecke zeichnet.
+Dabei k"onnen verschiedene F"alle auftreten. Die Objektoberfl"ache durchtrennt
+den Kubus nicht, sie schneidet einen Vertex ab oder teilt ihn beliebig komplex
+in Innen- und Au\ss enbereiche auf. Die Aufteilung richtet sich nach der Anzahl
+und dem Index der innen- bzw. au\ss enliegenden Eckvoxeln des Kubus.
+Insgesamt kann es 256 verschiedene F"alle geben, welche in Abbildung
+\ref{fig:mc_possibilities} bereits illustriert wurden.\\
+Die Bestimmung der Eckpunkte der zu zeichnenden Dreiecke richtet sich nach
+der Anzahl und dem Index der geschnittenen W"urfelkanten. Liegt zum Beispiel
+ein Voxel innerhalb eines Objekts und ein benachbarter Voxel au\ss erhalb, so
+muss die Objektoberfl"ache einen Schnittpunkt mit der Kante zwischen diesen
+beiden Voxeln haben. Die genaue Position des Schnittpunktes kann linear
+interpoliert werden, worauf in diesem Fall allerdings nicht eingegangen wird.
+Stattdessen wird stets der Kantenmittelpunkt als Schnittpunkt gew"ahlt.\\
+%Anschlie\ss end wird in der \texttt{TriangleLookupTable} (TLT) nachgesehen,
+
 
 
 \subsection{Imagin"aren Cube erstellen}
 
+Der Marching Cubes Algorithmus geht jeden Voxel der Szene durch und bildet
+mit diesem als Referenzvoxel
+einen imagin"aren W"urfel.
+Das bedeutet, dass die restlichen sieben Eckvoxel anhand des ersten bestimmt
+werden.\\
+Die Indizierung der Voxel von \texttt{v0} bis \texttt{v7} sowie der Kanten
+von \texttt{e0} bis \texttt{e11} wie sie bei der Umsetzung des Algorithmus
+verwendet werden, ist in Abbildung \ref{fig:cube} dargestellt.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=200px]{pictures/cube.eps}
+    \caption{Indizierung eines Marching Cubes}
+    \label{fig:cube}
+\end{figure}
+
+Der Referenzvoxel ist dabei immer die hintere linke Ecke des Kubus. Arbeitet man
+mit Vertices, so k"onnen die anderen Eckpunkte mit Hilfe eines Offsets
+bestimmt werden. In diesem Fall hingegen werden die Nachbarschaftsbeziehungen
+eines Voxels ausgenutzt um zu dem selben Ergebnis zu kommen.
+
 \inputminted[linenos=true]{java}{code/Cube.java}
+
+Wie in dem Codebeispiel zu sehen ist, werden alle acht W"urfelecken in einem
+Voxel-Array gespeichert, wobei \texttt{cube[0]} der Referenzvoxel ist.
 
 
 \subsection{Schnittkanten mit der Ebene bestimmen}
 
+Um im Anschluss die Schnittkanten des W"urfels mit einem Objekt zu ermitteln
+werden alle Eckpunkte darauf getestet ob sie innerhalb eines Objektes liegen
+oder
+Schnee beinhalten. Im zweiten Fall wird ein Voxel genauso behandelt wie im
+ersten, da er dann bereits in der Schneedecke liegt, das bedeutet unterhalb der
+Schneeoberfl"ache.
 
-\subsection{TriangleLookupTable}
+\inputminted[linenos=true]{java}{code/FlagIntex.java}
+
+Ist der Test erfolgreich, so wird sich mit einem 8-Bit Index gemerkt, wobei
+jedes Bit einem Eckvoxel entspricht.
+Dies geschieht mit einer Bitshift-Operation der 1 um
+die entsprechende Anzahl an Stellen nach links verschiebt.
+Ist ein Voxel innenliegend, so wird das Bit auf 1 gesetzt, ansonsten bleibt es
+0.\\
+Dieser Teil l"asst sich am Besten anhand eines Beispiels erkl"aren. Es sei
+der W"urfel aus Abbildung \ref{fig:cube_example} gegeben. Nun schneidet eine
+Objektoberfl"ache
+den Kubus derart, dass \texttt{cube[0]} und \texttt{cube[1]} (also \texttt{v0}
+und \texttt{v1}) innerhalb des Objektes liegen.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=200px]{pictures/cube_example.eps}
+    \caption{Beispiel Cube}
+    \label{fig:cube_example}
+\end{figure}
+
+Der \texttt{iFlagIndex} betr"agt folglich \texttt{0000 0011} in bin"arer oder
+\texttt{3} in dezimaler Kodierung.
+Als n"achstes wird in einer Tabelle bzw. einem Array nachgesehen, welche
+W"urfelkanten von der Oberfl"ache bei gegebenem \texttt{iFlagIndex}
+geschnitten werden.
+
+\inputminted[linenos=true]{java}{code/EdgeFlags.java}
+
+Dieses Array hei\ss t \texttt{CubeEdgeFlags}, hat
+256 Eintr"age, entsprechend aller Schnittm"oglichkeiten und bildet den
+8-Bit \texttt{iFlagIndex} auf eine 12-Bit kodierte Zahl mit dem Namen
+\texttt{iEdgeFlags} ab.
+
+\inputminted[linenos=true]{java}{code/CubeEdgeFlags.java}
+
+Auch hier entpricht jedes Bit einer bestimmten Kante.
+Ein Bit ist auf 1 gesetzt, wenn die Objektoberfl"ache die Kante schneidet und
+auf 0, falls es
+keinen Schnittpunkt gibt. Ist \texttt{iEdgeFlags == 0}, so wird keine der
+W"urfelkanten geteilt und es
+kann mit dem n"achsten Kubus fortgefahren werden.\\
+Bezogen auf das obere Beispiel bedeutet dies, dass
+\texttt{iEdgeFlags[3] = 0011 0000 1010} in Bin"ar- oder \texttt{0x30a} in
+Hexadezimalform.
+Das hei\ss t, es werden die Kanten \texttt{e1}, \texttt{e3}, \texttt{e8} und
+\texttt{e9} von der Objektoberfl"ache geschnitten, wie auch in Abbildung
+\ref{fig:cube_example} zu sehen ist.\\
+Anschlie\ss end werden die Koordinaten der Schnittpunkte auf den jeweiligen
+Kanten berechnet und in dem zw"olfelementigen \texttt{Vertex}-Array
+\texttt{edgeVertex} gespeichert.
+Dazu betrachtet man jede Kante und pr"uft, ob in \texttt{iEdgeFlags} an der
+entsprechenden Stelle eine \texttt{1} steht. Ist dies der Fall, so folgt
+eine Schnittpunktberechnung durch lineare Interpolation. Es wird
+bei den waagerechten Kanten (\texttt{e0} bis \texttt{e7}), wie in
+Abschnitt \ref{sec:voxel} bereits angek"undigt, der Einfachheit halber von
+dem Mittelpunkt einer Kante als Schnittpunkt ausgegangen.
+Lediglich die \texttt{z}-Koordinaten der senkrechten W"urfelkanten
+(\texttt{e8} bis \texttt{e11}) weichen von
+der Mitte ab und richten sich nach
+dem \texttt{Density}-Wert des zugeh"origen, unteren Voxels.\\
+Der folgende Codeauschnitt verdeutlicht das oben beschriebene Vorgehen.
+
+\inputminted[linenos=true]{java}{code/Intersection.java}
+
+Die Koordinaten eines Schnittpunktes lassen sich mit Hilfe von drei Hilfsarrays
+berechnen. Zun"achst wird im \texttt{EDGE\_CONNECTION}-Array nachgesehen,
+welche beiden Voxel die aktuelle Kante verbindet. Danach wird die Entfernung
+des Schnittpunktes vom Referenzvoxel durch das
+\texttt{VOXEL\_OFFSET}-Array bestimmt. Damit der Vertex an der richtigen Stelle
+platziert wird gibt \texttt{EDGE\_DIRECTION} die Richtung der
+Kante an. Der Wert \texttt{0.5f} bedeutet, dass der Kantenmittelpunkt als
+Schnittpunkt gew"ahlt wird. \texttt{scale} skaliert schlie\ss lich die
+Positionierung in
+Abh"angigkeit zur Granularit"at des \texttt{Voxel}-Gitters
+($\texttt{scale} = \frac{1}{\texttt{STEPS}}$).\\
+
+Zur besseren Visualisierung werden neben den Schnittpunkten auch
+die Einheitsnormalen an eben diesen Punkten berechnet.
+
+
+\subsection{\texttt{TriangleLookupTable}}
+
+Nachdem alle Schnittpunkte eines Kubus mit der Objektoberfl"ache berechnet
+wurden m"ussen diese noch in korrekter Reihenfolge zu Dreiecken bzw.
+\texttt{Faces} verbunden werden.
+Hierzu wird erneut ein Array verwendet, das den selben \texttt{iFlagIndex}
+verwendet wie zuvor \texttt{CubeEdgeFlags} und es erlaubt die
+\texttt{Vertex}-Sequenz zur Darstellung der angen"ahrten Oberfl"ache
+nachzuschlagen. Das \texttt{TriangleLookupTable}-Array ist
+zweidimensional und besteht aus \texttt{256 x 16} Eintr"agen, da es
+\texttt{256} Teilungsm"oglichkeiten und pro Cube bis zu f"unf \texttt{Faces}
+gibt. Die \texttt{TriangleLookupTable} hat die folgende Form.
+
+\inputminted[linenos=true]{java}{code/TriangleLookupTable.java}
+
+Dabei steht die \texttt{-1} f"ur einen invaliden Eintrag und zeigt an, dass
+der Algorithmus f"ur diesen Cube an dieser Stelle abgebrochen werden kann
+(siehe Zeile 4-5 im unteren Code-Beispiel).\\
+
+\inputminted[linenos=true]{java}{code/UseTLT.java}
+
+Folglich werden die bis zu f"unf M"oglichkeiten durchgegangen. Soll ein
+\texttt{Face} sp"ater gezeichnet werden, so wird auf die
+Vertices des \texttt{edgeVertex}-Arrays in richtiger Reihenfolge
+zugegriffen und diese entgegen dem
+Uhrzeigersinn in einer Instanzvariable \texttt{faces} abgespeichert.\\
+Erneut bezogen auf den obigen Beispielfall liefert der Aufruf
+\texttt{TriangleLookupTable[3]} die Zeile:
+\\
+\\
+\texttt{\{1, 8, 3, 9, 8, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1\}}
+\\
+\\
+Das bedeutet, dass f"ur diesen Cube zwei \texttt{Faces} gezeichnet werden
+m"ussen. Zum einen bestehend aus den Vertices mit den Indices
+\texttt{(1, 8, 3)} und zum anderen
+aus \texttt{(9, 8, 1)}.
+
+\subsection{Ergebnis}
+
 
 
 
 \section{Schneedecke}
 
+
+\subsection{Schnee von oben}
+
+
+\subsection{Schnee von der Seite}
+
+
+\subsection{Schneestabilit"at}
+
+\cite{fallen_snow}
 
 
 %%%%%%% REFLEXION %%%%%%%%
@@ -685,10 +957,6 @@ Schachfigur liegen.
 \section{Zusammenfassung}
 
 \section{Fazit und Ausblick}
-
-\newpage
-Beispieltext. Siehe auch \cite{Fischer:1995, Besl:1992, Thrun:2000}.
-URLs gehen auch: \cite{robocup}.
 
 
 % DON'T set \bibliographystyle here -- use the documentclass option instead

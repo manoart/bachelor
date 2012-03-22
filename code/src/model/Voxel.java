@@ -186,24 +186,18 @@ public class Voxel
         return (countNeighbors() == 6) ? true : false;
     }
     
+    public boolean hasSameLevelNeighbors()
+    {
+        return hasLeftNeighbor() && hasRightNeighbor() && 
+               hasFrontNeighbor() && hasBackNeighbor();
+    }
+    
     public boolean hasSameLevelSnowNeighbors()
     {
         return hasLeftNeighbor() && getLeftNeighbor().getSnow() &&
                hasRightNeighbor() && getRightNeighbor().getSnow() && 
                hasFrontNeighbor() && getFrontNeighbor().getSnow() &&
                hasBackNeighbor() && getBackNeighbor().getSnow();
-    }
-    
-    public boolean has3BottomNeighbors()
-    {
-        return (hasBottomNeighbor() && !getBottomNeighbor().hasSameLevelSnowNeighbors()&&
-                getBottomNeighbor().hasBottomNeighbor() && !getBottomNeighbor().getBottomNeighbor().hasSameLevelSnowNeighbors() &&
-                getBottomNeighbor().getBottomNeighbor().hasBottomNeighbor() && !getBottomNeighbor().getBottomNeighbor().getBottomNeighbor().hasSameLevelSnowNeighbors());
-    }
-    
-    public Voxel get3rdBottomNeighbor()
-    {
-        return getBottomNeighbor().getBottomNeighbor().getBottomNeighbor();
     }
     
     public void setNeighbors(Voxel[] voxels, float distance)
@@ -451,6 +445,7 @@ public class Voxel
         {
             getTopNeighbor().setSnow();
         }
+        if(this.density >= 1.1f) this.density = 1.1f;
         if(this.density <= -0.1f) this.density = -0.1f;
     }
     

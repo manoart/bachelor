@@ -108,7 +108,7 @@ public class Generator
         // set snow to mark these voxels as inside
         if(pointInPolygonX(x, y, edges))
         {
-//            voxels[iVoxel].setInside();
+            voxels[iVoxel].setInside();
 //            voxels[iVoxel].setSnow();
         }
         iVoxel++;
@@ -510,7 +510,7 @@ public class Generator
                 max = tmp;
             }
         }
-        return max + 2.5f;
+        return max + 0.2f;// + 2.5f;
     }
 
     /**
@@ -530,6 +530,6 @@ public class Generator
                 min = tmp;
             }
         }
-        return min - 0.5f;
+        return min;// - 0.5f;
     }
 }
