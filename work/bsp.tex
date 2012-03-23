@@ -343,7 +343,6 @@ Dieser Ansatz f"uhrt folglich zu keinem zufriedenstellenden Ergebnis.
 
 
 \subsubsection{Interpretation als Light- und Displacement-Map}
-
 Zur Verbesserung des Ergebnisses, das allein mit der Lightmap erzeugt werden
 kann, w"are es denkbar die Snow-Map als eine Kombination aus Light- und
 Displacement-Map zu interpretieren. Dabei arbeitet die Lightmap genauso
@@ -357,54 +356,170 @@ Schneegeometrie an dieser Stelle, so dass man die Szene darunter noch erkennen
 kann. Umgekehrt ist die Schneegeometrie undurchsichtiger je heller der Wert
 der Snow-Map ist.
 Hierbei ist es wichtig zu bedenken, dass die Schneegeometrie von Anfang an
-wei\ss ist und nur die Transparenz die Menge an Schnee wiederspiegelt.\\
-
-%TODO Bild aus Hennings Arbeit einfuegen
+wei\ss\ ist und nur die Transparenz die Menge an Schnee wiederspiegelt.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=400px]{pictures/clouds.png}
+    \caption[Beispiel f"ur transparentes Displacement-Mapping]
+        {Beispiel f"ur transparentes Displacement-Mapping \cite{wenke}}
+    \label{fig:clouds}
+\end{figure}
 
 Somit lie\ss en sich Erhebungen und Schneeh"aufungen darstellen, die zudem
 passend eingef"arbt w"aren. Jedoch wird man bei dieser Vorgehensweise ebenfalls
-mit gewissen Problemen konfrontiert. Zum einen kann es bei der Visualisierung
-passieren, dass aufgrund der Transparenz bei einer Betrachtung von der Seite
-nur schwebende
-Pyramiden- bzw. Kegelspitzen zu sehen sind und zum anderen k"onnen unerw"unschte
-"Uberschneidungen auftreten.
-
+mit gewissen Problemen konfrontiert.
+Zwar ist das Ergebnis bei einem steilen Betrachtungswinkel durchaus
+zufriedenstellend, jedoch kann es bei der Visualisierung
+passieren, dass aufgrund der Transparenz bei einem flachen Betrachtungswinkel
+lediglich schwebende
+Pyramiden- bzw. Kegelspitzen zu sehen sind, wie am Rand der Erdkugel in
+Abbildung \ref{fig:clouds}.
+Des Weiteren k"onnen unerw"unschte "Uberschneidungen in der N"ahe von
+Objektecken auftreten.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=300px]{pictures/ecke.png}
     \caption{"Uberschneidung beim Displacement-Mapping}
     \label{fig:ecke}
 \end{figure}
-
 Ein m"ogliches Problem ist in Abbildung \ref{fig:ecke} aufgezeigt. Aufgrund
 der sich ver"andernden Schneegeometrie und eventuell wachsenden Schneemengen
-k"onnte es zu "Uberschneidungen der Schneedecke mit sich selbst an solchen Ecken
-kommen (siehe Bild 3). Da allerdings weder schwebende Kegelspitzen sichtbar
-sein, noch
-seltsame Effekte beim Rendern durch
+k"onnte es zu "Uberschneidungen der Schneedecke mit sich selbst an solchen
+Ecken kommen (siehe Bild 3). Da allerdings weder schwebende Kegelspitzen
+sichtbar sein, noch seltsame Effekte beim Rendern durch
 "Uberschneidungen auftreten sollen,
 k"onnte auch dieser Ansatz kein befriedigendes Ergebnis liefern.
 
 
-
 \subsection{Voxelrepr"asentation}
-
-L"osung des Problems der bisher fehlenden Schneedecke. Mit Voxeln soll eine
-richtige Schneedecke erzeugt werden. Zudem ist keine "Uberschneidung des Objekts
-in den Ecken mehr m"oglich, da Voxel gesetzt werden.
+\label{sec:voxel}
+Die L"osung des Problems der bisher fehlenden Schneedecke beziehungsweise
+der sich selbst schneidenden Displacement-Oberfl"ache kann durch die
+Repr"asentation durch Voxel verwirklicht werden.\\
+Dabei wird mit Hilfe von Voxeln eine
+richtige Schneedecke erzeugt, die auf bzw. "uber der Szenenoberfl"ache
+liegt. Dies wird erreicht, indem der gesamte Raum, den die Szene einnimmt
+mit Voxeln gef"ullt wird, sodass die Schneedecke sp"ater "uberall wachsen
+kann. Darauffolgend wird jeder Voxel gepr"uft, ob er innerhalb oder
+au\ss erhalb eines Objektes liegt, um im Anschlu\ss\ mit Hilfe des
+sogenannten Marching Cubes Algorithmus (siehe Kapitel \ref{sec:mc_algo})
+eine Schneedecke zu erzeugen (siehe Kapitel \ref{sec:snow_surface}).
+Demnach ist keine "Uberschneidung der Displacement-Oberfl"ache
+in den Ecken mehr m"oglich, da die Voxel in einem regelm"a\ss igen
+Gitter gesetzt werden und jeder Voxel nur einmal existiert.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=200px]{pictures/voxel.eps}
+    \caption{Voxel in Objektecken}
+    \label{fig:voxel}
+\end{figure}
+Die Abbildung \ref{fig:voxel} verdeutlicht das gleichm"a\ss ige Voxelgrid
+sowie die L"osung des "Uberschneidungsproblems. W"achst zum Beispiel von
+unten und von links der Schnee an, so trifft die Schneeoberfl"ache auf den
+selben Voxel und
+die Schneedecke erweitert sich bis zu diesem Punkt. Folglich kann es keine
+ungewollten "Uberschneidungen geben. Die Bereiche ''Innen'' und ''Au\ss en''
+stehen in der Zeichnung f"ur Gebiete innerhalb sowie au\ss erhalb von einem
+Objekt.
+\\
+Im Folgenden wird erl"autert, was ein Voxel in diesem Fall genau ist, welche
+Eigenschaften er hat und welche Bedeutung diese f"ur den weiteren Verlauf
+der Arbeit haben.
 
 \subsubsection{Voxel}
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \vspace{-10pt}
+    \begin{center}
+        \includegraphics[width=0.35\textwidth]{pictures/neighborhood.eps}
+    \end{center}
+    \vspace{-10pt}
+    \caption{Voxelnachbarschaft}
+    \label{fig:voxel_neighborhood}
+    \vspace{-10pt}
+\end{wrapfigure}
+Wie zuvor bereits angedeutet sind Voxel im Grunde Punkte im Raum mit gewissen
+Eigenschaften.
+Ein Voxel besitzt folglich eine \texttt{x}-, \texttt{y}- und
+\texttt{z}-Koordinate zur eindeutigen Festlegung der Position.
+Des Weiteren wird gespeichert, ob ein Voxel sich inner- oder au\ss erhalb
+eines Objekts befindet, was mit Hilfe des dreidimensionalen Punkt in Polygon
+Algorithmus ermittelt wird. Zudem wird vorgehalten, ob ein Voxel Schnee
+beinhaltet. Ist dies der Fall, so wird in einer weiteren Variablen ein
+gewisser \texttt{density}-Wert festgehalten, der aussagt, wie viel
+Schnee der Voxel enth"alt.\\
+Als letzte wichtige Information merkt sich jeder Voxel seine bis zu sechs
+direkten Nachbarn. Die zugrunde liegende Nachbarschaftsbeziehung ist in
+Abbildung \ref{fig:voxel_neighborhood} dargestellt.
+%\begin{figure}[htbp]
+%    \centering
+%    \includegraphics[width=200px]{pictures/neighborhood.eps}
+%    \caption{Voxelnachbarschaft}
+%    \label{fig:voxel_neighborhood}
+%\end{figure}
+Ein Voxel in der Szenenmitte hat somit stets 6 Nachbarn, Randvoxel haben 5,
+Voxel auf einer Szenenkante 4 und die Voxel in den vier Eckpunkten haben
+lediglich 3 direkte Nachbarn.
 
-\inputminted[linenos=true]{java}{code/SetRightNeighbor.java}
 
-\subsubsection{1. Ansatz: F"ur beliebige Objekte}
+\subsubsection{1. Ansatz: rechteckige/rasterangepasste Objekte}
+Ein erster, einfacherer Ansatz ist in Abbildung \ref{fig:voxel_grid_rect}
+dargestellt. Die Kreise repr"asentieren Voxel, wobei diese rot eingef"arbt
+sind, wenn sie in einem Objekt liegen.
+Zur besseren "Ubersicht sind die Abbildungen in diesem Abschnitt
+zweidimensional.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=300px]{pictures/voxel_grid_rect.png}
+    \caption{Beispiel eines rechteckigen Objektes im Voxelgrid}
+    \label{fig:voxel_grid_rect}
+\end{figure}
+Gegeben ist ein rechteckiges Objekt, dessen Kanten exakt
+zwischen den Voxeln liegen (linkes Bild). In diesem Fall liefert der
+Marching Cubes Algorithmus ein sehr gutes Ergebnis, da er als Grundlage
+f"ur die Schnittpunktberechnung im Standardfall die Kantenmitte zugrunde legt.
+Involvierte bzw. geschnittene W"urfel sind als solche hervorgehoben.
+Die resultierende, initial erzeugte Oberfl"ache ist im rechten Bild durch die
+blaue Linie gekennzeichnet und stimmt fast exakt mit der Oberfl"ache des
+Objekts "uberein.
 
-\subsubsection{2. Ansatz: F"ur rechteckige/rasterangepasste Objekte}
 
-Dieser Ansatz wird der in dieser Arbeit entscheidene sein.
+\subsubsection{2. Ansatz: beliebige Objekte}
+Der zweite Ansatz verfolgt nun das Ziel das Ergebnis des ersten Ansatzes f"ur
+beliebige Objekte zu erzeugen.
+Um folglich eine Oberfl"ache wie im linken Bild der Abbildung
+\ref{fig:voxel_grid_random}
+m"oglichst exakt nachzubilden, m"ussen die Schnittpunkte zwischen den
+Kuben und der Objektoberfl"ache entsprechend genau berechnet bzw. interpoliert
+werden.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=350px]{pictures/voxel_grid_random.png}
+    \caption{Beispiel eines beliebigen Objektes im Voxelgrid}
+    \label{fig:voxel_grid_random}
+\end{figure}
+Setzt man bei einer solchen beliebigen Oberfl"ache die Schnittpunkte allerdings
+in die Kantenmitte, so erh"alt man eine initial angen"aherte L"osung, die durch
+die blaue Linie im rechten Bild dargestellt wird.
+Es ist deutlich zu sehen, dass die Oberfl"ache teilweise "uber und teilweise
+unter der tats"achlichen Objektoberfl"ache liegt. Dies kann dazu f"uhren,
+dass die Schneedecke leicht "uber dem Objekt schwebt.\\
+
+Aufgrund der h"oheren Komplexit"at des zweiten Ansatzes wird in der
+vorliegenden Arbeit der erste Ansatz verfolgt und umgesetzt. Dies hat
+zur Folge, dass die durch das Programm erzeugten Ergebnisse f"ur Objekte
+optimiert sind, deren Kanten mit dem Voxelgitter "ubereinstimmen, also
+vorwiegend rechteckig sind. Nat"urlich werden auch Ergebnisse f"ur beliebige
+Objekte geliefert, diese sind allerdings aus den oben genannten Gr"unden
+unpr"aziser. Nat"urlich erh"oht sich die Qualit"at des Ergebnisses mit
+steigender Anzahl von Voxeln, welche ab einer bestimmten Menge und
+Szenengr"o\ss e jedoch unpraktikabel wird. Zudem spielt dies nur bei der
+ersten Anwendung des Marching Cubes Algorithmus eine Rolle, denn sobald die
+Schneedecke anw"achst soll diese "uber dem Objekt liegen. In Kapitel
+\ref{sec:snow_surface} wird dieses Problem erneut aufgegriffen und
+anhand von Applikationsgrafiken illustriert.
+
 
 \section{Szene auslesen}
-
 Um nun eine Schneedecke simulieren zu k"onnen, muss die vorliegende Szene
 zun"achst ausgelesen werden.
 Das Programm kann Szenen im Wavefront-Format einlesen.
@@ -554,12 +669,33 @@ Das Ergebnis ist in Abbildung \ref{fig:pawn_scene} zu sehen.
 
 Als Grundlage der Szene wurde ein Bauer eines Schachspiels beispielhaft
 herangezogen (links im Bild). Die rechte Bildh"alfte stellt die ausgelesene
-Szene dar in der nur die gesetzten Voxel angezeigt werden.
+Szene dar in der nur die gesetzten Voxel angezeigt werden.\\
+Nachdem die Szene gef"ullt und alle ben"otigten Voxel erzeugt wurden, sind
+im Anschlu\ss\ die Nachbarschaftsbeziehungen f"ur jeden Voxel zu setzen.
+Beispielhaft sei einmal die Bestimmung des rechten Nachbarvoxels aufgef"uhrt.
+\inputminted[linenos=true]{java}{code/SetRightNeighbor.java}
+Die Methode bekommt das gesamte Voxelgitter sowie die Distanz zwischen zwei
+benachbarten Voxeln "ubergeben. Die Distanz h"angt von der zuvor bestimmten
+Voxeldichte ab. Es wird f"ur jeden Voxel der Szene gepr"uft, ob dieser die
+richtigen Bedingungen erf"ullt. Zun"achst wird der Abstand zwischen
+dem aktuellen Voxel und dem untersuchten auf der \texttt{x}-Achse berechnet
+(Zeile 5) und in \texttt{tmp} gespeichert. F"ur diesen Abstand muss nun gelten,
+dass er der vorgegebenen Distanz entspricht und positiv ist, da der rechte
+Nachbarvoxel auch rechts von dem aktuellen Voxel liegen sollte. Weiterhin
+ist zu beachten, dass der Nachbarvoxel auf der selben H"ohe
+(gleiche \texttt{z}-Koordinate) sowie direkt neben (gleiche
+\texttt{y}-Koordinate) liegen muss.\\
+Wurde ein passender Kandidat gefunden, so wird sich dieser gemerkt und die
+Methode kann verlassen werden, da es h"ochstens einen rechten Nachbarn geben
+kann.
+Die Bestimmung der f"unf restlichen Nachbarn erfolgt analog. Dieser Prozess
+kann je nach Granularit"at eine gewisse Zeit beanspruchen,
+da f"ur jeden Voxel das gesamte Voxelgrid linear durchsucht
+werden muss.
 
 
 \section{Voxel in Objekt - Algorithmus}
 \label{sec:voxel_in_object}
-
 In diesem Abschnitt soll die Funktionsweise des 3-dimensionalen Punkt in
 Polygon Algorithmus erl"autert werden. Dieser dient dazu festzustellen, ob
 ein Voxel in einem Objekt liegt. Mit dieser Information l"asst sich
@@ -702,7 +838,6 @@ Die \texttt{punktInPolygon}-Methode bekommt hierzu die Koordinaten des zu
 testenden Voxels und ein Array mir allen Polygonkanten der Ebene "ubergeben.
 
 \inputminted[linenos=true]{java}{code/PunktInPolygon.java}
-
 Dabei muss f"ur jede Polygonkante gepr"uft werden, ob sie einen Schnittpunkt
 mit dem Test-Strahl hat, oder nicht. Da jede Kante aus zwei Punkten, bzw.
 vier Koordinaten besteht, werden diese zu Beginn aus dem \texttt{edges}-Array
@@ -856,7 +991,7 @@ W"urfelkanten geteilt und es
 kann mit dem n"achsten Kubus fortgefahren werden.\\
 Bezogen auf das obere Beispiel bedeutet dies, dass
 \texttt{iEdgeFlags[3] = 0011 0000 1010} in Bin"ar- oder \texttt{0x30a} in
-Hexadezimalform.
+Hexadezimalform beinhaltet.
 Das hei\ss t, es werden die Kanten \texttt{e1}, \texttt{e3}, \texttt{e8} und
 \texttt{e9} von der Objektoberfl"ache geschnitten, wie auch in Abbildung
 \ref{fig:cube_example} zu sehen ist.\\
@@ -931,15 +1066,51 @@ m"ussen. Zum einen bestehend aus den Vertices mit den Indices
 \texttt{(1, 8, 3)} und zum anderen
 aus \texttt{(9, 8, 1)}.
 
+
 \subsection{Ergebnis}
-
-
+Nachfolgend werden einige Ergebnisse aufgef"uhrt, die mit Hilfe des oben
+beschriebenen Algorithmus entstanden sind.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=450px]{pictures/mc_objects.png}
+    \caption{Marching Cubes Ergebnisse}
+    \label{fig:mc_result}
+\end{figure}
+Die Abbildung \ref{fig:mc_result} zeigt im linken Teil die Ann"aherung an
+eine Kugel und im rechten die wiederhergestellte Oberfl"ache eines Kegels.
+Damit die erzeugten Dreiecke besser erkennbar sind, ist neben dem jeweiligen
+Objekt mit gef"ullten \texttt{Faces} zus"atzlich das entsprechende
+Drahtgittermodell dargestellt.\\
+Abh"angig von der Voxeldichte kann nun der Detailgrad der erzeugten Oberfl"ache
+variiert werden.
+Je mehr Voxel vorhanden sind, desto genauer ist die Ann"aherung an die
+tats"achliche Objektoberfl"ache. Dies illustriert die Abbildung
+\ref{fig:granularity} recht deutlich.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=400px]{pictures/granularity.png}
+    \caption{Unterschiedlicher Detailgrad des Marching Cubes Algorithmus}
+    \label{fig:granularity}
+\end{figure}
+Allen drei gezeichneten Figuren liegt das selbe Objekt zugrunde.
+Das erste Bild hat offensichtlich eine sehr geringe Voxeldichte oder auch
+Granularit"at von 5. Das hei\ss t pro Einheit auf der jeweiligen Achse
+werden 5 Voxel gesetzt. Ist die Szene zum Beispiel 2 Einheiten
+(in \texttt{x}-Richtung) lang, so werden 10 Voxel entlang dieser Achse
+gesetzt. Das zweite Bild l"asst die Schachfigur deutlich besser erkennen,
+da dort 10 Voxel pro Achseneinheit gesetzt werden. Im dritten Bild liegt
+schlie\ss lich eine Granularit"at von 15 vor.\\
+Nachdem jetzt die Oberfl"ache der Szene durch den Marching Cubes Algorithmus
+angen"ahert werden kann, ist es im Folgenden m"oglich Schnee auf Objekten
+fallen zu lassen und eine Schneedecke zu erzeugen.
 
 
 \section{Schneedecke}
+\label{sec:snow_surface}
 
 
 \subsection{Schnee von oben}
+
 
 
 \subsection{Schnee von der Seite}

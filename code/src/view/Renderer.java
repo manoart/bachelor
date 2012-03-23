@@ -70,7 +70,7 @@ public class Renderer
         GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
 
         //TODO general file-path
-        String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/pawn.obj";
+        String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/sphere1.obj";
         ObjParser op = new ObjParser(path);
         Surface surface = new Surface(path);
         
@@ -79,7 +79,8 @@ public class Renderer
         // zoom-factor
         float zoom = 1.0f;
         float cameraX = 0.0f;
-        float cameraY = 4.0f;
+        float cameraY = -4.0f;
+//        float cameraY = -7.0f;
         // move the 'camera' up and down (glLookAt()-z-coordinate)
         float cameraZ = 2.0f;
 
@@ -241,8 +242,9 @@ public class Renderer
             GL11.glBegin(GL11.GL_TRIANGLES);
             if(Keyboard.isKeyDown(Keyboard.KEY_P))
             {
-//                surface.singleTopSnow();
-                surface.topSnow();
+                surface.singleTopSnowIndex();
+//                surface.plainTopSnow();
+//                surface.topSnow();
 //                surface.rightSnow();
                 surface.setCnt(0);
                 surface.marchingCubes();
@@ -263,25 +265,25 @@ public class Renderer
 //            
             
             // set the color of the object (R,G,B)
-//            GL11.glColor3f(0.8f, 0.5f, 0.2f);   //brown
-//            
-//            GL11.glBegin(GL11.GL_TRIANGLES);
-//            // show all faces which intersect with the x-y-plane
-////            int[] faces = generator.activeFaces(0.75f);
-//            int[] faces = op.getFaces();
-//            float[] vertices = op.getVertices();
-//            float[] normals = op.getNormals();
-//            int[] normalIndices = op.getNormalIndices();
-//
-//            for (int i = 0; i < faces.length; i++)
-//            {
-//                //subtract 1 to get the right index
-//                int j = (faces[i] - 1) * 3;
-//                int normal = (normalIndices[i] - 1) * 3;
-//                GL11.glNormal3f(normals[normal], normals[normal + 1], normals[normal + 2]);
-//                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
-//            }
-//            GL11.glEnd();
+            GL11.glColor3f(0.8f, 0.5f, 0.2f);   //brown
+            
+            GL11.glBegin(GL11.GL_TRIANGLES);
+            // show all faces which intersect with the x-y-plane
+//            int[] faces = generator.activeFaces(0.75f);
+            int[] faces = op.getFaces();
+            float[] vertices = op.getVertices();
+            float[] normals = op.getNormals();
+            int[] normalIndices = op.getNormalIndices();
+
+            for (int i = 0; i < faces.length; i++)
+            {
+                //subtract 1 to get the right index
+                int j = (faces[i] - 1) * 3;
+                int normal = (normalIndices[i] - 1) * 3;
+                GL11.glNormal3f(normals[normal], normals[normal + 1], normals[normal + 2]);
+                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
+            }
+            GL11.glEnd();
             
             GL11.glPopMatrix();
             Display.update();

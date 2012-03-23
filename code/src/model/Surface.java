@@ -52,11 +52,12 @@ public class Surface
         this.normals = new float[faces.length];
         
         setNeighbors();
+        setInitialDensity();
+        
 //        randomSnow();
 //        marchingCubes();
 //        marchingCubesActive();
         
-        //TODO Schnee aus verschiedenen Richtungen
         //TODO AVZ-Modell (Plus)
         //TODO Textur auf AVZ-Modell
     }
@@ -116,28 +117,28 @@ public class Surface
             {
                 // no exact calculation of the intersection points
                 // just connect the middle of the edges with each other (0.5f)
-//                if(iEdge == 8)// && v.getDensity() != 0.0f)
-//                {
-//                   edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
-//                                                  (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
-//                                                  (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getDensity() * EDGE_DIRECTION[iEdge][2]) * scale)); 
-//                }else if(iEdge == 9)// && v.getRightNeighbor().getDensity() != 0.0f)
-//                {
-//                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
-//                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
-//                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getRightNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
-//                }else if(iEdge == 10)// && v.getRightNeighbor().getFrontNeighbor().getDensity() != 0.0f)
-//                {
-//                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
-//                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
-//                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getRightNeighbor().getFrontNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
-//                }else if (iEdge == 11)// && v.getFrontNeighbor().getDensity() != 0.0f)
-//                {
-//                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
-//                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
-//                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getFrontNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
-//                }   
-//                else
+                if(iEdge == 8)// && v.getDensity() != 0.0f)
+                {
+                   edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                  (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                  (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getDensity() * EDGE_DIRECTION[iEdge][2]) * scale)); 
+                }else if(iEdge == 9)// && v.getRightNeighbor().getDensity() != 0.0f)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getRightNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
+                }else if(iEdge == 10)// && v.getRightNeighbor().getFrontNeighbor().getDensity() != 0.0f)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getRightNeighbor().getFrontNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
+                }else if (iEdge == 11)// && v.getFrontNeighbor().getDensity() != 0.0f)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getFrontNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
+                }   
+                else
                 {
                     edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
                                                    (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
@@ -259,16 +260,27 @@ public class Surface
         }
     }
     
+    private void setInitialDensity()
+    {
+        for(int i = 0; i < voxels.length; i++)
+        {
+            if(voxels[i] != null && voxels[i].isInside())
+            {
+                voxels[i].setDensity(0.5f);
+            }
+        }
+    }
+    
     public void rightSnow()
     {
         int k = 0;
 
-        this.activeRightVoxels = new Voxel[countActiveTopVoxels(voxels)];
+        this.activeRightVoxels = new Voxel[countActiveRightVoxels(voxels)];
         // snow from above
         // mark Voxels as active if they have a topNeighbor 
         for(int i = 0; i < voxels.length; i++)
         {
-            if((voxels[i] != null && voxels[i].getSnow() && voxels[i].hasLeftNeighbor() && !voxels[i].getLeftNeighbor().getSnow()))
+            if((voxels[i] != null && (voxels[i].getSnow() || voxels[i].isInside()) && voxels[i].hasRightNeighbor() && !voxels[i].getRightNeighbor().getSnow()))
 
             {
                 activeRightVoxels[k++] = voxels[i];
@@ -281,11 +293,11 @@ public class Surface
             for(int j = 0; j < 5; j++)
             {
                 int index = (int)(Math.random() * activeRightVoxels.length);
-                this.activeRightVoxels[index].raiseDensity(0.1f);
-                if(this.activeRightVoxels[index].getDensity() > 1.0f && this.activeRightVoxels[index].getLeftNeighbor() != null)
+                this.activeRightVoxels[index].raiseDensity(SNOWFLAKE);
+                if(this.activeRightVoxels[index].getDensity() > 1.0f && this.activeRightVoxels[index].getRightNeighbor() != null)
                 {
-                    this.activeRightVoxels[index].getLeftNeighbor().setSnow();
-                    this.activeRightVoxels[index] = this.activeRightVoxels[index].getLeftNeighbor();
+                    this.activeRightVoxels[index].getRightNeighbor().setSnow();
+                    this.activeRightVoxels[index] = this.activeRightVoxels[index].getRightNeighbor();
                 }   
             }
         }else
@@ -312,18 +324,18 @@ public class Surface
 
                 {
                     v.removeSnow();
-                    this.activeRightVoxels[index] = v.getLeftNeighbor();
+                    this.activeRightVoxels[index] = v.getRightNeighbor();
                 }
             }
         }
     }
     
-    private int countActiveTopVoxels(Voxel[] voxels)
+    private int countActiveRightVoxels(Voxel[] voxels)
     {
         int count = 0;
         for(int i = 0; i < voxels.length; i++)
         {
-            if((voxels[i] != null && voxels[i].getSnow() && voxels[i].hasLeftNeighbor() && !voxels[i].getLeftNeighbor().getSnow()))// ||
+            if((voxels[i] != null && (voxels[i].getSnow() || voxels[i].isInside()) && voxels[i].hasRightNeighbor() && !voxels[i].getRightNeighbor().getSnow()))// ||
 //               (voxels[i] != null && !voxels[i].getSnow() && !voxels[i].hasBottomNeighbor() && !voxels[i].getTopNeighbor().getSnow()) ||
 //               (voxels[i] != null && voxels[i].getInside() && !voxels[i].getTopNeighbor().getInside()))
             {
@@ -333,9 +345,52 @@ public class Surface
         return count;
     }
     
+    // without snow stability
+    public void plainTopSnow()
+    {
+        int k = 0;
+
+        this.activeVoxels = new Voxel[countActiveVoxels(voxels)];
+
+        // snow from above
+        // mark Voxels as active if they have a topNeighbor 
+        for(int i = 0; i < voxels.length; i++)
+        {
+            if((voxels[i] != null && voxels[i].getSnow() && !voxels[i].getTopNeighbor().getSnow()) ||
+               (voxels[i] != null && !voxels[i].hasBottomNeighbor() && !voxels[i].getTopNeighbor().getSnow() && !voxels[i].getSnow()) ||
+               (voxels[i] != null && voxels[i].isInside() && !voxels[i].getTopNeighbor().isInside()))
+            {
+                activeVoxels[k++] = voxels[i];
+            }
+        }
+        
+        // let it snow
+        
+        int snowflakes = 50;
+        for(int j = 0; j < snowflakes; j++)
+        {
+            int index = (int)(Math.random() * activeVoxels.length);
+
+
+//                this.activeVoxels[index] = singleTopSnow(this.activeVoxels[index]);
+            this.activeVoxels[index].raiseDensity(SNOWFLAKE);
+            if(this.activeVoxels[index].getDensity() > 1.0f && this.activeVoxels[index].getTopNeighbor() != null)
+            {
+                this.activeVoxels[index].getTopNeighbor().setSnow();
+                this.activeVoxels[index] = this.activeVoxels[index].getTopNeighbor();
+            }
+
+            // make a visible border of the scene
+            if(!this.activeVoxels[index].hasSameLevelNeighbors())
+            {
+                this.activeVoxels[index].removeSnow();
+            }
+        }
+    }
+    
+    // with snow stability
     public void topSnow()
     {
-        // TODO snow stability...
         int k = 0;
 
         this.activeVoxels = new Voxel[countActiveVoxels(voxels)];
@@ -355,16 +410,21 @@ public class Surface
         // let it snow
         if(Surface.cold)
         {
-            for(int j = 0; j < 50; j++)
+            int snowflakes = 50;
+            for(int j = 0; j < snowflakes; j++)
             {
                 int index = (int)(Math.random() * activeVoxels.length);
-                this.activeVoxels[index].raiseDensity(0.1f);
-                if(this.activeVoxels[index].getDensity() > 1.0f && this.activeVoxels[index].getTopNeighbor() != null)
-                {
-                    this.activeVoxels[index].getTopNeighbor().setSnow();
-                    this.activeVoxels[index] = this.activeVoxels[index].getTopNeighbor();
-                }
                 
+                
+                this.activeVoxels[index] = singleTopSnow(this.activeVoxels[index]);
+//                this.activeVoxels[index].raiseDensity(SNOWFLAKE);
+//                if(this.activeVoxels[index].getDensity() > 1.0f && this.activeVoxels[index].getTopNeighbor() != null)
+//                {
+//                    this.activeVoxels[index].getTopNeighbor().setSnow();
+//                    this.activeVoxels[index] = this.activeVoxels[index].getTopNeighbor();
+//                }
+                
+                // make a visible border of the scene
                 if(!this.activeVoxels[index].hasSameLevelNeighbors())
                 {
                     this.activeVoxels[index].removeSnow();
@@ -416,27 +476,49 @@ public class Surface
         return count;
     }
     
-    public void singleTopSnow()
+    private Voxel singleTopSnow(Voxel v)
     { 
         // snow just from a point-source
         for(int j = 0; j < 1; j++)
         {
-//            int index = 14627;
-            int index = 14750;
-//            int index = 275;
-            
-            this.voxels[index].raiseDensity(SNOWFLAKE);
-            if(this.voxels[index].getDensity() > 1.0f && this.voxels[index].getTopNeighbor() != null)
+            v.raiseDensity(SNOWFLAKE);
+            if(v.getDensity() > 1.0f && v.getTopNeighbor() != null)
             {
 //                if(stabilityTest(this.voxels[index]) < 5)
-                this.voxels[index] = this.voxels[index].getTopNeighbor();
-
-                if(stabilityTest(this.voxels[index]) >= 5)
+                v = v.getTopNeighbor();
+                // magic number
+                if(stabilityTest(v) >= 4)
                 {
-                    this.voxels[index].removeSnow();
-                    this.voxels[index] = this.voxels[index].getBottomNeighbor();
+                    v.removeSnow();
+                    return v.getBottomNeighbor();
                 }
+                
             }
+        }
+        return v;
+    }
+    
+    public void singleTopSnowIndex()
+    {
+            
+        int index = 14627;
+//            int index = 14750;
+//            int index = 275;
+//            
+        this.voxels[index].raiseDensity(SNOWFLAKE);
+        if(this.voxels[index].getDensity() > 1.0f && this.voxels[index].getTopNeighbor() != null)
+        {
+//                if(stabilityTest(this.voxels[index]) < 5)
+            this.voxels[index] = this.voxels[index].getTopNeighbor();
+
+            if(stabilityTest(this.voxels[index]) >= 5)
+            {
+                this.voxels[index].removeSnow();
+                this.voxels[index] = this.voxels[index].getBottomNeighbor();
+            }
+        }
+            
+            
 //            if(this.voxels[index].getDensity() <= 1.0)
 //            {
 //                this.voxels[index].raiseDensity(SNOWFLAKE);
@@ -450,7 +532,7 @@ public class Surface
 //                }
 //
 //            }
-        }
+        
         
 //        for(int j = 0; j < 1; j++)
 //        {
@@ -466,7 +548,6 @@ public class Surface
 //                }
 //            }
 //        }
-
     }
     
     private int stabilityTest(Voxel v)
@@ -596,7 +677,7 @@ public class Surface
     
     public void setCold(boolean bool)
     {
-        this.cold = bool;
+        Surface.cold = bool;
     }
     
     public Voxel[] getVoxels()
