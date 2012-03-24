@@ -105,18 +105,12 @@ werden.
 Das Displacement-Mapping geht aus dem Bump-Mapping hervor und stellt eine
 Erweiterung dessen dar.\cite[S. 9]{texturing} Robert L. Cook beschreibt das
 Displacement-Mapping erstmals 1984.\cite{displacement_mapping}
-
-\begin{wrapfigure}{r}{0.4\textwidth}
-    \vspace{-20pt}
-    \begin{center}
-        \includegraphics[width=0.35\textwidth]{pictures/displacement_mapping.jpg}
-    \end{center}
-    \vspace{-10pt}
+\begin{figure}
+    \centering
+    \includegraphics[width=110px]{pictures/displacement_mapping.jpg}
     \caption[Beispiel f"ur Displacement Mapping]{Beispiel f"ur Displacement Mapping \cite{displacement_mapping_pic}}
     \label{fig:displacement}
-    \vspace{-20pt}
-\end{wrapfigure}
-
+\end{figure}
 Dabei werden Texturen dazu benutzt die Objektoberfl"ache zu alternieren.
 Das hei\ss t, es werden nicht nur die Normalen, wie beim
 Bump Mapping ver"andert um eine gew"unschte Erscheinung der Oberfl"ache zu
@@ -124,10 +118,7 @@ simulieren\cite{bump_mapping}, sondern es wird die tats"achliche
 Objektgeometrie modifiziert.
 Dies geschieht, indem die Vertices eines Objekts anhand der Werte einer
 Displacement-Map entlang der Normalen (senkrecht zur Oberfl"ache) verschoben
-und die Normalen entsprechend angepasst werden.
-
-
-
+und die Normalen entsprechend angepasst werden.\\
 In der Abbildung \ref{fig:displacement} ist ein
 Beispiel f"ur eine solche
 Displacement-Map und die Auswirkung auf die Oberfl"ache (Mesh) gegeben.
@@ -142,7 +133,6 @@ erzeugt wird im Umriss des Objekts sichtbar ist.
 
 \section{Punkt in Polygon - Algorithmus}
 \label{sec:pip_theo}
-
 Der Punkt in Polyon - Algorithmus ist ein Verfahren um festzustellen, ob ein
 gegebener Punkt in einer Ebene innerhalb oder au\ss erhalb der Grenzen
 eines Polygons liegt. Diese Methode findet vorwiegend Anwendung beim
@@ -156,15 +146,12 @@ durch andere verdeckt werden.
 \\
 Im Folgenden wird n"aher auf das Konzept des Ray-Castings eingegangen, welches
 in Abbildung \ref{fig:pip} illustriert wird.
-
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=250px]{pictures/punkt_in_polygon.eps}
+    \includegraphics[width=200px]{pictures/punkt_in_polygon.eps}
     \caption{Punkt in Polygon Algorithmus}
     \label{fig:pip}
 \end{figure}
-
 Punkte werden getestest, indem man einen imagin"aren ''Strahl'' in eine
 beliebige Richtung schickt und die Schnittpunkte mit den Kanten des Polygons
 z"ahlt. Ist die Anzahl der Schnittpunkte gerade, so liegt der Punkt
@@ -172,14 +159,12 @@ au\ss erhalb, ist sie ungerade, so liegt der Punkt innerhalb des Polygons.\\
 Um konsistente Ergebnisse zu erhalten falls ein oder mehrere Polygon-Vertices
 genau auf dem Test-Strahl liegen, ist es notwendig die Sonderf"alle zu
 betrachten, die in Abbildung \ref{fig:sonderfaelle} dargestellt sind.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=300px]{pictures/sonderfaelle.eps}
+    \includegraphics[width=250px]{pictures/sonderfaelle.eps}
     \caption{Sonderf"alle des Punkt in Polygon Algorithmus}
     \label{fig:sonderfaelle}
 \end{figure}
-
 Die Umgehung dieses Problems liegt in der Annahme, dass der Plygon-Vertex
 infinitisimal "uber dem Test-Strahl liegt. Durch dieses Vorgehen wird
 zus"atzlich festgelegt, zu welchem Polygon ein Pixel geh"ort, sollten
@@ -188,7 +173,6 @@ zwei Polygone einen oder mehrere Vertices gemeinsam haben.
 
 \section{Marching Cubes - Algorithmus}
 \label{sec:mc_theo}
-
 %Der MC geht auf Lorensen und Cline zur"uck...
 \subsection{Bedeutung}
 Der Marching Cubes Algorithmus wurde im Jahr 1987 im Auftrag der General
@@ -225,20 +209,18 @@ n"achsten Schritt werden vier benachbarte Voxel auf der unteren Ebene
 miteinander verbunden, dass sie ein Quadrat ergeben. Danach bilden diese mit
 den genau dar"uberliegenden Voxeln der Ebene \texttt{z+1} einen imagin"aren
 W"urfel (siehe Abbildung \ref{fig:mc}).
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[]{pictures/marching_cube.eps}
+    \includegraphics[width=300px]{pictures/marching_cube.eps}
     \caption{Marching Cube}
     \label{fig:mc}
 \end{figure}
-
 Dabei gibt es meist einen Referenzvoxel von dem aus die restlichen
 Kubusecken mit Hilfe eines Offsets bestimmt werden.\\
-Damit anschlie\ss end eine Oberfl"ache generiert werden kann wird wird f"ur
+Damit anschlie\ss end eine Oberfl"ache generiert werden kann wird f"ur
 jeden Eckpunkt
 gepr"uft, ob dieser innerhalb oder au\ss erhalb des betrachteten Objektes liegt,
-was anhand der Dichtewerde bestimmt werden kann.
+was anhand der Dichtewerte bestimmt werden kann.
 Liegen alle Eckpunkte innerhalb oder au\ss erhalb, so muss dieser W"urfel nicht
 weiter untersucht werden und es wird zum N"achsten ''marschiert''.
 Liegt hingegen ein Schnittpunkt des Kubus mit der Objektoberfl"ache vor, so
@@ -248,15 +230,13 @@ haben kann, gibt es genau $2^8 = 256$ M"oglichkeiten den Kubus zu zerteilen.
 Aus Symmetriegr"unden k"onnen diese 256 F"alle auf die in Abbildung
 \ref{fig:mc_possibilities} dargestellten 15 reduziert
 werden.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=310px]{pictures/marchingCubes.png}
+    \includegraphics[width=350px]{pictures/marchingCubes.png}
     \caption[Marching Cube - Schnittm"oglichkeiten]
         {Marching Cube - Schnittm"oglichkeiten \cite{mc_possibilities}}
     \label{fig:mc_possibilities}
 \end{figure}
-
 Sind schlie\ss lich die Zust"ande aller beteiligten Voxel bestimmt, so wird in
 einer Tabelle, der sogenannten
 \texttt{TriangleLookupTable} nachgesehen, welche Dreiecke in dem vorliegenden
@@ -273,10 +253,9 @@ Einheitsnormalen berechnen.\\
 Ein Beispiel f"ur die Visualisierung eines aus 150 Schichten bestehenden
 MRT-Modells soll die Abbildung \ref{fig:mc_head} geben, in der die
 Ann"aherung an einen Kopf deutlich zu erkennen ist.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=250px]{pictures/marching_cubes_head.png}
+    \includegraphics[width=180px]{pictures/marching_cubes_head.png}
     \caption[Marching Cubes - Polygonmodell eines Kopfes]
         {Marching Cubes - Polygonmodell eines Kopfes \cite{mc_head}}
     \label{fig:mc_head}
@@ -298,17 +277,13 @@ Ann"aherung an einen Kopf deutlich zu erkennen ist.
 
 
 \section{Ans"atze}
-
 Dieses Kapitel befasst sich mit m"oglichen L"osungsans"atzen zur Erstellung
 einer Schneedecke und stellt drei verschiedene Ans"atze dar, von denen der
 Letztgenannte umgesetzt werden soll.
 
 
 \subsection{Snow-Map}
-
-
 \subsubsection{Interpretation als Lightmap}
-
 Ein erster, naiver Ansatz eine Schneedecke zu modellieren ist es, eine Textur
 zu erstellen, die die Aufgabe hat die Menge an gefallenem Schnee an jeder
 Stelle der Szene zu speichern. Diese Textur wird im Folgenden als Snow-Map
@@ -318,14 +293,12 @@ interpretiert werden. Das hei\ss t, dass in die urspr"ungliche Farbe der
 Objekttextur entsprechend der Menge an Schnee wei\ss hineingemischt wird um
 die Farbe aufzuhellen. Das Prinzip
 einer Lightmap ist in Abbildung (\ref{fig:lightmap}) verdeutlicht.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=400px]{pictures/lightmap.png}
+    \includegraphics[width=350px]{pictures/lightmap.png}
     \caption{Lightmap auf einer Wand}
     \label{fig:lightmap}
 \end{figure}
-
 Die Abbildung zeigt die Auswirkung einer Lightmap in Form eines Spotlights
 auf eine Mauer-Textur.
 Ebenso w"urde sich die Snow-Map bei der Simulation von
@@ -359,12 +332,11 @@ Hierbei ist es wichtig zu bedenken, dass die Schneegeometrie von Anfang an
 wei\ss\ ist und nur die Transparenz die Menge an Schnee wiederspiegelt.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=400px]{pictures/clouds.png}
+    \includegraphics[width=350px]{pictures/clouds.png}
     \caption[Beispiel f"ur transparentes Displacement-Mapping]
         {Beispiel f"ur transparentes Displacement-Mapping \cite{wenke}}
     \label{fig:clouds}
 \end{figure}
-
 Somit lie\ss en sich Erhebungen und Schneeh"aufungen darstellen, die zudem
 passend eingef"arbt w"aren. Jedoch wird man bei dieser Vorgehensweise ebenfalls
 mit gewissen Problemen konfrontiert.
@@ -409,7 +381,7 @@ in den Ecken mehr m"oglich, da die Voxel in einem regelm"a\ss igen
 Gitter gesetzt werden und jeder Voxel nur einmal existiert.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=200px]{pictures/voxel.eps}
+    \includegraphics[width=180px]{pictures/voxel.eps}
     \caption{Voxel in Objektecken}
     \label{fig:voxel}
 \end{figure}
@@ -427,16 +399,6 @@ Eigenschaften er hat und welche Bedeutung diese f"ur den weiteren Verlauf
 der Arbeit haben.
 
 \subsubsection{Voxel}
-\begin{wrapfigure}{r}{0.4\textwidth}
-    \vspace{-10pt}
-    \begin{center}
-        \includegraphics[width=0.35\textwidth]{pictures/neighborhood.eps}
-    \end{center}
-    \vspace{-10pt}
-    \caption{Voxelnachbarschaft}
-    \label{fig:voxel_neighborhood}
-    \vspace{-10pt}
-\end{wrapfigure}
 Wie zuvor bereits angedeutet sind Voxel im Grunde Punkte im Raum mit gewissen
 Eigenschaften.
 Ein Voxel besitzt folglich eine \texttt{x}-, \texttt{y}- und
@@ -450,12 +412,12 @@ Schnee der Voxel enth"alt.\\
 Als letzte wichtige Information merkt sich jeder Voxel seine bis zu sechs
 direkten Nachbarn. Die zugrunde liegende Nachbarschaftsbeziehung ist in
 Abbildung \ref{fig:voxel_neighborhood} dargestellt.
-%\begin{figure}[htbp]
-%    \centering
-%    \includegraphics[width=200px]{pictures/neighborhood.eps}
-%    \caption{Voxelnachbarschaft}
-%    \label{fig:voxel_neighborhood}
-%\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=180px]{pictures/neighborhood.eps}
+    \caption{Voxelnachbarschaft}
+    \label{fig:voxel_neighborhood}
+\end{figure}
 Ein Voxel in der Szenenmitte hat somit stets 6 Nachbarn, Randvoxel haben 5,
 Voxel auf einer Szenenkante 4 und die Voxel in den vier Eckpunkten haben
 lediglich 3 direkte Nachbarn.
@@ -469,7 +431,7 @@ Zur besseren "Ubersicht sind die Abbildungen in diesem Abschnitt
 zweidimensional.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=300px]{pictures/voxel_grid_rect.png}
+    \includegraphics[width=200px]{pictures/voxel_grid_rect.png}
     \caption{Beispiel eines rechteckigen Objektes im Voxelgrid}
     \label{fig:voxel_grid_rect}
 \end{figure}
@@ -493,7 +455,7 @@ Kuben und der Objektoberfl"ache entsprechend genau berechnet bzw. interpoliert
 werden.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=350px]{pictures/voxel_grid_random.png}
+    \includegraphics[width=200px]{pictures/voxel_grid_random.png}
     \caption{Beispiel eines beliebigen Objektes im Voxelgrid}
     \label{fig:voxel_grid_random}
 \end{figure}
@@ -537,9 +499,7 @@ wie Vertices, Normalen, Faces, Texturkoordinaten oder benutzte
 Oberfl"achenmatrialien.
 In dem folgenden Dateiausschnitt sind die f"ur diese Applikation erforderlichen
 Daten beispielhaft aufgef"uhrt.
-
 \inputminted[]{ruby}{code/cube.obj}
-
 Die ersten beiden Zeilen k"onnen ignoriert werden, da es Kommentare sind,
 deren Inhalt hier irrelevant ist.
 Es sind lediglich jene Zeilen von Bedeutung, die mit ''\texttt{v}'',
@@ -568,7 +528,7 @@ Schlie\ss lich leitet das Pr"afix ''\texttt{f}'' ein Face ein. Hinter jedem
 Somit wird festgelegt, welche Vertices miteinander zu einem Face verbunden
 werden m"ussen und welche Normale der jeweilige Vertex hat. Beispiel:
 
-\inputminted[]{ruby}{face.obj}
+\inputminted[]{ruby}{code/face.obj}
 
 Dieses Face besteht folglich aus dem Vertex mit dem Index 5, dem Vertex 8
 und dem Vertex 7, welche in genau dieser Reihenfolge miteinander verbunden
@@ -593,8 +553,8 @@ gro\ss e Arrays anzulegen. Diese Arrays sind:
         Normalen, die ebenfalls hintereinander in dem Array stehen.
     \item{\textbf{faceArray}}: Enth"alt die Indizes der Vertices die zu einem
         Face verbunden werden. Ein Face besteht dabei immer aus drei Vertices.
-    \item{\textbf{normalIndexArray}}: Enth"alt analog zum \texttt{faceArray} die
-        Indizes der Normalen.
+    \item{\textbf{normalIndexArray}}: Enth"alt analog zum \texttt{faceArray}
+        die Indizes der Normalen.
 \end{itemize}
 
 Nachdem die Arrays erstellt wurden, wird die Datei mit Hilfre der folgenden
@@ -659,14 +619,12 @@ Das hei\ss t pro L"angeneinheit im Koordinatensystem werden \texttt{STEPS}
 Voxel gesetzt.\\
 %TODO evtl. die setVoxel()-Methode erkl"aren
 Das Ergebnis ist in Abbildung \ref{fig:pawn_scene} zu sehen.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=250px]{pictures/pawn_scene.png}
+    \includegraphics[width=200px]{pictures/pawn_scene.png}
     \caption{Voxelgitter}
     \label{fig:pawn_scene}
 \end{figure}
-
 Als Grundlage der Szene wurde ein Bauer eines Schachspiels beispielhaft
 herangezogen (links im Bild). Die rechte Bildh"alfte stellt die ausgelesene
 Szene dar in der nur die gesetzten Voxel angezeigt werden.\\
@@ -705,7 +663,6 @@ nicht.
 
 
 \subsection{Aktive Faces berechnen}
-
 Es sollen nicht immer alle in der Szene
 enthaltenen Faces auf Schnittpunkte mit dem aus dem Punkt in Polygon bekannten,
 imagin"aren ''Strahl'' gepr"uft werden, sondern lediglich die
@@ -715,9 +672,7 @@ aktuelle Ebene schneiden nur ein Mal pro Ebene ermittelt werden. Das bedeutet,
 dass alle Voxel in der aktuellen \texttt{x}-\texttt{y}-Ebene die selbe
 \texttt{z}-Koordinate
 besitzen und nur mit den gerade aktiven Faces gepr"uft werden m"ussen.
-
 \inputminted[linenos=true]{java}{code/ActiveFaces.java}
-
 Welches Face die betrachtete Ebene schneidet bestimmt die
 \texttt{z}-Koordinate der drei Face-Vertices. Sind alle
 \texttt{z}-Werte kleiner oder gr"o\ss er als der \texttt{z}-Wert der Ebene,
@@ -726,14 +681,12 @@ so gibt es offensichtlich keine Schnittkante. Sobald mindestens eine
 so muss es einen Schnitt geben und das Face wird zu den aktiven Faces
 hinzugef"ugt. Diese Abfrage findet in dem \texttt{if}-Statement im oberen
 Code-Ausschnitt statt (Zeile 8-13).
-
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=120px]{pictures/active_faces.png}
     \caption{Aktive Faces}
     \label{fig:active_faces}
 \end{figure}
-
 In der Abbildung \ref{fig:active_faces} sind beispielhaft f"ur eine Ebene die
 aktiven Faces einmal dargestellt. Zudem werden zur besseren "Ubersicht lediglich
 die innenliegenden Voxel angezeigt.\\
@@ -743,20 +696,17 @@ der entsprechenden Ebene berechnet werden.
 
 \subsection{Schnittkanten der Faces mit der Ebene bestimmen}
 \label{sec:schnittkanten}
-
 Die Schnittkantenberechnung der aktiven Faces mit der aktuell betrachteten
 Ebene ist entscheidend um im Folgenden den zweidimensionalen Punkt in Polygon
 Algorithmus anwenden zu k"onnen.\\
 Dazu werden zun"achst alle M"oglichkeiten ein Face zu schneiden betrachtet
 (siehe Abbildung \ref{fig:faces_schnitte}).
-
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=400px]{pictures/faces_schnitte.eps}
     \caption{Ebene-Face Schnittm"oglichkeiten}
     \label{fig:faces_schnitte}
 \end{figure}
-
 Es k"onnen sechs verschiedene F"alle unterschieden werden. F"ur die
 Fallunterscheidung signifikant sind die
 \texttt{z}-Koordinaten der drei Vertices jedes Faces. Es wird gepr"uft, welcher
@@ -773,14 +723,12 @@ Das bedeutet, dass f"ur jedes Face zweimal ein Schnittpunkt zwischen einer
 Gerade und der aktuellen Ebene durchgef"uhrt werden muss.
 Umgesetzt wird dies mit Hilfe einfacher Vektorgeometrie. Zur besseren
 Veranschaulichung ist die Abbildung \ref{fig:sp_gerade_ebene} gegeben.
-
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=300px]{pictures/sp_gerade_ebene.eps}
+    \includegraphics[width=200px]{pictures/sp_gerade_ebene.eps}
     \caption{Schnittpunkt von einer Geraden mit einer Ebene}
     \label{fig:sp_gerade_ebene}
 \end{figure}
-
 Exemplarisch soll sich hier auf eine Seite und deren Schnittpunkt mit einer
 Ebene beschr"ankt werden.
 Gegeben sind die Punkte $P_1$ und $P_2$ und gesucht ist
@@ -904,7 +852,8 @@ ein Voxel innerhalb eines Objekts und ein benachbarter Voxel au\ss erhalb, so
 muss die Objektoberfl"ache einen Schnittpunkt mit der Kante zwischen diesen
 beiden Voxeln haben. Die genaue Position des Schnittpunktes kann linear
 interpoliert werden, worauf in diesem Fall allerdings nicht eingegangen wird.
-Stattdessen wird stets der Kantenmittelpunkt als Schnittpunkt gew"ahlt.\\
+Stattdessen wird stets der Kantenmittelpunkt als Schnittpunkt gew"ahlt.
+%TODO in alle Richtungen interpolieren, nicht nur in z-Richtung!!
 %Anschlie\ss end wird in der \texttt{TriangleLookupTable} (TLT) nachgesehen,
 
 
@@ -923,7 +872,7 @@ verwendet werden, ist in Abbildung \ref{fig:cube} dargestellt.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=200px]{pictures/cube.eps}
-    \caption{Indizierung eines Marching Cubes}
+    \caption{Indizierung eines imagin"aren W"urfels}
     \label{fig:cube}
 \end{figure}
 
@@ -1024,7 +973,6 @@ Positionierung in
 Abh"angigkeit zur Granularit"at des \texttt{Voxel}-Gitters
 ($\texttt{scale} = \frac{1}{\texttt{STEPS}}$).\\
 
-Zur besseren Visualisierung werden neben den Schnittpunkten auch
 die Einheitsnormalen an eben diesen Punkten berechnet.
 
 
@@ -1088,7 +1036,7 @@ tats"achliche Objektoberfl"ache. Dies illustriert die Abbildung
 \ref{fig:granularity} recht deutlich.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=400px]{pictures/granularity.png}
+    \includegraphics[width=350px]{pictures/granularity.png}
     \caption{Unterschiedlicher Detailgrad des Marching Cubes Algorithmus}
     \label{fig:granularity}
 \end{figure}
@@ -1107,18 +1055,178 @@ fallen zu lassen und eine Schneedecke zu erzeugen.
 
 \section{Schneedecke}
 \label{sec:snow_surface}
+Die zuvor durch den Marching Cubes Algorithmus erzeugte Oberfl"ache
+dient im Nachfolgenden als Grundlage der Schneedecke. Damit diese allerdings
+wachsen und auf den bereits vorhandenen Oberfl"achen aufbauen kann, muss
+zun"achst Schneefall simuliert werden. Das Anwachsen der Schneedecke wiederum
+wird mit Hilfe der Voxel realisiert, mit denen die gesamte Szene gef"ullt
+wurde. Dieses Vorgehen wird im weiteren Verlauf noch genauer erl"autert.\\
+Der in diesem Kapitel simulierte Schneefall hat zwei m"ogliche Richtungen:
+senkrecht von oben oder schr"ag von der Seite.
+Als Abrundung des Ergebnisses wird die
+Schneestabilit"at eingef"uhrt. Dabei wird gepr"uft, ob kleinere Lawinen
+ausgel"ost werden
+m"ussen (Verteilung des Schnees auf benachbarte Voxel), um unrealistisch
+hohe Schneeauft"urmungen an Objektkanten zu vermeiden.\\
+Die folgenden zwei Applikationsbilder (\ref{fig:mc_initial} und
+\ref{fig:rect_obj}) zeigen den initialen Zustand nach einmaliger Anwendung
+des Marching Cubes Algorithmus.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=300px]{pictures/mc_initial.png}
+    \caption{Unterschied zwischen tats"achlicher und angen"aherter Oberfl"ache}
+    \label{fig:mc_initial}
+\end{figure}
+Die Abbildung \ref{fig:mc_initial} verdeutlicht das in Abschnitt
+\ref{sec:voxel} angesprochene Problem der unpr"azisen Ann"aherung an die
+tats"achliche Objektoberfl"ache. Die nachgebildete Oberfl"ache,
+die als Grundlage der Schneedecke dienen wird, liegt zu beginn teilweise
+"uber und teilweise unter der Oberfl"ache des Objekts.
+Ein besseres Ergebnis kann die vorliegende Implementation des Algorithmus
+nicht leisten. Die Gr"unde hierf"ur sind zum einen die Unausgewogenheit
+zwischen dem Aufwand der komplexen Berechnung der Schnittpunkte
+und dem im
+Gegensatz dazu nur leicht verbesserten Endergebnis und zum anderen die
+Tatsache, dass die Schneedecke bereits nach wenigen Iterationen auf und "uber
+der Objektoberfl"ache liegt, wodurch die zu Anfang durchscheinende Schneedecke
+keine Relevanz mehr hat.\\
+Im Gegensatz dazu ist die Ann"aherung an rechteckige Objekte, wie in
+Abbildung \ref{fig:rect_obj} zu sehen ist, sehr zufriedenstellend.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=450px]{pictures/rect_obj.png}
+    \caption{Ann"aherung eines rechteckigen Objekts mit Schneedecke}
+    \label{fig:rect_obj}
+\end{figure}
 
 
 \subsection{Schnee von oben}
-
-
+Das Anwachsen der Schneedecke soll zun"achst an einem Beispiel verdeutlich
+werden. Dabei wird davon ausgegangen, dass die imagin"aren Schneeflocken
+senkrecht von oben fallen.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=300px]{pictures/voxel_grid_snow.png}
+    \caption{Anwachsen der Schneedecke}
+    \label{fig:voxel_grid_snow}
+\end{figure}
+Die Abbildung \ref{fig:voxel_grid_snow} stellt das das Voxelgitter schematisch
+und zweidimensional dar. Es werden zus"atzlich die in Abschnitt \ref{sec:voxel}
+beschriebenen Eigenschaften der Voxel ausgenutzt.
+Die gr"un gef"ullten Kreise repr"asentieren schneegef"ullte Voxel, die kleinen
+schwarzen Kreise stellen den jeweiligen \texttt{density}- oder F"ullewert
+des darunterliegenden Voxels dar und die schwarze Linie illustriert
+die Schneedecke.\\
+Der \texttt{density}-Wert eines Voxels kann zwischen \texttt{0} und \texttt{1}
+liegen. Er wird erh"oht, wenn eine imagin"are Schneeflocke auf
+den jeweiligen Voxel trifft. "Uberschreitet der F"ullwert dabei den Wert
+\texttt{1}, so wird mit Hilfe der Nachbarschaftsbeziehung der dar"uberliegende
+Voxel aktiviert, das hei\ss t sein \texttt{snow}-Attribut wird auf
+\texttt{ture}
+gesetzt.
+Um schlie\ss lich sprunghafte "Uberg"ange von einem Voxel zum n"achsten bei
+der Visualisierung des Schneewachstums zu verhindern, wird die
+H"ohe der Schneedecke anhand des \texttt{density}-Wertes des entsprechenden
+Voxels interpoliert.\\
+Im weiteren Verlauf wird nun genauer auf die Umsetzung des senkrechten
+Scheefalls auf Programmebene eingegangen. Zur Simulation von Schneefall
+oder Schneeflocken m"ussen als erstes die Voxel der Szene bestimmt werden
+auf die Schnee fallen kann. Dazu wird das gesamte
+\texttt{Voxel}-Array durchgegangen um anschlie\ss end die in Frage kommenden
+Kandidaten in dem Array \texttt{activeVoxels} zu speichern.
+\inputminted[linenos=true]{java}{code/ActiveVoxels.java}
+Wird angenommen, dass der Schnee direkt von oben f"allt, so legt das l"angliche
+\texttt{if}-Statement (Zeile 6 - 11) fest, welche Voxel als m"ogliche
+Landepl"atze bereitgestellt werden. Dies betrifft zum einen alle auf der
+Schneeoberfl"ache liegenden Voxel, das bedeutet, Voxel die selbst Schnee
+enthalten, ihr oberer Nachbar aber nicht. Zum anderen soll auch neben den
+Objekten, auf dem Szenenboden Schnee fallen k"onnen, wozu die Voxel ohne
+unteren Nachbarn aktiviert werden. Zuletzt werden noch die Voxel in Betracht
+gezogen, die auf einem Objekt liegen, das hei\ss t der Voxel selbst liegt
+innerhalb, sein oberer Nachbar hingegen au\ss erhalb eines Objekts.\\
+Sind die Aktiven Voxel bestimmt worden, so kann mit der Simulation des
+Schneefalls begonnen werden. Dazu bestimmt man zun"achst die Anzahl der
+Schneeflocken, die fallen sollen, bevor die Szene neu gezeichnet wird
+(in diesem Fall \texttt{int snowflakes = 50}).
+\inputminted[linenos=true]{java}{code/TopSnow.java}
+Anschlie\ss end wird f"ur jede Schneeflocke ein beliebiger Voxel aus dem
+\texttt{activeVoxels}-Array herausgegriffen und dessen \texttt{density}-Wert
+um eine konstante Gr"o\ss e erh"oht (z.B. \texttt{0.1}).
+"Ubersteigt die \texttt{density} den Wert \texttt{1.0}, so wird der obere
+Nachbar des aktuellen Voxels aktiviert und an die Stelle des alten
+in das \texttt{activeVoxels}-Array geschrieben.\\
+Nach einer gewissen Anzahl von Iterationen f"uhrt dieses Vorgehen zu
+folgendem Ergebnis (Abbildung \ref{fig:topSnow}). Der Pfeil zeigt die Richtung
+des Schneefalls an.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=120px]{pictures/topSnow.png}
+    \caption{Schneedecke bei senkrechtem Schneefall}
+    \label{fig:topSnow}
+\end{figure}
+Nat"urlich ist dies nur ein grobes Modell zur Validierung und Visualisierung
+eines Ergebnisses. Bei dem oben beschriebenen Vorgehen kann es zum Beispiel
+vorkommen, dass auch Voxel unterhalb eines Objekts auf den Boden empf"anglich
+f"ur Schnee sind, obwohl diese in der Realit"at nicht erreichbar w"aren.
+Um ein authentischeres Ergebnis zu erhalten m"usste ein realit"atsnahes
+Partikelsystem erstellt werden anhand dessen sich Schneeflocken in der Szene
+bewegen. In diesem Fall m"usste der \texttt{density}-Wert eines aktiven Voxels
+nur erh"oht werden, wenn eine Schneeflocke in das Einzugsgebiet dieses Voxels
+f"allt und nicht nach dem oben verwendeten Zufallsprinzip.
 
 \subsection{Schnee von der Seite}
+Um nun etwas Wind zu simulieren wird zus"atzlich zu dem senkrechten noch
+waagerechter Schneefall hinzugef"ugt. Die Funktionsweise ist analog zum
+Schnee von oben, nur das etwas andere Voxel aktiviert werden.
+Beispielhaft soll der Schnee von rechts auf das Objekt auftreffen.
+\inputminted[linenos=true]{java}{code/RightSnow.java}
+Dazu wird lediglich gepr"uft, ob sich ein Voxel auf der Objektoberfl"ache oder
+der Schneedecke befindet und einen nicht gef"ullten, rechten Nachbarn besitzt.
+Ist dies der Fall, so kann die Schneedecke nun rechts an das Objekt wachsen.
+In Kombination mit den senkrecht fallenden Schneeflocken kann somit ein
+Schneefall von rechts oben nachgestellt werden.
+Damit das in Abbildung \ref{fig:topRightSnow} dargestellte Ergebnis realistisch
+wirkt, ist darauf zu achten, dass die Anzahl der Schneeflocken, die von
+oben fallen gr"o\ss er ist, als die Zahl der von rechts kommenden.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=450px]{pictures/topRightSnow.png}
+    \caption{Schneedecke bei Schneefall von rechts oben}
+    \label{fig:topRightSnow}
+\end{figure}
+Zudem zeigen die ersten beiden Bilder zwei Zust"ande der Szene mit steigender
+Schneedecke. Im dritten Bild verdeutlicht das Drahtgittermodell gut die
+deutlich noch oben und nach rechts gewachsene Schneedecke, da sich die
+Schachfigur darunter erkennen l"asst.
 
 
 \subsection{Schneestabilit"at}
-
+Die Idee des Stabilit"atstests der Schneedecke stammt aus dem Paper
+''Computer Modelling Of Fallen Snow'' von Paul Fearing in dem
+er sich ebenfalls mit der Akkumulation von Schnee, sowie der Bildung von
+Schneedecken besch"aftigt, dabei allerdings einen anderen Ansatz verfolgt.
 \cite{fallen_snow}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=300px]{pictures/singleTopSnow.png}
+    \caption{Schneeverteilung bei einer Punktquelle mit Stabilit"atstest}
+    \label{fig:singleTopSnow}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=120px]{pictures/singleTopSnow_versetzt.png}
+    \caption{Beispiel der Schneeverteilung bei alternativer Punktquelle}
+    \label{fig:singleTopSnow_versetzt}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=300px]{pictures/topSnowStability.png}
+    \caption{Senkrechter Schneefall ohne und mit Stabilit"atstest}
+    \label{fig:topSnowStability}
+\end{figure}
 
 
 %%%%%%% REFLEXION %%%%%%%%

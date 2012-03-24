@@ -2,20 +2,35 @@
 \select@language {ngerman}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Beispiel f"ur Displacement Mapping}}{3}{figure.caption.4}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Beispiel f"ur Displacement Mapping}}{4}{figure.caption.4}
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Punkt in Polygon Algorithmus\relax }}{4}{figure.caption.5}
 \contentsline {figure}{\numberline {2.3}{\ignorespaces Sonderf"alle des Punkt in Polygon Algorithmus\relax }}{5}{figure.caption.6}
 \contentsline {figure}{\numberline {2.4}{\ignorespaces Marching Cube\relax }}{6}{figure.caption.7}
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Marching Cube - Schnittm"oglichkeiten}}{7}{figure.caption.8}
 \contentsline {figure}{\numberline {2.6}{\ignorespaces Marching Cubes - Polygonmodell eines Kopfes}}{7}{figure.caption.9}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Lightmap auf einer Wand\relax }}{10}{figure.caption.11}
-\contentsline {figure}{\numberline {3.2}{\ignorespaces "Uberschneidung beim Displacement-Mapping\relax }}{10}{figure.caption.13}
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Voxelgitter\relax }}{15}{figure.caption.17}
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Aktive Faces\relax }}{17}{figure.caption.18}
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Ebene-Face Schnittm"oglichkeiten\relax }}{17}{figure.caption.19}
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Schnittpunkt von einer Geraden mit einer Ebene\relax }}{18}{figure.caption.20}
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Voxel in Objekt - Algorithmus\relax }}{20}{figure.caption.21}
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Indizierung eines Marching Cubes\relax }}{22}{figure.caption.22}
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Beispiel Cube\relax }}{23}{figure.caption.23}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Lightmap auf einer Wand\relax }}{9}{figure.caption.11}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Beispiel f"ur transparentes Displacement-Mapping}}{10}{figure.caption.13}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces "Uberschneidung beim Displacement-Mapping\relax }}{11}{figure.caption.14}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Voxel in Objektecken\relax }}{12}{figure.caption.15}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Voxelnachbarschaft\relax }}{12}{figure.caption.17}
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Beispiel eines rechteckigen Objektes im Voxelgrid\relax }}{13}{figure.caption.19}
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Beispiel eines beliebigen Objektes im Voxelgrid\relax }}{13}{figure.caption.21}
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Voxelgitter\relax }}{18}{figure.caption.22}
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Aktive Faces\relax }}{20}{figure.caption.23}
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Ebene-Face Schnittm"oglichkeiten\relax }}{20}{figure.caption.24}
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Schnittpunkt von einer Geraden mit einer Ebene\relax }}{21}{figure.caption.25}
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Voxel in Objekt - Algorithmus\relax }}{23}{figure.caption.26}
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Indizierung eines imagin"aren W"urfels\relax }}{24}{figure.caption.27}
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Beispiel Cube\relax }}{26}{figure.caption.28}
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Marching Cubes Ergebnisse\relax }}{28}{figure.caption.29}
+\contentsline {figure}{\numberline {3.16}{\ignorespaces Unterschiedlicher Detailgrad des Marching Cubes Algorithmus\relax }}{29}{figure.caption.30}
+\contentsline {figure}{\numberline {3.17}{\ignorespaces Unterschied zwischen tats"achlicher und angen"aherter Oberfl"ache\relax }}{30}{figure.caption.31}
+\contentsline {figure}{\numberline {3.18}{\ignorespaces Ann"aherung eines rechteckigen Objekts mit Schneedecke\relax }}{30}{figure.caption.32}
+\contentsline {figure}{\numberline {3.19}{\ignorespaces Anwachsen der Schneedecke\relax }}{31}{figure.caption.33}
+\contentsline {figure}{\numberline {3.20}{\ignorespaces Schneedecke bei senkrechtem Schneefall\relax }}{33}{figure.caption.34}
+\contentsline {figure}{\numberline {3.21}{\ignorespaces Schneedecke bei Schneefall von rechts oben\relax }}{34}{figure.caption.35}
+\contentsline {figure}{\numberline {3.22}{\ignorespaces Schneeverteilung bei einer Punktquelle mit Stabilit"atstest\relax }}{34}{figure.caption.36}
+\contentsline {figure}{\numberline {3.23}{\ignorespaces Beispiel der Schneeverteilung bei alternativer Punktquelle\relax }}{34}{figure.caption.37}
+\contentsline {figure}{\numberline {3.24}{\ignorespaces Senkrechter Schneefall ohne und mit Stabilit"atstest\relax }}{35}{figure.caption.38}
 \addvspace {10\p@ }

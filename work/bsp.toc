@@ -17,26 +17,26 @@
 \contentsline {subsubsection}{Interpretation als Lightmap}{9}{section*.10}
 \contentsline {subsubsection}{Interpretation als Light- und Displacement-Map}{10}{section*.12}
 \contentsline {subsection}{\numberline {3.1.2}Voxelrepr"asentation}{11}{subsection.3.1.2}
-\contentsline {subsubsection}{Voxel}{11}{section*.14}
-\contentsline {subsubsection}{1. Ansatz: F"ur beliebige Objekte}{11}{section*.15}
-\contentsline {subsubsection}{2. Ansatz: F"ur rechteckige/rasterangepasste Objekte}{11}{section*.16}
-\contentsline {section}{\numberline {3.2}Szene auslesen}{11}{section.3.2}
-\contentsline {subsection}{\numberline {3.2.1}Wavefront-Dateiformat}{12}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}Parser}{13}{subsection.3.2.2}
-\contentsline {section}{\numberline {3.3}Szene mit Voxeln f"ullen}{14}{section.3.3}
-\contentsline {section}{\numberline {3.4}Voxel in Objekt - Algorithmus}{15}{section.3.4}
-\contentsline {subsection}{\numberline {3.4.1}Aktive Faces berechnen}{15}{subsection.3.4.1}
-\contentsline {subsection}{\numberline {3.4.2}Schnittkanten der Faces mit der Ebene bestimmen}{16}{subsection.3.4.2}
-\contentsline {subsection}{\numberline {3.4.3}Punkt in Polgon - Algorithmus anwenden}{19}{subsection.3.4.3}
-\contentsline {section}{\numberline {3.5}Marching Cubes - Algorithmus}{20}{section.3.5}
-\contentsline {subsection}{\numberline {3.5.1}Imagin"aren Cube erstellen}{21}{subsection.3.5.1}
-\contentsline {subsection}{\numberline {3.5.2}Schnittkanten mit der Ebene bestimmen}{22}{subsection.3.5.2}
-\contentsline {subsection}{\numberline {3.5.3}\texttt {TriangleLookupTable}}{24}{subsection.3.5.3}
-\contentsline {subsection}{\numberline {3.5.4}Ergebnis}{25}{subsection.3.5.4}
-\contentsline {section}{\numberline {3.6}Schneedecke}{25}{section.3.6}
-\contentsline {subsection}{\numberline {3.6.1}Schnee von oben}{25}{subsection.3.6.1}
-\contentsline {subsection}{\numberline {3.6.2}Schnee von der Seite}{25}{subsection.3.6.2}
-\contentsline {subsection}{\numberline {3.6.3}Schneestabilit"at}{25}{subsection.3.6.3}
-\contentsline {chapter}{\numberline {4}Reflexion}{27}{chapter.4}
-\contentsline {section}{\numberline {4.1}Zusammenfassung}{27}{section.4.1}
-\contentsline {section}{\numberline {4.2}Fazit und Ausblick}{27}{section.4.2}
+\contentsline {subsubsection}{Voxel}{12}{section*.16}
+\contentsline {subsubsection}{1. Ansatz: rechteckige/rasterangepasste Objekte}{13}{section*.18}
+\contentsline {subsubsection}{2. Ansatz: beliebige Objekte}{13}{section*.20}
+\contentsline {section}{\numberline {3.2}Szene auslesen}{14}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Wavefront-Dateiformat}{14}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Parser}{15}{subsection.3.2.2}
+\contentsline {section}{\numberline {3.3}Szene mit Voxeln f"ullen}{16}{section.3.3}
+\contentsline {section}{\numberline {3.4}Voxel in Objekt - Algorithmus}{18}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Aktive Faces berechnen}{19}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}Schnittkanten der Faces mit der Ebene bestimmen}{20}{subsection.3.4.2}
+\contentsline {subsection}{\numberline {3.4.3}Punkt in Polgon - Algorithmus anwenden}{22}{subsection.3.4.3}
+\contentsline {section}{\numberline {3.5}Marching Cubes - Algorithmus}{23}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Imagin"aren Cube erstellen}{24}{subsection.3.5.1}
+\contentsline {subsection}{\numberline {3.5.2}Schnittkanten mit der Ebene bestimmen}{25}{subsection.3.5.2}
+\contentsline {subsection}{\numberline {3.5.3}\texttt {TriangleLookupTable}}{27}{subsection.3.5.3}
+\contentsline {subsection}{\numberline {3.5.4}Ergebnis}{28}{subsection.3.5.4}
+\contentsline {section}{\numberline {3.6}Schneedecke}{29}{section.3.6}
+\contentsline {subsection}{\numberline {3.6.1}Schnee von oben}{31}{subsection.3.6.1}
+\contentsline {subsection}{\numberline {3.6.2}Schnee von der Seite}{33}{subsection.3.6.2}
+\contentsline {subsection}{\numberline {3.6.3}Schneestabilit"at}{33}{subsection.3.6.3}
+\contentsline {chapter}{\numberline {4}Reflexion}{37}{chapter.4}
+\contentsline {section}{\numberline {4.1}Zusammenfassung}{37}{section.4.1}
+\contentsline {section}{\numberline {4.2}Fazit und Ausblick}{37}{section.4.2}

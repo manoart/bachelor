@@ -117,28 +117,68 @@ public class Surface
             {
                 // no exact calculation of the intersection points
                 // just connect the middle of the edges with each other (0.5f)
-                if(iEdge == 8)// && v.getDensity() != 0.0f)
+                /*
+                if(iEdge == 0)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  interpolate(v.getDensity(), v.getRightNeighbor().getDensity()) * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getY()),// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getZ()));// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                }else if(iEdge == 1)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getRightNeighbor().getX()),// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getRightNeighbor().getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  interpolate(v.getRightNeighbor().getDensity(), v.getRightNeighbor().getFrontNeighbor().getDensity()) * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getRightNeighbor().getZ())); //+ (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                }else if(iEdge == 2)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getRightNeighbor().getFrontNeighbor().getX() - (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  interpolate(v.getRightNeighbor().getFrontNeighbor().getDensity(), v.getFrontNeighbor().getDensity()) * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getRightNeighbor().getFrontNeighbor().getY()),// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getRightNeighbor().getFrontNeighbor().getZ())); //+ (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                }else if(iEdge == 3)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getFrontNeighbor().getX()),// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getFrontNeighbor().getY() - (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  interpolate(v.getFrontNeighbor().getDensity(), v.getDensity()) * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getFrontNeighbor().getZ()));// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                }else if(iEdge == 4)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getTopNeighbor().getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  interpolate(v.getTopNeighbor().getDensity(), v.getTopNeighbor().getRightNeighbor().getDensity()) * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getTopNeighbor().getY()),// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getTopNeighbor().getZ()));// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                }else if(iEdge == 5)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getTopNeighbor().getRightNeighbor().getX()),// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getTopNeighbor().getRightNeighbor().getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  interpolate(v.getTopNeighbor().getRightNeighbor().getDensity(), v.getTopNeighbor().getRightNeighbor().getFrontNeighbor().getDensity()) * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getTopNeighbor().getRightNeighbor().getZ()));// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                }else if(iEdge == 6)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getTopNeighbor().getRightNeighbor().getFrontNeighbor().getX() - (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  interpolate(v.getTopNeighbor().getRightNeighbor().getFrontNeighbor().getDensity(), v.getTopNeighbor().getFrontNeighbor().getDensity()) * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getTopNeighbor().getRightNeighbor().getFrontNeighbor().getY()),// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getTopNeighbor().getRightNeighbor().getFrontNeighbor().getZ()));// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                }else if(iEdge == 7)
+                {
+                    edgeVertex[iEdge] = new Vertex((v.getTopNeighbor().getFrontNeighbor().getX()),// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
+                                                   (v.getTopNeighbor().getFrontNeighbor().getY() - (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  interpolate(v.getTopNeighbor().getFrontNeighbor().getDensity(), v.getTopNeighbor().getDensity()) * EDGE_DIRECTION[iEdge][1]) * scale), 
+                                                   (v.getTopNeighbor().getFrontNeighbor().getZ()));// + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  0.5f * EDGE_DIRECTION[iEdge][2]) * scale));
+                }else*/ if(iEdge == 8)
                 {
                    edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
                                                   (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
                                                   (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getDensity() * EDGE_DIRECTION[iEdge][2]) * scale)); 
-                }else if(iEdge == 9)// && v.getRightNeighbor().getDensity() != 0.0f)
+                }else if(iEdge == 9)
                 {
                     edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
                                                    (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
                                                    (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getRightNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
-                }else if(iEdge == 10)// && v.getRightNeighbor().getFrontNeighbor().getDensity() != 0.0f)
+                }else if(iEdge == 10)
                 {
                     edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
                                                    (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
                                                    (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getRightNeighbor().getFrontNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
-                }else if (iEdge == 11)// && v.getFrontNeighbor().getDensity() != 0.0f)
+                }else if (iEdge == 11)
                 {
                     edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
                                                    (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
                                                    (v.getZ() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][2]  +  v.getFrontNeighbor().getDensity() * EDGE_DIRECTION[iEdge][2]) * scale));
-                }   
-                else
+                }else
                 {
                     edgeVertex[iEdge] = new Vertex((v.getX() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][0]  +  0.5f * EDGE_DIRECTION[iEdge][0]) * scale), 
                                                    (v.getY() + (VERTEX_OFFSET[EDGE_CONNECTION[iEdge][0] ][1]  +  0.5f * EDGE_DIRECTION[iEdge][1]) * scale), 
@@ -200,6 +240,20 @@ public class Surface
         }
         
         return vOut;
+    }
+    
+    private float interpolate(float a, float b)
+    {
+        if(a > b && b == 0.0f)
+        {
+            return a;
+        }else if(b > a && a == 0.0f)
+        {
+            return b;
+        }else
+        {
+            return 0.5f;
+        }
     }
 
         
@@ -280,7 +334,7 @@ public class Surface
         // mark Voxels as active if they have a topNeighbor 
         for(int i = 0; i < voxels.length; i++)
         {
-            if((voxels[i] != null && (voxels[i].getSnow() || voxels[i].isInside()) && voxels[i].hasRightNeighbor() && !voxels[i].getRightNeighbor().getSnow()))
+            if((voxels[i] != null && (voxels[i].getSnow() || voxels[i].isInside())) && voxels[i].hasRightNeighbor() && !voxels[i].getRightNeighbor().getSnow())
 
             {
                 activeRightVoxels[k++] = voxels[i];
@@ -290,7 +344,8 @@ public class Surface
         // let it snow
         if(Surface.cold)
         {
-            for(int j = 0; j < 5; j++)
+            int snowflakes = 50;
+            for(int j = 0; j < snowflakes; j++)
             {
                 int index = (int)(Math.random() * activeRightVoxels.length);
                 this.activeRightVoxels[index].raiseDensity(SNOWFLAKE);
@@ -414,16 +469,7 @@ public class Surface
             for(int j = 0; j < snowflakes; j++)
             {
                 int index = (int)(Math.random() * activeVoxels.length);
-                
-                
                 this.activeVoxels[index] = singleTopSnow(this.activeVoxels[index]);
-//                this.activeVoxels[index].raiseDensity(SNOWFLAKE);
-//                if(this.activeVoxels[index].getDensity() > 1.0f && this.activeVoxels[index].getTopNeighbor() != null)
-//                {
-//                    this.activeVoxels[index].getTopNeighbor().setSnow();
-//                    this.activeVoxels[index] = this.activeVoxels[index].getTopNeighbor();
-//                }
-                
                 // make a visible border of the scene
                 if(!this.activeVoxels[index].hasSameLevelNeighbors())
                 {
@@ -479,21 +525,17 @@ public class Surface
     private Voxel singleTopSnow(Voxel v)
     { 
         // snow just from a point-source
-        for(int j = 0; j < 1; j++)
+        v.raiseDensity(SNOWFLAKE);
+        if(v.getDensity() > 1.0f && v.getTopNeighbor() != null)
         {
-            v.raiseDensity(SNOWFLAKE);
-            if(v.getDensity() > 1.0f && v.getTopNeighbor() != null)
+            v = v.getTopNeighbor();
+            // magic number
+            if(stabilityTest(v) >= 4)
             {
-//                if(stabilityTest(this.voxels[index]) < 5)
-                v = v.getTopNeighbor();
-                // magic number
-                if(stabilityTest(v) >= 4)
-                {
-                    v.removeSnow();
-                    return v.getBottomNeighbor();
-                }
-                
+                v.removeSnow();
+                return v.getBottomNeighbor();
             }
+
         }
         return v;
     }

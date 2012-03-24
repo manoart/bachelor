@@ -70,7 +70,7 @@ public class Renderer
         GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
 
         //TODO general file-path
-        String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/sphere1.obj";
+        String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/pawn.obj";
         ObjParser op = new ObjParser(path);
         Surface surface = new Surface(path);
         
@@ -225,43 +225,43 @@ public class Renderer
 //            GL11.glBegin(GL11.GL_POINTS);
 //            if(Keyboard.isKeyDown(Keyboard.KEY_P))
 //            {
-//                surface.singleTopSnow();
+//                surface.topSnow();
 //            }
 //            Voxel[] voxels = surface.getVoxels();
 //
 //            for (int i = 0; i < voxels.length; i++)
 //            {
-//                if (voxels[i] != null && (voxels[i].getSnow()))// || voxels[i].isInside()))
+//                if (voxels[i] != null && (voxels[i].getSnow() || voxels[i].isInside()))
 //                {
 //                    GL11.glVertex3f(voxels[i].getX(), voxels[i].getY(), voxels[i].getZ());
 //                }
 //            }
 //            GL11.glEnd();
 
-            GL11.glColor3f(1.0f, 1.0f, 1.0f);
-            GL11.glBegin(GL11.GL_TRIANGLES);
-            if(Keyboard.isKeyDown(Keyboard.KEY_P))
-            {
-                surface.singleTopSnowIndex();
-//                surface.plainTopSnow();
-//                surface.topSnow();
+//            GL11.glColor3f(1.0f, 1.0f, 1.0f);
+//            GL11.glBegin(GL11.GL_TRIANGLES);
+//            if(Keyboard.isKeyDown(Keyboard.KEY_P))
+//            {
+////                surface.singleTopSnowIndex();
+////                surface.plainTopSnow();
+////                surface.topSnow();
 //                surface.rightSnow();
-                surface.setCnt(0);
-                surface.marchingCubes();
-            }
-            float[] marchingCubesFaces = surface.getFaces();
-            float[] marchingCubesNormals = surface.getNormals();
-
-            for (int i = 0; i < marchingCubesFaces.length; i += 3)
-            {
-                GL11.glNormal3f(marchingCubesNormals[i], 
-                                marchingCubesNormals[i + 1], 
-                                marchingCubesNormals[i + 2]);
-                GL11.glVertex3f(marchingCubesFaces[i], 
-                                marchingCubesFaces[i + 1], 
-                                marchingCubesFaces[i + 2]);
-            }
-            GL11.glEnd();
+//                surface.setCnt(0);
+//                surface.marchingCubes();
+//            }
+//            float[] marchingCubesFaces = surface.getFaces();
+//            float[] marchingCubesNormals = surface.getNormals();
+//
+//            for (int i = 0; i < marchingCubesFaces.length; i += 3)
+//            {
+//                GL11.glNormal3f(marchingCubesNormals[i], 
+//                                marchingCubesNormals[i + 1], 
+//                                marchingCubesNormals[i + 2]);
+//                GL11.glVertex3f(marchingCubesFaces[i], 
+//                                marchingCubesFaces[i + 1], 
+//                                marchingCubesFaces[i + 2]);
+//            }
+//            GL11.glEnd();
 //            
             
             // set the color of the object (R,G,B)

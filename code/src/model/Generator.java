@@ -450,8 +450,8 @@ public class Generator
                 min = tmp;
             }
         }
-        return min - 0.1f;
-//        return min - 0.2f;
+//        return min - 0.1f;
+        return min - 0.2f;
     }
 
     /**
@@ -513,7 +513,7 @@ public class Generator
                 max = tmp;
             }
         }
-        return max + 2.5f;
+        return max + 2.2f;
     }
 
     /**
@@ -533,6 +533,6 @@ public class Generator
                 min = tmp;
             }
         }
-        return min - 0.5f;
+        return min;// - 0.5f;
     }
 }

@@ -72,6 +72,11 @@
 \newblock \emph{{Computergrafik}}.
 \newblock {Osnabr"uck} : {Selbstverlag der Universit"at Osnabr"uck}, 2010
 
+\bibitem[Wen05]{wenke}
+\textsc{Wenke}, Henning:
+\newblock \emph{{3D Klimadatenvisualisierung mit OpenGL}}, {Universit"at
+  Osnabr"uck}, Bachelorarbeit, 2005
+
 \bibitem[Wik05]{displacement_mapping_pic}
 \textsc{Wikipedia}:
 \newblock \emph{Displacement Mapping}.
