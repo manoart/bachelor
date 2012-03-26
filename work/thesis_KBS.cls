@@ -269,7 +269,7 @@
   \ifthenelse{\value{sprache} = 1}{Erstgutachter:}{First supervisor:}
   & \large \@firstSupervisor\\
   \large
-  \ifthenelse{\value{sprache} = 1}{Zweitgutachter:}{Second supervisor:}
+  \ifthenelse{\value{sprache} = 1}{Zweitgutachterin:}{Second supervisor:}
   & \large \@secondSupervisor
 \end{tabular}
 \end{center}}
