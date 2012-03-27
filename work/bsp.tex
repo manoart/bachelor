@@ -2,7 +2,7 @@
 % - select either [german] or [english]
 % - select the type of thesis from:
 %   [bachelor, master, generic]
-%   (in case of generic, use \type{} to specify it)
+%   (in case of generic, use \tygpe{} to specify it)
 % - use option "alpha" for abbreviated citation (instead of numbers)
 % - option "draft" is available, too
 % - use options "utf8" or "latin1" to select inputencoding
@@ -45,7 +45,8 @@ Arbeit unterst"utzt haben:
             Thematik.
         \item Frau Prof. Dr. Sigrid Knust, die sich als Zweitgutachterin zur
             Verf"ugung gestellt hat.
-        \item Frau Jana Lehnfeld und Herrn Henning Wenke f"ur das wertvolle
+        \item Frau Jana Lehnfeld, Herrn Henning Wenke und Herrn Philipp
+            Middendorf f"ur das wertvolle
             Feedback w"ahrend der Verfassung der Arbeit.
     \end{itemize}
 \end{prefacesection}
@@ -57,8 +58,8 @@ Die vorliegende Arbeit entstand in der Arbeitsgruppe Medieninformatik an der
 Universit"at Osnabr"uck im Bereich Computergrafik und besch"aftigt sich mit
 prozeduraler Modellierung.
 Kern der Arbeit ist die Generierung einer Schneedecke, um Wetterverh"altnisse
-anhand von Wetterdaten naturgetreue darstellen zu k"onnen.
-Dazu wird der Anzatz einer Repr"asentation durch Voxel in einem
+anhand von Wetterdaten naturgetreu darstellen zu k"onnen.
+Dazu wird der Ansatz einer Repr"asentation durch Voxel in einem
 regelm"a\ss igen Voxelgitter verfolgt.
 F"ur die realistische Verteilung des Schnees sorgt dabei die Simulation
 zuf"alligen Schneefalls sowie ein Stabilit"atstest, der die Entstehung
@@ -82,7 +83,7 @@ Oberfl"ache "uberf"uhrt.
 Diese Arbeit befasst sich mit dem Entwurf, der Konzeption und der Entwicklung
 einer Methode zur Repr"asentation von Schneedecken. Zu Anfang soll kurz
 dargestellt werden, wordurch das Thema motiviert ist und worauf die Arbeit
-abzielt.
+.
 Im Anschluss folgt ein Abriss des Aufbaus der Arbeit.
 
 \section{Motivation}
@@ -99,7 +100,7 @@ abgeschlossen sowie
 gut separat bearbeitbar war. Zum anderen war darauf zu achten, dass der Umfang
 zwar entsprechend gro\ss\ sein, dennoch aber klar abgesteckte
 Grenzen haben sollte.
-Schlie\ss lich fiel die Wahl auf die prozedurale Modellierung von Schneedecken,
+Letztendlich fiel die Wahl auf die prozedurale Modellierung von Schneedecken,
 da diese Aufgabe alle oben genannten Voraussetzungen erf"ullt.
 Zudem soll somit die Funktionlit"at des Programms der Projektgruppe insofern
 erweitert werden, dass wechselnde Witterungen bzw. Wetterverh"altnisse
@@ -129,7 +130,7 @@ gegeben. Diese beinhaltet die Entstehung, sowie die Gr"unde des Booms
 prozeduraler Methoden Mitte der 80er Jahre sowie deren Entwicklung bis heute.
 Anschlie\ss end wird kurz die Funktionsweise des Displacement-Mappings
 dargestellt. Es folgen die Erl"auterungen des Punkt-in-Polygon- sowie des
-Marchin-Cubes-Algorithmus', die Schwerpunkte dieser Arbeit ausmachen.\\
+Marching-Cubes-Algorithmus', die Schwerpunkte dieser Arbeit ausmachen.\\
 
 Es folgt das Kapitel Umsetzung, in dem zu Beginn verschiedene L"osungsans"atze
 aufgezeigt und diskutiert werden. Der schlie\ss lich verfolgte Ansatz
@@ -163,21 +164,20 @@ ausgereizte Potential des Verfahrens aufgezeigt.
 
 \chapter{Grundlagen}
 Im folgenden Kapitel sollen die theoretischen Grundlagen erl"autert werden,
-die dieser Arbeit zugrunde liegen. Angefangen bei einer kurzen Einf"uhrung
-in das Thema der prozeduralen Modellierung, "uber die Darstellung des
-Displacement-Mappings und des Punkt-in-Polygon-Algorithmus, wird schlie\ss lich
-der Marching-Cubes-Algorithmus zum Erzeugen von Oberfl"achen aus einem
-regelm"a\ss igen Vertexgitter geschildert.
+die in dieser Arbeit zum Einsatz kommen. Angefangen bei einer kurzen Einf"uhrung
+in die Thematik der prozeduralen Modellierung, "uber die Darstellung des
+Displacement-Mappings und des Punkt-in-Polygon-Algorithmus' bis hin zum
+Marching-Cubes-Algorithmus zum Erzeugen von Oberfl"achen aus einem
+regelm"a\ss igen Voxelgitter.
 
 
 \section{Prozedurale Modellierung}
-Zu Beginn wird der Begriff der prozeduralen Modellierung betrachtet.
-Seit jeher besch"aftigt sich die Kunst und folglich die Comutergrafik
+Seit jeher besch"aftigt sich die Kunst und ebenso die Computergrafik
 mit der Frage nach Realismus. Die klassische Definition ist der
 wahrheitsgetreue Realismus, welcher auf
 dem Vergleich mit der Wirklichkeit basiert.
-Wo fr"uher die K"unstler mit Gem"alden versuchten den Betrachter zu t"auschen,
-wird heute sehr viel Energie darauf verwendet Spezialeffekte in Filmen
+Wo fr"uher die K"unstler mit Gem"alden versuchten, den Betrachter zu t"auschen,
+wird heute sehr viel Energie darauf verwendet, Spezialeffekte in Filmen
 m"oglichst echt wirken zu lassen.\\
 Eine bedeutende Errungenschaft der letzten zwei Jahrzehnte ist die
 realit"atsnahe Darstellung von Fantasiewelten mit Hilfe von Computern.
@@ -187,17 +187,20 @@ sowie deren blo\ss e Anzahl ist.
 Eine Beschr"ankung ist lediglich durch die Leistung der aktuell verf"ugbaren
 Grafikchips gegeben.
 An diesem Punkt setzt die prozedurale Modellierung an.
-Es ist ein Ansatz zur gr"o\ss tenteils automatischen Generierung von
-Bilder, Texturen oder Objekten. Typische Beispiele f"ur prozedural
-generierte Materialien sind Holz, Stein, Marmor oder aber Wolken, Rauch, Feuer
-und Wasser.\\
-Die Prozedurale Modellierung ist ein sehr m"achtiges Werkzeug, da mit nur
-wenigen Zeilen Code sehr sch"one Ergebnisse erzielt werden k"onnen.
+Es ist eine Vorgehensweise zur gr"o\ss tenteils automatischen Generierung von
+Bildern, Texturen oder Objekten. Typische Beispiele f"ur prozedural
+generierte Materialien sind Holz, Stein und Marmor genauso wie Wolken, Rauch,
+Feuer und Wasser.\\
+Die prozedurale Modellierung ist ein sehr m"achtiges Werkzeug, denn mit
+wenigen Zeilen Code k"onnen bereits sehr sch"one Ergebnisse erzielt werden.
 Durch die algorithmische Abstraktion von Materialcharakteristiken und -mustern
-ist es in einigen Bereichen nahezu "uberfl"ussig geworden Texturen oder
-Modelle per Hand zu erstellen.
+ist es in einigen Bereichen nahezu "uberfl"ussig geworden, Texturen oder
+Modelle per Hand zu erstellen, auch wenn beispielsweise Charaktermodelle
+weiterhin von Hand modelliert werden, so k"onnen gr"o\ss ere
+Menschenansammlungen sowie Geb"aude oder Landschaften vermehrt mit Hilfe
+prozedurale Methoden erzeugt werden.
 Diese Art der Modellierung unterscheidet sich folglich fundamental von der
-traditionellen Bildeanfertigung. Auch, wenn es auf den ersten Blick wie
+traditionellen Bildanfertigung. Auch wenn es auf den ersten Blick wie
 eine einzige Verbesserung gegen"uber dem klassischen Ansatz wirkt,
 so gibt es doch einen entscheidenen Nachteil bei der prozeduralen
 Modellierung. Zwar ist sie der manuellen Modellierung in Sachen Effizienz,
@@ -206,30 +209,26 @@ Anwender durch die automatisierte Generierung der Details die Kontrolle "uber
 eben diese.
 Der Balanceakt zwischen kontolliertem Detail und programmierter Komplexit"at
 verbleibt bis heute ein interessantes Forschungsgebiet.\\
-In der Realit"at werden zum Beispiel Charaktermodelle weiterhin von
-Hand modelliert, wobei
-gr"o\ss ere Menschenansammlungen sowie Geb"aude oder Landschaften vermehrt
-mit Hilfe prozeduraler Methoden erzeugt werden.
 
-Ursr"unglich wurden prozedurale Techniken eingef"uhrt um Objekttexturen
+Urspr"unglich wurden prozedurale Techniken eingef"uhrt, um Objekttexturen
 einfacher und schneller anzufertigen. Aufgrund voranschreitender Technik,
 insbesondere der stetig steigenden Leistung von CPUs und programmierbaren
 GPUs, gewann die prozedurale Modellierung immer gr"o\ss ere Bedeutung.
 In der Mitte der 1980er Jahre kam es schlie\ss lich zu einem regelrechten
-Boom und die Anwendung prozeduraler Techniken stieg rapide an und wurde
-sogar zu einem aktiven Forschungsgebiet.
-Ein entscheidener Grund hierf"ur war die Vorstellung von Verfahren zur
+Boom und die Anwendung prozeduraler Techniken stieg rapide an. Sie wurde
+sogar zu einem aktiven Forschungsgebiet, wohl vor allem aufgrund der
+Vorstellung von Verfahren zur
 Darstellung realistisch aussehender, dreidimensionaler Texturen.\\
 Bis heute hat sich die Anwendung und die "Ubertragbarkeit der
 prozeduralen Modellierung stets weiterentwickelt, sodass nicht nur
 Texturen und Bilder,
-sonder auch Objektgeometrie algorithmisch erzeugt werden kann.
-Inzwiscnen werden sogar automatisierte Verfahren f"ur die realistische
+sondern auch Objektgeometrien algorithmisch erzeugt werden k"onnen.
+Inzwischnen werden sogar automatisierte Verfahren f"ur die realistische
 Simulation und Animation von Naturph"anomenen, wie zum Beispiel Nebel oder
 Feuer verwendet.
 In Bezug auf diese Arbeit spielt die prozedurale Modellierung insofern eine
-entscheidene Rolle, als das die zu erzeugende Schneedecke nicht von Hand,
-sonder f"ur beliebige Szenen automatisch generiert werden soll.
+entscheidene Rolle, als dass die zu erzeugende Schneedecke nicht von Hand,
+sondern f"ur beliebige Szenen automatisch generiert werden soll.
 
 Die Ausf"uhrungen dieses Kapitels st"utzen sich gr"o\ss tenteils auf die
 Darstellung prozeduraler Modellierung aus dem Buch \glqq Texturing \& Modeling:
@@ -241,19 +240,20 @@ A Procedural Approach\grqq\ \cite{texturing}.
 Das Displacement-Mapping geht aus dem Bump-Mapping hervor und stellt eine
 Erweiterung dessen dar \cite[S. 9]{texturing}. Robert L. Cook beschreibt das
 Displacement-Mapping erstmals 1984 \cite{displacement_mapping},
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=110px]{pictures/displacement_mapping.jpg}
     \caption[Beispiel f"ur Displacement-Mapping]{Beispiel f"ur Displacement-Mapping \cite{displacement_mapping_pic}}
     \label{fig:displacement}
 \end{figure}
-dabei werden Texturen dazu verwendet, die Objektoberfl"ache zu alternieren.
+dabei werden Texturen dazu verwendet, die Geometrie der Objektoberfl"ache zu
+ver"andern.
 Das hei\ss t, es werden nicht nur die Normalen, wie beim
-Bump-Mapping ver"andert, um eine gew"unschte Erscheinung der Oberfl"ache zu
+Bump-Mapping, ver"andert, um eine gew"unschte Erscheinung der Oberfl"ache zu
 simulieren \cite{bump_mapping}, sondern es wird die tats"achliche
 Objektgeometrie modifiziert.
 Dies geschieht, indem die Vertices eines Objekts anhand der Werte einer
-Displacement-Map entlang ihrer Normalen (senkrecht zur Oberfl"ache) verschoben
+Displacement-Map entlang ihrer Normalen (Senkrechten zur Oberfl"ache) verschoben
 und die umliegenden Normalen entsprechend angepasst werden.\\
 In Abbildung \ref{fig:displacement} ist ein
 Beispiel f"ur eine solche
@@ -370,7 +370,7 @@ Aus Symmetriegr"unden k"onnen diese 256 F"alle auf die in Abbildung
 werden.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=350px]{pictures/marchingCubes.png}
+    \includegraphics[width=400px]{pictures/marchingCubes.png}
     \caption[Schnittm"oglichkeiten eines W"urfels]
         {Schnittm"oglichkeiten eines W"urfels \cite{mc_possibilities}}
     \label{fig:mc_possibilities}
@@ -393,7 +393,7 @@ MRT-Modells soll die Abbildung \ref{fig:mc_head} geben, in der die
 Ann"aherung an einen Kopf deutlich zu erkennen ist.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=180px]{pictures/marching_cubes_head.png}
+    \includegraphics[width=220px]{pictures/marching_cubes_head.png}
     \caption[Marching-Cubes - Polygonmodell eines Kopfes]
         {Marching-Cubes - Polygonmodell eines Kopfes \cite{mc_head}}
     \label{fig:mc_head}
@@ -406,12 +406,13 @@ Ann"aherung an einen Kopf deutlich zu erkennen ist.
 
 \chapter{Umsetzung}
 
-%%%% TODO evtl. umschreiben, oder weglassen
-%Dieses Kapitel besch"aftigt sich mit der Umsetzung und Implementierung der
+%Dieser Teil der Arbeit besch"aftigt sich mit der Umsetzung und
+%Implementierung der
 %vorher genannten Konzepte. Nach einer Darstellung verschiedener
 %L"osungsans"atze wird genauer auf den gew"ahlten Ansatz eingegangen.
-%Besonders herausgestellt werden der Punkt in Objekt Algorithmus sowie der
-%Marching Cubes Algorithmus, die den Kern dieser Arbeit darstellen.
+%Besonders herausgestellt werden der Voxel-in-Objekt-Algorithmus sowie der
+%Marching Cubes Algorithmus, die neben dem Stabilit"atstest
+%den Kern dieser Arbeit darstellen.
 
 
 \section{Ans"atze}
@@ -516,7 +517,7 @@ Dabei wird basierend auf Voxeln eine
 liegt. Dies wird erreicht, indem der gesamte Raum, den die Szene einnimmt,
 mit Voxeln gef"ullt wird, sodass die Schneedecke sp"ater "uberall wachsen
 kann. Darauffolgend wird f"ur jeden Voxel gepr"uft, ob er innerhalb oder
-au\ss erhalb eines Objektes liegt, um im Anschlu\ss\ mit Hilfe des
+au\ss erhalb eines Objektes liegt, um im Anschluss mit Hilfe des
 sogenannten Marching-Cubes-Algorithmus' (siehe Kapitel \ref{sec:mc_algo})
 eine Schneedecke zu erzeugen (siehe Kapitel \ref{sec:snow_surface}).
 Demnach ist keine "Uberschneidung der Displacement-Oberfl"ache
@@ -727,9 +728,9 @@ immer zwei Informationen in einer Zeile stehen.
 \section{Szene mit Voxeln f"ullen}
 \label{sec:voxel_fill}
 
-Nachdem die Szene nun ausgelesen werden kann und die Arrays mit den ben"otigten
-Daten zur Verf"ugung stehen, soll die Szene mit Voxeln gef"ullt werden.
-%TODO oberen Abschnitt umschreiben (Erzaehlstil)
+Nachdem die Szene jetzt ausgelesen werden kann und die Arrays mit den
+ben"otigten Daten zur Verf"ugung stehen, soll die Szene mit
+Voxeln gef"ullt werden.
 \\
 Um ein regelm"a\ss iges Voxelgitter zu erstellen, muss als erstes
 die r"aumliche Ausdehnung der Voxel
@@ -739,16 +740,6 @@ kleinste in der Szene enthaltene Wert auf jeder der drei Achsen herausfinden.
 Daraus lassen sich drei Kantenl"angen berechnen, aus denen wiederum ein
 Quader ermittelt werden kann, der die Szene enth"alt und mit Voxeln
 aufgef"ullt wird.
-%TODO weglassen
-%Beispielhaft sei hier die Methode zur Berechnung des gr"o\ss ten
-%\texttt{x}-Wertes dargestellt.
-%\inputminted[linenos=true]{java}{code/CalculateMaxX.java}
-%Die Methode bekommt das gesamte Vertex-Array "ubergeben und geht alle Vertices
-%durch, wobei lediglich die \texttt{x}-Koordinate betrachtet wird (Zeile 7).
-%Es wird sich der bisher gr"o\ss te gefundene \texttt{x}-Wert gemerkt und
-%bei Bedarf aktualisiert und am Ende zur"uckgegeben.\\
-%Die Berechnung der f"unf weiteren Werte geschieht analog, mit dem Unterschied,
-%dass die untersuchte Koordinate des Vertex wechselt.\\
 Um den Quader mit Voxeln zu f"ullen wird die folgende Methode verwendet.
 
 \inputminted[linenos=true]{java}{code/FillScene.java}
@@ -760,7 +751,6 @@ geschachtelten \texttt{for}-Schleifen realisiert.
 Die Konstante \texttt{STEPS} stellt eine Art Granularit"atsfaktor dar,
 das hei\ss t, pro L"angeneinheit im Koordinatensystem werden \texttt{STEPS}
 Voxel gesetzt.\\
-%TODO evtl. die setVoxel()-Methode erkl"aren
 Das Ergebnis ist in Abbildung \ref{fig:pawn_scene} zu sehen.
 \begin{figure}[htbp]
     \centering
@@ -799,20 +789,18 @@ werden muss.
 
 \section{Voxel-in-Objekt-Algorithmus}
 \label{sec:voxel_in_object}
-In diesem Abschnitt soll die Funktionsweise des 3-dimensionalen Punkt in
-Polygon Algorithmus erl"autert werden. Mit den daraus gewonnenen Informationen
-l"asst sich
+In diesem Abschnitt soll die Funktionsweise des 3-dimensionalen
+Punkt-in-Polygon-Algorithmus erl"autert werden. Mit den daraus gewonnenen
+Informationen l"asst sich
 sp"ater bestimmen, an welchen Stellen der Szene Schnee fallen kann und an
 welchen nicht.
-%TODO groben Ueberblick schaffen, WARUM wird das ueberhaupt gemacht?
-
 
 \subsection{Aktive Faces berechnen}
 Es sollen nicht immer alle in der Szene
 enthaltenen Faces auf Schnittpunkte mit dem aus dem
 Punkt-in-Polygon-Algorithmus bekannten
 imagin"aren \glqq\ Strahl\grqq\ gepr"uft werden, sondern lediglich die
-f"ur die jeweilige Ebene relevanten.\\ %%%%% TODO Umschreiben!!!!
+f"ur die jeweilige Ebene relevanten.\\ 
 Da der Algorithmus die Szene ebenenweise durchgeht, m"ussen die Faces, die die
 aktuelle Ebene schneiden, nur ein Mal pro Ebene ermittelt werden. Das bedeutet,
 dass alle Voxel in der aktuellen \texttt{x}-\texttt{y}-Ebene dieselbe
@@ -929,7 +917,7 @@ und den betroffenen Faces kann im Folgenden der in Kapitel \ref{sec:pip_theo}
 bereits theoretisch erl"auterte, zweidimensionale Punkt-in-Polygon-Algorithmus
 angewandt werden.\\
 Die \texttt{punktInPolygon()}-Methode bekommt hierzu die Koordinaten des zu
-testenden Voxels und ein Array mir allen Polygonkanten der Ebene "ubergeben.
+testenden Voxels und ein Array mit allen Polygonkanten der Ebene "ubergeben.
 
 \inputminted[linenos=true]{java}{code/PunktInPolygon.java}
 Dabei muss f"ur jede Polygonkante gepr"uft werden, ob sie einen Schnittpunkt
@@ -998,10 +986,7 @@ der Anzahl und dem Index der geschnittenen W"urfelkanten. Liegt zum Beispiel
 ein Voxel innerhalb eines Objekts und ein benachbarter Voxel au\ss erhalb, so
 muss die Objektoberfl"ache einen Schnittpunkt mit der Kante zwischen diesen
 beiden Voxeln haben. Die genaue Position des Schnittpunktes kann linear
-interpoliert werden, worauf in diesem Fall allerdings nicht eingegangen wird.
-Stattdessen wird stets der Kantenmittelpunkt als Schnittpunkt gew"ahlt.
-%TODO in alle Richtungen interpolieren, nicht nur in z-Richtung!!
-%Anschlie\ss end wird in der \texttt{TriangleLookupTable} (TLT) nachgesehen,
+interpoliert werden.
 
 
 \subsection{Imagin"aren Cube erstellen}
@@ -1183,7 +1168,7 @@ tats"achliche Objektoberfl"ache. Dies illustriert Abbildung
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=350px]{pictures/granularity.png}
-    \caption{Unterschiedlicher Detailgrad des Marching Cubes Algorithmus}
+    \caption{Unterschiedlicher Detailgrad des Marching-Cubes-Algorithmus'}
     \label{fig:granularity}
 \end{figure}
 Allen drei gezeichneten Figuren liegt dasselbe Objekt zugrunde.
@@ -1246,7 +1231,7 @@ Abbildung \ref{fig:rect_obj} zu sehen, sehr zufriedenstellend.
 \end{figure}
 
 
-\subsection{Schnee von oben}
+\subsection{Senkrechter Schneefall}
 Das Anwachsen der Schneedecke soll zun"achst an einem Beispiel verdeutlich
 werden. Dabei wird davon ausgegangen, dass die imagin"aren Schneeflocken
 senkrecht von oben fallen.
@@ -1281,7 +1266,7 @@ auf die Schnee fallen kann. Dazu wird das gesamte
 \texttt{Voxel}-Array durchgegangen um anschlie\ss end die in Frage kommenden
 Kandidaten im Array \texttt{activeVoxels} zu speichern.
 \inputminted[linenos=true]{java}{code/ActiveVoxels.java}
-Wird angenommen, dass der Schnee direkt von oben f"allt, so legt das l"angliche
+Wird angenommen, dass der Schnee direkt von oben f"allt, so legt das
 \texttt{if}-Statement (Zeilen 6 - 11) fest, welche Voxel als m"ogliche
 Landepl"atze bereitgestellt werden. Dies betrifft zum einen alle auf der
 Schneeoberfl"ache liegenden Voxel, also Voxel, die selbst Schnee
@@ -1306,8 +1291,8 @@ dem in Abb. \ref{fig:topSnow} sichtbaren Ergebnis. Der Pfeil zeigt die Richtung
 des Schneefalls an.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=120px]{pictures/topSnow.png}
-    \caption{Schneedecke bei senkrechtem Schneefall}
+    \includegraphics[width=400px]{pictures/topSnow_verlauf.png}
+    \caption{Entwicklung der Schneedecke bei senkrechtem Schneefall}
     \label{fig:topSnow}
 \end{figure}
 Nat"urlich ist dies nur ein grobes Modell zur Validierung und Visualisierung
@@ -1422,7 +1407,7 @@ eine im Raum schwebende
 Kugel auf die mittig von oben aus einer Punktquelle Schnee f"allt.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=300px]{pictures/singleTopSnow.png}
+    \includegraphics[width=400px]{pictures/singleTopSnow.png}
     \caption{Schneeverteilung bei einer Punktquelle mit Stabilit"atstest}
     \label{fig:singleTopSnow}
 \end{figure}
@@ -1431,19 +1416,13 @@ Zudem kann man erkennen, dass der Schnee an den Seiten der Kugel herunterf"allt,
 sobald kein Platz mehr auf der Oberfl"ache vorhanden ist. Die Simulation
 verh"alt sich folglich wie gew"unscht und erzeugt ein gutes Ergebnis.\\
 
-%\begin{figure}[htbp]
-%    \centering
-%    \includegraphics[width=120px]{pictures/singleTopSnow_versetzt.png}
-%    \caption{Beispiel der Schneeverteilung bei alternativer Punktquelle}
-%    \label{fig:singleTopSnow_versetzt}
-%\end{figure}
 In einem letzten Schritt soll schlie\ss lich der randomisierte, senkrechte
 Schneefall mit dem Stabilit"atstest kombiniert werden.
 Das Endergebnis dieser Kombination zeigt die Abbildung
 \ref{fig:topSnowStability} in einem Vorher-Nachher-Vergleich.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=300px]{pictures/topSnowStability.png}
+    \includegraphics[width=250px]{pictures/topSnowStability.png}
     \caption{Senkrechter Schneefall ohne und mit Stabilit"atstest}
     \label{fig:topSnowStability}
 \end{figure}
