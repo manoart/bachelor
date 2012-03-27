@@ -71,7 +71,6 @@ Oberfl"ache "uberf"uhrt.
 
 
 \cleardoublepage
-\thispagestyle{empty}
 \tableofcontents
 %\cleardoublepage
 %\listoffigures
@@ -163,13 +162,78 @@ ausgereizte Potential des Verfahrens aufgezeigt.
 %%%%%%%  GRUNDLAGEN  %%%%%%%%
 
 \chapter{Grundlagen}
-Im folgenden Kapitel sollen die dieser Arbeit zugrunde liegenden theoretischen
-Grundlagen aufgef"uhrt und erkl"art werden, bevor sie im Kapitel Umsetzung
-implementiert werden.
+Im folgenden Kapitel sollen die theoretischen Grundlagen erl"autert werden,
+die dieser Arbeit zugrunde liegen. Angefangen bei einer kurzen Einf"uhrung
+in das Thema der prozeduralen Modellierung, "uber die Darstellung des
+Displacement-Mappings und des Punkt-in-Polygon-Algorithmus, wird schlie\ss lich
+der Marching-Cubes-Algorithmus zum Erzeugen von Oberfl"achen aus einem
+regelm"a\ss igen Vertexgitter geschildert.
+
 
 \section{Prozedurale Modellierung}
-Zu Beginn soll der Begriff der prozeduralen Modellierung n"aher beleuchtet
-werden.
+Zu Beginn wird der Begriff der prozeduralen Modellierung betrachtet.
+Seit jeher besch"aftigt sich die Kunst und folglich die Comutergrafik
+mit der Frage nach Realismus. Die klassische Definition ist der
+wahrheitsgetreue Realismus, welcher auf
+dem Vergleich mit der Wirklichkeit basiert.
+Wo fr"uher die K"unstler mit Gem"alden versuchten den Betrachter zu t"auschen,
+wird heute sehr viel Energie darauf verwendet Spezialeffekte in Filmen
+m"oglichst echt wirken zu lassen.\\
+Eine bedeutende Errungenschaft der letzten zwei Jahrzehnte ist die
+realit"atsnahe Darstellung von Fantasiewelten mit Hilfe von Computern.
+Die k"unstlich erzeugten Bilder wirken umso realisitscher,
+desto gr"o\ss er die Vielfalt der verwendeten grafischen Primitive
+sowie deren blo\ss e Anzahl ist.
+Eine Beschr"ankung ist lediglich durch die Leistung der aktuell verf"ugbaren
+Grafikchips gegeben.
+An diesem Punkt setzt die prozedurale Modellierung an.
+Es ist ein Ansatz zur gr"o\ss tenteils automatischen Generierung von
+Bilder, Texturen oder Objekten. Typische Beispiele f"ur prozedural
+generierte Materialien sind Holz, Stein, Marmor oder aber Wolken, Rauch, Feuer
+und Wasser.\\
+Die Prozedurale Modellierung ist ein sehr m"achtiges Werkzeug, da mit nur
+wenigen Zeilen Code sehr sch"one Ergebnisse erzielt werden k"onnen.
+Durch die algorithmische Abstraktion von Materialcharakteristiken und -mustern
+ist es in einigen Bereichen nahezu "uberfl"ussig geworden Texturen oder
+Modelle per Hand zu erstellen.
+Diese Art der Modellierung unterscheidet sich folglich fundamental von der
+traditionellen Bildeanfertigung. Auch, wenn es auf den ersten Blick wie
+eine einzige Verbesserung gegen"uber dem klassischen Ansatz wirkt,
+so gibt es doch einen entscheidenen Nachteil bei der prozeduralen
+Modellierung. Zwar ist sie der manuellen Modellierung in Sachen Effizienz,
+Geschwindigkeit und Aufl"osung "uberlegen, dennoch verliert der
+Anwender durch die automatisierte Generierung der Details die Kontrolle "uber
+eben diese.
+Der Balanceakt zwischen kontolliertem Detail und programmierter Komplexit"at
+verbleibt bis heute ein interessantes Forschungsgebiet.\\
+In der Realit"at werden zum Beispiel Charaktermodelle weiterhin von
+Hand modelliert, wobei
+gr"o\ss ere Menschenansammlungen sowie Geb"aude oder Landschaften vermehrt
+mit Hilfe prozeduraler Methoden erzeugt werden.
+
+Ursr"unglich wurden prozedurale Techniken eingef"uhrt um Objekttexturen
+einfacher und schneller anzufertigen. Aufgrund voranschreitender Technik,
+insbesondere der stetig steigenden Leistung von CPUs und programmierbaren
+GPUs, gewann die prozedurale Modellierung immer gr"o\ss ere Bedeutung.
+In der Mitte der 1980er Jahre kam es schlie\ss lich zu einem regelrechten
+Boom und die Anwendung prozeduraler Techniken stieg rapide an und wurde
+sogar zu einem aktiven Forschungsgebiet.
+Ein entscheidener Grund hierf"ur war die Vorstellung von Verfahren zur
+Darstellung realistisch aussehender, dreidimensionaler Texturen.\\
+Bis heute hat sich die Anwendung und die "Ubertragbarkeit der
+prozeduralen Modellierung stets weiterentwickelt, sodass nicht nur
+Texturen und Bilder,
+sonder auch Objektgeometrie algorithmisch erzeugt werden kann.
+Inzwiscnen werden sogar automatisierte Verfahren f"ur die realistische
+Simulation und Animation von Naturph"anomenen, wie zum Beispiel Nebel oder
+Feuer verwendet.
+In Bezug auf diese Arbeit spielt die prozedurale Modellierung insofern eine
+entscheidene Rolle, als das die zu erzeugende Schneedecke nicht von Hand,
+sonder f"ur beliebige Szenen automatisch generiert werden soll.
+
+Die Ausf"uhrungen dieses Kapitels st"utzen sich gr"o\ss tenteils auf die
+Darstellung prozeduraler Modellierung aus dem Buch \glqq Texturing \& Modeling:
+A Procedural Approach\grqq\ \cite{texturing}.
 
 \section{Displacement-Mapping}
 \label{sec:displacement_mapping}
