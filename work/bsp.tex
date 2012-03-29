@@ -73,6 +73,7 @@ Oberfl"ache "uberf"uhrt.
 
 \cleardoublepage
 \tableofcontents
+
 %\cleardoublepage
 %\listoffigures
 
@@ -81,45 +82,55 @@ Oberfl"ache "uberf"uhrt.
 
 \chapter{Einleitung}
 Diese Arbeit befasst sich mit dem Entwurf, der Konzeption und der Entwicklung
-einer Methode zur Repr"asentation von Schneedecken. Zu Anfang soll kurz
-dargestellt werden, wordurch das Thema motiviert ist und worauf die Arbeit
-.
+einer Methode zur Repr"asentation von Schneedecken. Zu Anfang sollen kurz
+die Motivation des Themas sowie das Ziel dieser Arbeit dargestellt werden.
 Im Anschluss folgt ein Abriss des Aufbaus der Arbeit.
 
 \section{Motivation}
-Die vorliegende Ausarbeitung entstand im Rahmen der Masterprojektgruppe
+Die vorliegende Ausarbeitung entstand neben der Masterprojektgruppe
 \glqq Virtueller Campus\grqq\ an der Universit"at
-Osnabr"uck im Wintersemester 2011/12. Die Projektgruppe befasste sich
+Osnabr"uck im Wintersemester 2011/12 als separat bearbeitetes Thema.
+Die Projektgruppe befasste sich
 mit der Modellierung und dem Nachbau
 des Westerberg-Campus' der Universit"at Osnabr"uck
-unter Anwendung aktueller Methoden der Computergrafik.\\
-Um in diesem Zusammenhang ein Thema f"ur eine Bachelorarbeit herauszuarbeiten,
-waren gewisse Voraussetzungen zu erf"ullen.
-Zum einen musste sicherzustellen werden, dass die Thematik in sich
-abgeschlossen sowie
-gut separat bearbeitbar war. Zum anderen war darauf zu achten, dass der Umfang
-zwar entsprechend gro\ss\ sein, dennoch aber klar abgesteckte
-Grenzen haben sollte.
-Letztendlich fiel die Wahl auf die prozedurale Modellierung von Schneedecken,
-da diese Aufgabe alle oben genannten Voraussetzungen erf"ullt.
-Zudem soll somit die Funktionlit"at des Programms der Projektgruppe insofern
-erweitert werden, dass wechselnde Witterungen bzw. Wetterverh"altnisse
-modelliert werden k"onnen (insbesondere die Bildung einer Schneedecke).
-Schlie\ss lich soll nach Abschluss der Arbeit das hier vorgestellte
-Verfahren zur Schneedeckenerzeugung in das Programm der Projektgruppe
+unter Anwendung aktueller Methoden der Computergrafik.
+Dabei wurde eine komplexe Szene mit einem sehr dynamischen
+Wettermodell erstellt, welches die aktuellen Wetterdaten der Stadt
+Osnabr"uck abruft und darstellt.
+Um die Diversit"at der Wetterverh"altnisse besser abbilden zu k"onnen,
+fehlte unter anderem die Repr"asentation einer Schneedecke bei Schneefall.
+Im Rahmen dieser Thematik besch"aftigt sich die vorliegende Arbeit mit der
+Akkumulation von Schnee mit Hilfe prozeduraler Methoden,
+um das Wachstum einer Schneedecke realistisch darstellen zu k"onnen.
+Damit sich die Schneeoberfl"ache m"oglichst wirklichkeitsgetreu verh"alt,
+sollte eine realit"atsnahe Simulation von Schneefall zugrunde gelegt werden, die
+auf den gegebenen Wetterdaten und den Gesetzen der Str"ohmungsmechanik basiert.
+\\
+Schlie\ss lich soll das hier vorgestellte
+Verfahren zur Schneedeckengenerierung in das Programm der Projektgruppe
 integriert werden oder zumindest als Grundlage zur Visualisierung einer
 Schneedecke dienen.
 
 \section{Zielsetzung}
-Ziel der Arbeit ist es, eine Schneeoberfl"ache innerhalb einer
-vorgegebenen Szene zu erzeugen. Somit soll eine vielseitige und
-naturgetreue Wetterdarstellung mit Hilfe prozeduraler Methoden
-erm"oglicht werden. Von gro\ss er Bedeutung ist speziell die
+Ziel der Arbeit ist es, eine realistisch wachsende Schneeoberfl"ache
+innerhalb einer vorgegebenen Szene unter Verwendung prozeduraler Methoden
+zu simulieren.
+Somit soll eine vielseitige und
+naturgetreue Wetterdarstellung erm"oglicht werden.
+Von gro\ss er Bedeutung ist speziell die
 realit"atsnahe Entstehung von Schneeansammlungen und -h"aufungen.
 Insbesondere stehen hierbei die Algorithmen zur Modellierung der Schneedecke
-im Vordergrund,
-die zus"atzliche, aufwendigere Visualisierung dieser w"urde den Umfang dieser
-Arbeit sprengen und wird deshalb weniger intensiv behandelt.
+im Vordergrund.
+Auf eine realistischere Schneefallsimulation sowie ein detailliertes Rendern der
+Schneeoberfl"ache wird bewusst nicht genauer eingegangen,
+da dies f"ur sich genommen
+bereits zwei eigenst"andige Themen w"aren und den Rahmen dieser Arbeit sprengen
+w"urden.\\
+Um dennoch aussagekr"aftige Ergebnisse visualisieren zu k"onnen, wird ein
+einfaches Modell zur Nachbildung von Schneefall implementiert und die
+resultierende Schneedecke im
+Anschluss als unbearbeitete Polygonoberfl"ache angezeigt.
+
 
 \section{Aufbau der Arbeit}
 Ein Grundlagenkapitel bildet zu Beginn
@@ -127,9 +138,10 @@ das theoretische Fundament der in der Arbeit verwendeten Konzepte und Ideen.
 Zun"achst wird dort eine kurze Einf"uhrung in das Thema \glqq Prozedurale
 Modellierung\grqq\
 gegeben. Diese beinhaltet die Entstehung, sowie die Gr"unde des Booms
-prozeduraler Methoden Mitte der 80er Jahre sowie deren Entwicklung bis heute.
+prozeduraler Methoden Mitte der 1980er Jahre sowie deren Entwicklung bis heute.
 Anschlie\ss end wird kurz die Funktionsweise des Displacement-Mappings
-dargestellt. Es folgen die Erl"auterungen des Punkt-in-Polygon- sowie des
+dargestellt. Im Anschluss folgen Erl"auterungen des Punkt-in-Polygon-
+sowie des
 Marching-Cubes-Algorithmus', die Schwerpunkte dieser Arbeit ausmachen.\\
 
 Es folgt das Kapitel Umsetzung, in dem zu Beginn verschiedene L"osungsans"atze
@@ -515,11 +527,16 @@ Repr"asentation durch Voxel realisiert werden.
 Dabei wird basierend auf Voxeln eine
 \glqq richtige\grqq\ Schneedecke erzeugt, die auf bzw. "uber der Szenenoberfl"ache
 liegt. Dies wird erreicht, indem der gesamte Raum, den die Szene einnimmt,
-mit Voxeln gef"ullt wird, sodass die Schneedecke sp"ater "uberall wachsen
+mit einem regelm"a\ss igen Voxelgitter gef"ullt wird,
+sodass die Schneedecke sp"ater "uberall wachsen
 kann. Darauffolgend wird f"ur jeden Voxel gepr"uft, ob er innerhalb oder
-au\ss erhalb eines Objektes liegt, um im Anschluss mit Hilfe des
+au\ss erhalb eines Objektes liegt, um im Anschluss
+den Schneefall mit Stabilit"atstest zu simulieren (siehe Kapitel
+\ref{sec:snow_surface}).
+Im Anschluss wird mit Hilfe des
 sogenannten Marching-Cubes-Algorithmus' (siehe Kapitel \ref{sec:mc_algo})
-eine Schneedecke zu erzeugen (siehe Kapitel \ref{sec:snow_surface}).
+eine Schneeoberfl"ache erzeugt. Der zusammegefasste Ablauf dieses Verfahrens
+wird in der Snow-Pipeline (Abbildung \ref{fig:snow_pipeline}) illustriert.
 Demnach ist keine "Uberschneidung der Displacement-Oberfl"ache
 in den Ecken mehr m"oglich, da die Voxel in einem regelm"a\ss igen
 Gitter gesetzt werden und jeder Voxel nur einmal existiert.
@@ -634,14 +651,14 @@ Um nun eine Schneedecke simulieren zu k"onnen, muss die vorliegende Szene
 zun"achst ausgelesen werden.
 Das im Zusammenhang mit dieser Arbeit entstandene Programm kann beliebige Szenen
 im Wavefront-Format einlesen.
-%TODO mehr Informationen ueber das Format, woher kommt es, Verbreitung, etc.
-%Hierbei ist es wichtig, dass die Szene in dem sogenannten
-%Wavefront-Dateiformat (Dateiendung: *.obj) vorliegt.
 Es folgt eine
 kurze Erkl"arung dieses
 Dateiformats sowie die Beschreibung und Funktionsweise des Parsers.
 
 \subsection{Wavefront-Dateiformat}
+Das Wavefront-Dateiformat ist ein standardisiertes und einfaches ASCII-Format
+zur Repr"asentation von dreidimensionaler Geometrie, welches zudem von
+vielen Modellierungsprogrammen (wie z.B. Blender) unterst"utzt wird.
 Eine Wavefront-Datei enth"alt alle f"ur die Szene relevanten Informationen,
 wie Vertices, Normalen, Faces, Texturkoordinaten oder benutzte
 Oberfl"achenmaterialien.
@@ -758,9 +775,14 @@ Das Ergebnis ist in Abbildung \ref{fig:pawn_scene} zu sehen.
     \caption{Voxelgitter}
     \label{fig:pawn_scene}
 \end{figure}
-Als Grundlage der Szene wurde beispielhaft ein Bauer eines Schachspiels
-herangezogen (links im Bild). Die rechte Bildh"alfte stellt die ausgelesene
-Szene dar, in der nur die gesetzten Voxel angezeigt werden.\\
+Als Grundlage der Szene wurde in den meisten F"allen beispielhaft der Bauer
+eines Schachspiels
+herangezogen (links im Bild),
+da das Modell des Westerberg-Campus' der zu Beginn angesprochenen
+Masterprojektgruppe \glqq Virtueller Campus\grqq\ noch nicht zur Verf"ugung
+stand.\\
+Die rechte Bildh"alfte stellt die ausgelesene
+Szene dar, in der nur die gesetzten Voxel angezeigt werden.
 Nachdem die Szene gef"ullt und alle ben"otigten Voxel erzeugt wurden, sind
 im Anschluss die Nachbarschaftsbeziehungen f"ur jeden Voxel zu setzen.
 Exemplarisch sei einmal die Bestimmung des rechten Nachbarvoxels aufgef"uhrt.
@@ -800,7 +822,7 @@ Es sollen nicht immer alle in der Szene
 enthaltenen Faces auf Schnittpunkte mit dem aus dem
 Punkt-in-Polygon-Algorithmus bekannten
 imagin"aren \glqq\ Strahl\grqq\ gepr"uft werden, sondern lediglich die
-f"ur die jeweilige Ebene relevanten.\\ 
+f"ur die jeweilige Ebene relevanten.\\
 Da der Algorithmus die Szene ebenenweise durchgeht, m"ussen die Faces, die die
 aktuelle Ebene schneiden, nur ein Mal pro Ebene ermittelt werden. Das bedeutet,
 dass alle Voxel in der aktuellen \texttt{x}-\texttt{y}-Ebene dieselbe
@@ -1099,8 +1121,10 @@ welche beiden Voxel die aktuelle Kante verbindet. Danach wird die Entfernung
 des Schnittpunktes vom Referenzvoxel durch das
 \texttt{VOXEL\_OFFSET}-Array bestimmt. Damit der Vertex an der richtigen Stelle
 platziert wird, gibt \texttt{EDGE\_DIRECTION} die Richtung der
-Kante an. Der Wert \texttt{0.5f} bedeutet, dass der Kantenmittelpunkt als
-Schnittpunkt gew"ahlt wird. \texttt{scale} skaliert schlie\ss lich die
+Kante an.
+Die Methode \texttt{interpolate()} bestimmt schlie\ss lich die genaue
+Position des Schnittpunkts auf der Kante.
+\texttt{scale} skaliert schlie\ss lich die
 Positionierung in
 Abh"angigkeit zur Granularit"at des \texttt{Voxel}-Gitters
 ($\texttt{scale} = \frac{1}{\texttt{STEPS}}$).\\
@@ -1200,17 +1224,18 @@ ausgel"ost werden
 m"ussen (Verteilung des Schnees auf benachbarte Voxel), um unrealistisch
 hohe Schneeauft"urmungen an Objektkanten zu vermeiden.\\
 Die folgenden zwei Applikationsbilder (\ref{fig:mc_initial} und
-\ref{fig:rect_obj}) zeigen den initialen Zustand nach einmaliger Anwendung
-des Marching-Cubes-Algorithmus'.
+\ref{fig:rect_obj}) verdeutlichen das in Abschnitt
+\ref{sec:voxel} angesprochene Problem der unpr"azisen Ann"aherung an die
+tats"achliche Objektoberfl"ache.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=300px]{pictures/mc_initial.png}
     \caption{Unterschied zwischen tats"achlicher und angen"aherter Oberfl"ache}
     \label{fig:mc_initial}
 \end{figure}
-Die Abbildung \ref{fig:mc_initial} verdeutlicht das in Abschnitt
-\ref{sec:voxel} angesprochene Problem der unpr"azisen Ann"aherung an die
-tats"achliche Objektoberfl"ache. Die nachgebildete Oberfl"ache,
+Die Abbildung \ref{fig:mc_initial} zeigt den initialen Zustand nach
+einmaliger Anwendung des Marching-Cubes-Algorithmus'.
+ Die nachgebildete Oberfl"ache,
 die als Grundlage der Schneedecke dienen wird, liegt zu Beginn teilweise
 "uber und teilweise unter der Oberfl"ache des Objekts.
 Ein besseres Ergebnis kann die vorliegende Implementation des Algorithmus'
@@ -1220,12 +1245,12 @@ und dem im
 Gegensatz dazu nur leicht verbesserten Endergebnis und zum anderen die
 Tatsache, dass die Schneedecke bereits nach wenigen Iterationen auf und "uber
 der Objektoberfl"ache liegt, wodurch die zu Anfang durchscheinende Schneedecke
-keine Relevanz mehr hat.\\
+keine Relevanz mehr hat.
 Im Gegensatz dazu ist die Ann"aherung an rechteckige Objekte, wie in
 Abbildung \ref{fig:rect_obj} zu sehen, sehr zufriedenstellend.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=450px]{pictures/rect_obj.png}
+    \includegraphics[width=430px]{pictures/rect_obj.png}
     \caption{Ann"aherung eines rechteckigen Objekts mit Schneedecke}
     \label{fig:rect_obj}
 \end{figure}
@@ -1269,8 +1294,8 @@ Kandidaten im Array \texttt{activeVoxels} zu speichern.
 Wird angenommen, dass der Schnee direkt von oben f"allt, so legt das
 \texttt{if}-Statement (Zeilen 6 - 11) fest, welche Voxel als m"ogliche
 Landepl"atze bereitgestellt werden. Dies betrifft zum einen alle auf der
-Schneeoberfl"ache liegenden Voxel, also Voxel, die selbst Schnee
-enthalten, ihr oberer Nachbar aber nicht. Zum anderen soll auch neben den
+Schneeoberfl"ache liegenden Voxel, die bereits Schnee
+enthalten, ihr oberer Nachbar hingegen nicht. Zum anderen soll auch neben den
 Objekten, auf den Szenenboden Schnee fallen k"onnen, wozu die Voxel ohne
 unteren Nachbarn aktiviert werden. Zuletzt werden noch die Voxel in Betracht
 gezogen, die auf einem Objekt liegen, das hei\ss t der Voxel selbst liegt
@@ -1301,11 +1326,20 @@ vorkommen, dass auch Voxel unterhalb eines Objekts empf"anglich
 f"ur Schnee sind, obwohl diese in der Realit"at nicht erreichbar w"aren.
 Um ein authentischeres Ergebnis zu erhalten, m"usste ein realit"atsnahes
 Partikelsystem erstellt werden, anhand dessen sich Schneeflocken in der Szene
-bewegen. In diesem Fall m"usste der \texttt{density}-Wert eines aktiven Voxels
+nach den Gesetzen der Str"omungsmechanik bewegen. In diesem Fall
+m"usste der \texttt{density}-Wert eines aktiven Voxels
 nur erh"oht werden, wenn eine Schneeflocke in das Einzugsgebiet dieses Voxels
-f"allt und nicht nach dem oben verwendeten Zufallsprinzip.
+f"allt und nicht nach dem oben verwendeten Zufallsprinzip.\\
+Da die physikalisch korrekte Simulation von fallendem Schnee allerdings
+nicht Teil der Aufgabenstellung war, soll an dieser Stelle
+auf die Diplomarbeit von Philipp Middendorf verwiesen
+werden, die sich mit genau dieser Thematik besch"aftigt
+und das oben genannte Problem l"osen w"urde \cite{pimiddy}. Leider
+ist die Arbeit zu diesem Zeitpunkt noch nicht fertiggestellt, weshalb hier
+ein sehr vereinfachtes Modell implementiert wurde, welches
+lediglich senkrechten und schr"agen Schneefall simulieren kann.
 
-\subsection{Schnee von der Seite}
+\subsection{Schr"ager Schneefall}
 Um Wind zu simulieren wird zus"atzlich zu dem senkrechten noch
 waagerechter Schneefall hinzugef"ugt. Die Funktionsweise ist analog zum
 Schnee von oben, mit der "Anderung, dass andere Voxel aktiviert werden.
@@ -1407,7 +1441,7 @@ eine im Raum schwebende
 Kugel auf die mittig von oben aus einer Punktquelle Schnee f"allt.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=400px]{pictures/singleTopSnow.png}
+    \includegraphics[width=380px]{pictures/singleTopSnow.png}
     \caption{Schneeverteilung bei einer Punktquelle mit Stabilit"atstest}
     \label{fig:singleTopSnow}
 \end{figure}
@@ -1422,7 +1456,7 @@ Das Endergebnis dieser Kombination zeigt die Abbildung
 \ref{fig:topSnowStability} in einem Vorher-Nachher-Vergleich.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=250px]{pictures/topSnowStability.png}
+    \includegraphics[width=230px]{pictures/topSnowStability.png}
     \caption{Senkrechter Schneefall ohne und mit Stabilit"atstest}
     \label{fig:topSnowStability}
 \end{figure}
@@ -1441,76 +1475,104 @@ In diesem Kapitel werden zun"achst die Ergebnisse der Arbeit kurz
 zusammengefasst und deren G"ute diskutiert. Abschlie\ss end folgt ein Fazit und
 ein Ausblick auf m"ogliche Optimierungen des vorgestellten Verfahrens.
 
-\section{Zusammenfassung}
-Die im Zuge dieser Arbeit entstandene Applikation erf"ullt das zu Anfang
-aufgestellte Ziel der Generierung einer Schneedecke in vollem Umfang.
-Es wird mit Hilfe prozeduraler Techniken eine Schneedecke f"ur eine beliebige
-Szene modelliert. Dabei ist lediglich zu beachten, dass die erstellte
-Szene in dem beschriebenen Wavefront-Format vorliegt, damit das
-Programm in der Lage ist, diese zu analysieren und auszulesen.\\
-Nachdem verschiedene L"osungsans"atze diskutiert wurden, fiel die Wahl auf
-eine Umsetzung der Schneerepr"asentation durch sog. Voxel, da dieses
-Verfahren vielversprechende Ergebnisse erhoffen lie\ss.
-Das Vorgehen und der Ablauf des Programms sind in der Snow-Pipeline
-(Abbildung \ref{fig:snow_pipeline}, Kapitel \ref{sec:voxel}) pr"agnant
-zusammengefasst.\\
-%TODO evtl. mehr zur zusammenfassung schreiben
-
-
-\section{Fazit und Ausblick}
-Im Rahmen dieser Arbeit war es leider nicht m"oglich, noch andere Verfahren zur
+\section{Zusammenfassung und Kritik}
+Im Rahmen dieser Arbeit
+entstand eine Methode zur Repr"asentation einer realistisch wachsenden
+Schneedecke. Bedingt durch den eingeschr"ankten
+Bearbeitungszeitraum
+war es leider nicht m"oglich, noch weitere Verfahren zur
 Schneedeckengenerierung umzusetzen um diese dann gegebenenfalls in Bezug auf
 Effizienz und Qualit"at mit der vorliegenden Realisierung zu vergleichen.
-Zudem konnten aufgrund der beschr"ankten Zeit und der teilweise hohen
-Komplexit"at einige Funktionalit"aten nicht implementiert
-werden, die zu weiteren Ergebnisverbesserungen gef"uhrt h"atten. Somit ist
+Zudem konnten aufgrund der zus"atzlich hohen
+Komplexit"at einige erweiterte Funktionalit"aten nicht implementiert
+werden, die zu Ergebnisverbesserungen gef"uhrt h"atten. Somit ist
 das Potential des Verfahrens noch nicht vollst"andig ausgereizt.
-Zum Beispiel ist der 
-simulierte Schneefall lediglich durch einen randomisierten Arrayzugriff
-realisiert. Dabei f"allt der Schnee auf zuvor ermittelte
-aktive Voxel, die sich momentan noch unter einem Objektvorsprung
-befinden k"onnen. Dies hat zur Folge, dass sich auch an Stellen Schnee
-sammeln kann, wo in der Realit"at kein Schnee fallen w"urde. 
-Abhilfe k"onnte hier ein Partikelsystem schaffen, welches Schneeflocken
-realit"atsnah durch den Raum bewegt. Dabei k"onnten der Wind, die
-Gravitation und
-im Weg befindliche Objekte die Bewegungsrichtung einer solchen Flocke bestimmen,
-bevor diese auf den Boden bzw. die Schneedecke trifft, an dessen Stelle
-schlie\ss lich der \texttt{density}-Wert des entsprechenden Voxels erh"oht
-w"urde. Damit lie\ss en sich ebenfalls Schneeverwehungen oder -verwirbelungen
-darstellen.\\
-Eine weitere Verbesserungsm"oglichkeit ist bei der initialen Ausf"uhrung des
-Marching-Cubes-Algorithmus' gegeben. Wie in Abschnitt \ref{sec:voxel} bereits
-erl"autert und in
+
+Nach der Modellierung einer Szene, wird diese von dem Programm ausgelesen
+und mit einem regelm"a\ss igen Voxelgitter gef"ullt.
+Daraufhin erfolgt die Bestimmung der Nachbarschaftsbeziehungen sowie die
+Pr"ufung, ob ein Voxel innerhalb eines Objektes liegt. Nach der Anwendung
+des Voxel-in-Objekt-Algorithmus k"onnen die Voxel ermittelt werden, auf
+denen sich Schnee sammeln kann. Die folgende,
+von der Aufgabenstellung nicht geforderte
+Schneesimulation ist durch ein
+sehr einfaches Modell realisiert worden, um ein aussagekr"aftiges Ergebnis zu
+generieren und die Applikation zu testen.
+Damit die Akkumulation des Schnees realistisch wirkt, wird nach dem
+Schneefall ein Stabilit"atstest durchgef"uhrt, um unwirklich
+hohe bzw. steile Schneet"urme zu verhindern. Zum Schluss werden die
+schneegef"ullten Voxel mit dem Marching-Cubes-Algorithmus in eine
+Schneeoberfl"ache "uberf"uhrt.\\
+Wie in Abschnitt \ref{sec:voxel} bereits erl"autert und in
 Abbildung \ref{fig:mc_initial} illustriert, liefert die erste Iteration des
-Algorithmus lediglich eine grobe Ann"aherung an die in der Szene vorhandenen
+Marching-Cubes-Algorithmus' lediglich eine grobe Ann"aherung an die in
+der Szene vorhandenen
 Objekte, was besonders bei nicht-rechteckigen Objekten ins Auge f"allt.
-Dieses Problem verliert zwar an Relevanz je mehr Schnee gefallen ist
-und desto h"oher die Schneedecke anw"achst, jedoch lie\ss e sich das Ergebnis
-durch eine genaue Schnittpunktberechnung der W"urfelkanten mit der
-Objektoberfl"ache weiter verbessern.
-Ein abschlie\ss end erw"ahnenswerter Makel ist der lediglich geringe
-Detailgrad einer m"oglichen Schneeoberfl"ache. Damit ist gemeint, dass
-nur eine recht grobe Bedeckung der Szene erreicht werden kann. Das stellt kein
-Problem bei gro\ss en Objekten wie Erhebungen in der Landschaft oder Geb"auden
-dar. Kleinere Details
-hingegen, wie zum Beispiel die "Aste eines Baums werden h"ochstwahrscheinlich
-nicht von dem Algorithmus erfasst, da das Voxelgitter zu grob ist.
+Des Weiteren f"uhrt die nur bedingt zu erh"ohende Voxeldichte zu einem
+Detailverlust in der Schneeabdeckung der Szene. So werden beispielsweise
+gro\ss e Objekte, wie Geb"aude oder Erhebungen in der Landschaft ohne Probleme
+rekonstruiert, wobei kleinere Details, wie zum Beispiel die "Aste eines Baums,
+h"ochstwahrscheinlich nicht von dem Algorithmus erfasst werden.
 Nun einfach die Voxeldichte zu erh"ohen, ist keine realistische Option, da man
 diese wirklich sehr hoch ansetzen m"usste um auch kleinere Details mit
 Schnee zu bedecken, was wiederum die Anzahl der Voxel zu einer unpraktikabel
 gro\ss en Menge anwachsen lie\ss e, die schlie\ss lich nicht mehr effizient
 zu verwalten w"are.\\
-Folglich k"onnte man sich durchaus weitere Arbeiten in dem Bereich vorstellen,
-die entweder auf dieser Arbeit aufbauen oder einen komplett anderen Ansatz
-verfolgen und diesen dann mit dem hier umgesetzten vergleichen.\\
-%TODO evtl, noch was zur Projektgruppe schreiben
+Die Abschlie\ss ende Visualisierung der Schneedecke wird durch die Darstellung
+von einfachen Polygonoberfl"achen realisiert und k"onnte durch detaillierteres
+und aufwendigeres Rendern ebenfalls verbessert werden.
 
-Zusammenfassend l"asst sich sagen, dass die Repr"asentation einer Schneedecke
-durch ein Voxelgrid 
-%TODO vllt. noch etwas zu MC und Stabilit"at sagen...
-ein durchaus zufriedenstellendes Ergebnis erzeugt, auch wenn dieses
-eventuell noch verbesserungsf"ahig ist.
+
+\section{Ausblick}
+Im Folgenden soll ein Ausblick auf m"ogliche Verbesserungen, beziehungsweise
+L"osungsans"atze der oben genannten Probleme gegeben werden.\\
+Beispielsweise k"onnte das bisher verwendete, recht simple
+Schneesimulationsmodell durch das Str"omungsmodell von Middendorf ersetzt
+werden, welches deutlich beeindruckendere Ergebnisse liefern
+w"urde \cite{pimiddy}. Es bewegt Schneeflocken realit"atsnah durch den Raum.
+Dabei k"onnen Wind, Gravitation und im Weg befindliche Objekte die
+Bewegungsrichtung einer solchen Flocke beeinflussen,
+bevor diese auf den Boden bzw. die Schneedecke trifft, an dessen Stelle
+schlie\ss lich der \texttt{density}-Wert des entsprechenden Voxels erh"oht
+w"urde. Somit lie\ss en sich ebenfalls Schneeverwehungen oder -verwirbelungen
+darstellen.\\
+Das Problem der bisher ungenauen Ann"aherung an die Objektoberfl"ache bei der
+initialen Iteration des Marching-Cubes-Algorithmus' verliert zwar an
+Relevanz je mehr Schnee gefallen ist
+und desto h"oher die Schneedecke anw"achst, jedoch lie\ss e sich das Ergebnis
+durch eine genaue Schnittpunktberechnung der W"urfelkanten mit der
+Objektoberfl"ache weiter verbessern.\\
+Damit auch kleine Details der Szene erfasst und mit Schnee bedeckt werden,
+k"onnte man anstatt eines regelm"a\ss igen Voxelgitters die Umsetzung eines
+unregelm"a\ss igen Voxelgrids in Betracht ziehen oder die Voxeldichte
+dynamisch an den Detailgrad der Szene anpassen.\\
+Zum Schluss k"onnte man mit Hilfe prozeduraler Texturen und der Verwendung
+von Normal-Mapping die Visualisierung der resultierenden Schneedecke deutlich
+realistischer gestalten.\\
+Eine Integration des hier vorgestellten Verfahrens zur Generierung einer
+Schneedecke in das Masterprojekt \glqq Virtueller Campus\grqq\ fand bislang
+nicht statt und steht noch aus.
+
+
+\section{Abschlie\ss endes Fazit}
+Die im Zuge dieser Arbeit entstandene Applikation erf"ullt das zu Anfang
+aufgestellte Ziel der Generierung einer Schneedecke in vollem Umfang.
+Es wird mit Hilfe prozeduraler Techniken eine Schneedecke f"ur eine beliebige
+Szene modelliert. Dabei ist lediglich zu beachten, dass die erstellte
+Szene in dem standardisierten Wavefront-Format vorliegt, damit das
+Programm in der Lage ist, diese zu analysieren und auszulesen.\\
+Nachdem verschiedene L"osungsans"atze diskutiert wurden, fiel die Wahl auf
+eine Umsetzung der Schneerepr"asentation durch sog. Voxel, da dieses
+Verfahren vielversprechende Ergebnisse erhoffen lie\ss\ und diese
+im Endeffekt auch liefert.
+Das Vorgehen und der Ablauf des Programms
+werden anhand der erstellten Snow-Pipeline
+(Abbildung \ref{fig:snow_pipeline}, Kapitel \ref{sec:voxel}) pr"agnant
+auf den Punkt gebracht.\\
+Zusammenfassend l"asst sich sagen, dass die in dieser Arbeit erstellte
+Repr"asentation einer anwachsenden Schneedecke
+ein gutes und realistisches Ergebnis erzeugt,
+welches als Grundlage f"ur weitere Arbeiten dienen k"onnte.
 
 % DON'T set \bibliographystyle here -- use the documentclass option instead
 \bibliography{papers}
