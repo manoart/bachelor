@@ -9,7 +9,9 @@ package view;
  * @author Manuel
  */
 import java.nio.FloatBuffer;
+import model.Snowflakes;
 import model.Surface;
+import model.Vertex;
 import model.Voxel;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -22,6 +24,11 @@ import view.parser.ObjParser;
 
 public class Renderer
 {
+    private boolean draw = true;
+    private boolean snowfall = true;
+    private boolean topSnow = false;
+    private boolean rightSnow = false;
+    
     public void start()
     {
         try
@@ -73,6 +80,7 @@ public class Renderer
         String path = "/Users/Manuel/NetBeansProjects/Snow/src/obj/pawn.obj";
         ObjParser op = new ObjParser(path);
         Surface surface = new Surface(path);
+        Snowflakes snowflakes = surface.getSnowflakes();
         
         // angle to rotate around the z-axis
         float orbitAngle = 0.0f;
@@ -212,78 +220,143 @@ public class Renderer
             if(Keyboard.isKeyDown(Keyboard.KEY_M))
             {
                 surface.setCold(false);
+                this.snowfall = false;
             }
             
             if(Keyboard.isKeyDown(Keyboard.KEY_N))
             {
                 surface.setCold(true);
+                this.snowfall = true;
+            }
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_Z))
+            {
+                this.snowfall = false;
+            }
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_X))
+            {
+                this.snowfall = true;
             }
 
+            // draw the Voxelgrid
+            if(Keyboard.isKeyDown(Keyboard.KEY_1))
+            {
+                // draw triangles or points or lines
+                GL11.glColor3f(1.0f, 1.0f, 1.0f);
+                GL11.glBegin(GL11.GL_POINTS);
+                Voxel[] voxels = surface.getVoxels();
 
-            // draw triangles or points or lines
-//            GL11.glColor3f(1.0f, 1.0f, 1.0f);
-//            GL11.glBegin(GL11.GL_POINTS);
-//            if(Keyboard.isKeyDown(Keyboard.KEY_P))
-//            {
-//                surface.topSnow();
-//            }
-//            Voxel[] voxels = surface.getVoxels();
-//
-//            for (int i = 0; i < voxels.length; i++)
-//            {
-//                if (voxels[i] != null && (voxels[i].getSnow() || voxels[i].isInside()))
-//                {
-//                    GL11.glVertex3f(voxels[i].getX(), voxels[i].getY(), voxels[i].getZ());
-//                }
-//            }
-//            GL11.glEnd();
+                for (int i = 0; i < voxels.length; i++)
+                {
+                    if (voxels[i] != null)// && (voxels[i].getSnow() || voxels[i].isInside()))
+                    {
+                        GL11.glNormal3f(1.0f, 0.0f, 0.0f);
+                        GL11.glVertex3f(voxels[i].getX(), voxels[i].getY(), voxels[i].getZ());
+                    }
+                }
+                GL11.glEnd();
+            }
+            
+            // draw Voxels which are in objects
+            if(Keyboard.isKeyDown(Keyboard.KEY_2))
+            {
+                GL11.glColor3f(1.0f, 1.0f, 1.0f);
+                GL11.glBegin(GL11.GL_POINTS);
+                Voxel[] voxels = surface.getVoxels();
 
-//            GL11.glColor3f(1.0f, 1.0f, 1.0f);
-//            GL11.glBegin(GL11.GL_TRIANGLES);
-//            if(Keyboard.isKeyDown(Keyboard.KEY_P))
-//            {
-////                surface.singleTopSnowIndex();
-////                surface.plainTopSnow();
-////                surface.topSnow();
-//                surface.rightSnow();
-//                surface.setCnt(0);
-//                surface.marchingCubes();
-//            }
-//            float[] marchingCubesFaces = surface.getFaces();
-//            float[] marchingCubesNormals = surface.getNormals();
-//
-//            for (int i = 0; i < marchingCubesFaces.length; i += 3)
-//            {
-//                GL11.glNormal3f(marchingCubesNormals[i], 
-//                                marchingCubesNormals[i + 1], 
-//                                marchingCubesNormals[i + 2]);
-//                GL11.glVertex3f(marchingCubesFaces[i], 
-//                                marchingCubesFaces[i + 1], 
-//                                marchingCubesFaces[i + 2]);
-//            }
-//            GL11.glEnd();
+                for (int i = 0; i < voxels.length; i++)
+                {
+                    if (voxels[i] != null && (voxels[i].getSnow() || voxels[i].isInside()))
+                    {
+                        GL11.glNormal3f(1.0f, 0.0f, 0.0f);
+                        GL11.glVertex3f(voxels[i].getX(), voxels[i].getY(), voxels[i].getZ());
+                    }
+                }
+                GL11.glEnd();
+            }
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_D))
+            {
+                this.draw = true;
+            }
+            
+            if(Keyboard.isKeyDown(Keyboard.KEY_E))
+            {
+                this.draw = false;
+            }
+
+            if(draw)
+            {
+                GL11.glColor3f(1.0f, 1.0f, 1.0f);
+                GL11.glBegin(GL11.GL_TRIANGLES);
+                if(Keyboard.isKeyDown(Keyboard.KEY_P))
+                {
+    //                surface.singleTopSnowIndex();
+//                    surface.plainTopSnow();
+                    surface.topSnow(); this.topSnow = true;
+    //                surface.rightSnow(); this.rightSnow = true;
+                    surface.setCnt(0);
+                    surface.marchingCubes();
+                }
+                float[] marchingCubesFaces = surface.getFaces();
+                float[] marchingCubesNormals = surface.getNormals();
+
+                for (int i = 0; i < marchingCubesFaces.length; i += 3)
+                {
+                    GL11.glNormal3f(marchingCubesNormals[i], 
+                                    marchingCubesNormals[i + 1], 
+                                    marchingCubesNormals[i + 2]);
+                    GL11.glVertex3f(marchingCubesFaces[i], 
+                                    marchingCubesFaces[i + 1], 
+                                    marchingCubesFaces[i + 2]);
+                }
+                GL11.glEnd();
+                
+                
+                
+                GL11.glColor3f(1.0f, 1.0f, 1.0f);
+                GL11.glBegin(GL11.GL_POINTS);
+                
+                if(this.snowfall && this.topSnow && Keyboard.isKeyDown(Keyboard.KEY_P))
+                {
+                    snowflakes.topSnowfall();
+                    Vertex[] flakes = snowflakes.getSnowflakes();
+                    for(int j = 0; j < flakes.length; j++)
+                    {
+                        if(flakes[j] != null && !flakes[j].isEmpty())
+                        {
+                            GL11.glNormal3f(1.0f, 1.0f, 1.0f);
+                            GL11.glVertex3f(flakes[j].getX(), flakes[j].getY(), flakes[j].getZ());
+                        }
+                    }
+                }
+                
+                GL11.glEnd();
 //            
             
-            // set the color of the object (R,G,B)
-            GL11.glColor3f(0.8f, 0.5f, 0.2f);   //brown
             
-            GL11.glBegin(GL11.GL_TRIANGLES);
-            // show all faces which intersect with the x-y-plane
-//            int[] faces = generator.activeFaces(0.75f);
-            int[] faces = op.getFaces();
-            float[] vertices = op.getVertices();
-            float[] normals = op.getNormals();
-            int[] normalIndices = op.getNormalIndices();
+                // set the color of the object (R,G,B)
+                GL11.glColor3f(0.8f, 0.5f, 0.2f);   //brown
+//                GL11.glColor3f(1.0f, 1.0f, 1.0f);
+                GL11.glBegin(GL11.GL_TRIANGLES);
+                // show all faces which intersect with the x-y-plane
+//                int[] faces = surface.getGenerator().activeFaces(0.75f);
+                int[] faces = op.getFaces();
+                float[] vertices = op.getVertices();
+                float[] normals = op.getNormals();
+                int[] normalIndices = op.getNormalIndices();
 
-            for (int i = 0; i < faces.length; i++)
-            {
-                //subtract 1 to get the right index
-                int j = (faces[i] - 1) * 3;
-                int normal = (normalIndices[i] - 1) * 3;
-                GL11.glNormal3f(normals[normal], normals[normal + 1], normals[normal + 2]);
-                GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
+                for (int i = 0; i < faces.length; i++)
+                {
+                    //subtract 1 to get the right index
+                    int j = (faces[i] - 1) * 3;
+                    int normal = (normalIndices[i] - 1) * 3;
+                    GL11.glNormal3f(normals[normal], normals[normal + 1], normals[normal + 2]);
+                    GL11.glVertex3f(vertices[j], vertices[j + 1], vertices[j + 2]);
+                }
+                GL11.glEnd();
             }
-            GL11.glEnd();
             
             GL11.glPopMatrix();
             Display.update();

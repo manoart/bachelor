@@ -22,6 +22,22 @@ public class Vertex
         this.z = z;
     }
     
+    public boolean isEmpty()
+    {
+        return this.equals(new Vertex(0.0f, 0.0f, 0.0f));
+    }
+    
+    public boolean equals(Vertex v)
+    {
+        if(this.x == v.getX() && this.y == v.getY() && this.z == v.getZ())
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }
+    
     public float getX()
     {
         return this.x;

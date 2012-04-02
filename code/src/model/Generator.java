@@ -19,6 +19,10 @@ public class Generator
     private static final int STEPS = 10;
     /** Array which contains the faces' vertices */
     private int[] faces;
+    private int width;
+    private int height;
+    private int depth;
+   
     
     private static int iVoxel = 0;
 
@@ -58,12 +62,15 @@ public class Generator
         // granularity of the voxel-density (every 1/steps units)
 
         // "+ 1" because you need 11 points to get 10 parts
-        float heigth = ((calculateMaxY(vertices) - calculateMinY(vertices)) * STEPS) + 1;
+        float depth = ((calculateMaxY(vertices) - calculateMinY(vertices)) * STEPS) + 1;
         float width = ((calculateMaxX(vertices) - calculateMinX(vertices)) * STEPS) + 1;
-        float depth = ((calculateMaxZ(vertices) - calculateMinZ(vertices)) * STEPS) + 1;
+        float height = ((calculateMaxZ(vertices) - calculateMinZ(vertices)) * STEPS) + 1;
+        this.height = (int) height/STEPS;
+        this.width = (int) width/STEPS;
+        this.depth = (int) depth/STEPS;
         
         // make the array a little bigger, so that we do not run out of bounds
-        return (int) ((heigth + 0.5f) * (width + 0.5f) * (depth + 0.5f));
+        return (int) ((height + 0.5f) * (width + 0.5f) * (depth + 0.5f));
     }
 
     /**
@@ -149,47 +156,7 @@ public class Generator
             }
         }
         return inside;
-    }
-    
-    /**
-     * Checks if the current Voxel (represented through x,y,z) is inside an
-     * object or not using the Point in Polygon-Algorithm.
-     * Sets also a Voxel directly on an edge.
-     * 
-     * @param x x-coordinate of the Voxel.
-     * @param y y-coordinate of the Voxel.
-     * @param z z-coordinate of the Voxel to set a Voxel.
-     * @param edges which are intersections of faces with the current plane.
-     * @return true if the coordinates are inside an object.
-     */
-    private boolean pointInPolygonY(float x, float y, float z, float[] edges)
-    {
-        boolean inside = false;
-        for(int i = 0; i < edges.length; i += 4)
-        {
-            float x1 = edges[i];
-            float y1 = edges[i + 1];
-            float x2 = edges[i + 2];
-            float y2 = edges[i + 3];
-            
-            boolean startOver = x1 >= x;
-            boolean endOver = x2 >= x;
-            
-            if(startOver != endOver)
-            {
-                float sy = ((float) (x * (y2 - y1) - x1 * y2 + x2 * y1) / (float) (x2 - x1));
-                
-                if(sy >= y)
-                {
-                    inside = !inside;
-//                    setVoxel(x, sy, z);
-                }
-            }
-        }
-        
-        return inside;
-    }
-    
+    }   
     
     /**
      * Calculates all edges at heigth z createt by any object in the y-x-plane.
@@ -371,7 +338,7 @@ public class Generator
     }
 
     /**
-     * Trims a overgiven Array to the given length.
+     * Trims an Array to a given length.
      * 
      * @param a Array which should be trimmed.
      * @param length New length of the Array a.
@@ -411,6 +378,21 @@ public class Generator
     public float[] getVertices()
     {
         return this.vertices;
+    }
+    
+    public int getWidth()
+    {
+        return this.width;
+    }
+    
+    public int getHeight()
+    {
+        return this.height;
+    }
+    
+    public int getDepth()
+    {
+        return this.depth;
     }
     
     /**

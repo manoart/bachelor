@@ -10,6 +10,12 @@ public class Surface
     private Voxel[] activeRightVoxels;
     private Voxel[] activeVoxels;
     private Generator generator;
+    private Snowflakes snowflakes;
+
+    public Snowflakes getSnowflakes()
+    {
+        return snowflakes;
+    }
     /** Array which contains the faces' vertices. */
     private float[] faces;
     /** Array which contains the normals vertices. */
@@ -47,6 +53,7 @@ public class Surface
     public Surface(String path)
     {
         this.generator = new Generator(path);
+        this.snowflakes = new Snowflakes(5, this.generator);
         this.voxels = generator.getVoxels();
         this.faces = new float[voxels.length * 6];
         this.normals = new float[faces.length];
@@ -64,6 +71,7 @@ public class Surface
     
     private void marchingCube(Voxel v, float scale)
     {      
+        
         Vertex[] edgeVertex = new Vertex[12];
         Vertex[] edgeNormal = new Vertex[12];
         
@@ -283,6 +291,10 @@ public class Surface
     
     public void marchingCubes()
     {
+        for(int i = 0; i < this.faces.length; i++)
+        {
+            this.faces[i] = 0.0f;
+        }
         for(int i = 0; i < voxels.length; i++)
         {
             if(voxels[i] != null)
@@ -421,7 +433,7 @@ public class Surface
         
         // let it snow
         
-        int snowflakes = 50;
+        int snowflakes = 20;
         for(int j = 0; j < snowflakes; j++)
         {
             int index = (int)(Math.random() * activeVoxels.length);
@@ -465,7 +477,7 @@ public class Surface
         // let it snow
         if(Surface.cold)
         {
-            int snowflakes = 50;
+            int snowflakes = 20;
             for(int j = 0; j < snowflakes; j++)
             {
                 int index = (int)(Math.random() * activeVoxels.length);
@@ -480,7 +492,7 @@ public class Surface
         {
         
             // melting snow
-            for(int j = 0; j < 10; j++)
+            for(int j = 0; j < 20; j++)
             {
                 int index = (int)(Math.random() * activeVoxels.length);
                 Voxel v = this.activeVoxels[index];
